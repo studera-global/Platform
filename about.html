@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>About Us — Studera</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#147A3E;--green-dark:#0e5a2d;--green-light:#e8f5ee;--green-faint:#f0f7f3;
+  --orange:#F97316;--orange-dark:#ea6d0e;
+  --dark:#0f1a14;--body:#2d3a33;--muted:#6b7c72;
+  --border:#dce8e0;
+  --radius:12px;--radius-lg:20px;
+  --shadow:0 4px 24px rgba(20,122,62,.08);
+  --font-display:'DM Serif Display',serif;
+  --font-body:'DM Sans',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:var(--font-body);color:var(--body);
+  background-color:var(--green-faint);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='104' viewBox='0 0 90 104'%3E%3Cg fill='none' stroke='%23147A3E' stroke-width='1.1' stroke-opacity='0.08'%3E%3Cpolygon points='71,26 58,48 32,48 19,26 32,4 58,4'/%3E%3Cpolygon points='26,78 13,100 -13,100 -26,78 -13,56 13,56'/%3E%3Cpolygon points='116,78 103,100 77,100 64,78 77,56 103,56'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat:repeat;background-size:90px 104px;
+}
+.brand{color:var(--green);font-weight:600}
+
+nav{
+  position:sticky;top:0;z-index:900;
+  background:rgba(255,255,255,.96);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0 5%;height:68px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.nav-logo-text{font-family:var(--font-display);font-size:1.5rem;color:var(--green);text-decoration:none}
+.nav-back{font-size:.88rem;color:var(--green);text-decoration:none;font-weight:600}
+.nav-back:hover{text-decoration:underline}
+
+.page-hero{
+  background:var(--dark);padding:70px 5%;
+  position:relative;overflow:hidden;text-align:center;
+}
+.page-hero::before{
+  content:"";position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='104' viewBox='0 0 90 104'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1' stroke-opacity='0.05'%3E%3Cpolygon points='71,26 58,48 32,48 19,26 32,4 58,4'/%3E%3Cpolygon points='26,78 13,100 -13,100 -26,78 -13,56 13,56'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat:repeat;background-size:90px 104px;
+}
+.page-hero-inner{max-width:700px;margin:0 auto;position:relative;z-index:1}
+.page-hero h1{font-family:var(--font-display);font-size:clamp(2.2rem,4vw,3.2rem);color:#fff;margin-bottom:14px}
+.page-hero p{color:rgba(255,255,255,.75);font-size:1rem;line-height:1.7}
+
+.main{max-width:1000px;margin:0 auto;padding:60px 5%}
+
+/* MISSION STRIP */
+.mission-strip{
+  background:var(--green);border-radius:var(--radius-lg);
+  padding:36px 40px;color:#fff;text-align:center;
+  margin-bottom:60px;
+}
+.mission-strip h2{font-family:var(--font-display);font-size:1.5rem;margin-bottom:10px}
+.mission-strip p{color:rgba(255,255,255,.85);font-size:.95rem;line-height:1.7;max-width:600px;margin:0 auto}
+
+/* TEAM SECTION */
+.team-heading{font-family:var(--font-display);font-size:clamp(1.8rem,3vw,2.4rem);color:var(--dark);text-align:center;margin-bottom:8px}
+.team-sub{text-align:center;color:var(--muted);font-size:.95rem;margin-bottom:48px}
+
+.team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:28px}
+
+.team-card{
+  background:#fff;border:1px solid var(--border);
+  border-radius:var(--radius-lg);overflow:hidden;
+  transition:transform .2s,box-shadow .2s;
+}
+.team-card:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+
+.team-card-top{
+  background:var(--green);padding:36px 28px 0;
+  display:flex;flex-direction:column;align-items:center;
+  position:relative;
+}
+.team-role-badge{
+  position:absolute;top:16px;right:16px;
+  background:rgba(255,255,255,.2);color:#fff;
+  font-size:.72rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+  padding:4px 12px;border-radius:99px;border:1px solid rgba(255,255,255,.3);
+}
+.team-avatar{
+  width:110px;height:110px;border-radius:50%;
+  border:4px solid rgba(255,255,255,.3);
+  background:var(--green-dark);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;margin-bottom:0;
+}
+.team-avatar img{width:100%;height:100%;object-fit:cover}
+.avatar-initials{
+  font-family:var(--font-display);font-size:2.4rem;
+  color:rgba(255,255,255,.9);
+}
+
+.team-card-body{padding:28px}
+.team-name{font-family:var(--font-display);font-size:1.5rem;color:var(--dark);margin-bottom:4px}
+.team-title{font-size:.88rem;color:var(--orange);font-weight:600;margin-bottom:16px}
+.team-uni{
+  display:flex;align-items:center;gap:8px;
+  background:var(--green-faint);border-radius:8px;
+  padding:10px 14px;margin-bottom:16px;
+  border:1px solid rgba(20,122,62,.1);
+  font-size:.88rem;color:var(--body);font-weight:500;
+}
+.team-bio{font-size:.9rem;color:var(--muted);line-height:1.7}
+
+/* VALUES */
+.values-section{margin-top:72px}
+.values-heading{font-family:var(--font-display);font-size:clamp(1.6rem,2.5vw,2.2rem);color:var(--dark);text-align:center;margin-bottom:8px}
+.values-sub{text-align:center;color:var(--muted);font-size:.93rem;margin-bottom:40px}
+.values-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.value-card{
+  background:#fff;border:1px solid var(--border);
+  border-radius:var(--radius);padding:24px 20px;
+  transition:border-color .2s,transform .2s;
+  text-align:center;
+}
+.value-card:hover{border-color:var(--green);transform:translateY(-3px)}
+.value-icon{font-size:2rem;margin-bottom:12px;display:block}
+.value-card h3{font-size:1rem;font-weight:600;color:var(--dark);margin-bottom:8px}
+.value-card p{font-size:.85rem;color:var(--muted);line-height:1.5}
+
+/* CTA */
+.about-cta{
+  background:var(--orange);border-radius:var(--radius-lg);
+  padding:48px 40px;text-align:center;margin-top:60px;
+}
+.about-cta h2{font-family:var(--font-display);font-size:1.8rem;color:#fff;margin-bottom:12px}
+.about-cta p{color:rgba(255,255,255,.85);font-size:.95rem;line-height:1.6;margin-bottom:24px}
+.btn-white{
+  background:#fff;color:var(--orange);
+  padding:13px 32px;border-radius:99px;
+  font-weight:700;font-size:.95rem;
+  text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+  transition:transform .2s,box-shadow .2s;
+}
+.btn-white:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.15)}
+
+footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.08);margin-top:0}
+.footer-inner{max-width:1100px;margin:0 auto;padding:28px 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer-bar{text-align:center;padding:14px 5%;background:#fff;border-top:1px solid var(--border);font-size:.82rem;color:#555;display:block}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" style="text-decoration:none">
+    <span class="nav-logo-text">🎓 <span class="brand">Studera</span></span>
+  </a>
+  <a href="index.html" class="nav-back">← Back to Home</a>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <h1>The Team Behind <span style="color:#a8e6c1">Studera</span></h1>
+    <p>We are two students who experienced the broken college counselling system firsthand — and decided to build something better.</p>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="mission-strip">
+    <h2>Why We Built This</h2>
+    <p>Too many brilliant students miss their dream university not because they are not good enough, but because they never had access to the right guidance. <span style="color:#a8e6c1;font-weight:600">Studera</span> exists to change that — one mentor match at a time.</p>
+  </div>
+
+  <h2 class="team-heading">Meet the Founders</h2>
+  <p class="team-sub">Two upcoming freshmen. One shared mission.</p>
+
+  <div class="team-grid">
+
+    <!-- ALI ZAYAAN -->
+    <div class="team-card">
+      <div class="team-card-top">
+        <span class="team-role-badge">Founder</span>
+        <div class="team-avatar">
+          <span class="avatar-initials">AZ</span>
+        </div>
+      </div>
+      <div class="team-card-body">
+        <div class="team-name">Ali Zayaan</div>
+        <div class="team-title">Founder</div>
+        <div class="team-uni">🎓 Upcoming Freshman — Aerospace Engineering @ University of Colorado Boulder</div>
+        <p class="team-bio">Ali is the founder of <span class="brand">Studera</span>, driven by a deep belief that every student deserves a precise, personalised path to their dream university. Having navigated the university application process himself, he experienced firsthand how generic and ineffective traditional college counselling can be — and knew there had to be a better way. <span class="brand">Studera</span> is his answer to that problem.</p>
+      </div>
+    </div>
+
+    <!-- ARSH FAISAL -->
+    <div class="team-card">
+      <div class="team-card-top">
+        <span class="team-role-badge">Co-Founder</span>
+        <div class="team-avatar">
+          <span class="avatar-initials">AF</span>
+        </div>
+      </div>
+      <div class="team-card-body">
+        <div class="team-name">Arsh Faisal</div>
+        <div class="team-title">Co-Founder</div>
+        <div class="team-uni">🎓 Upcoming Freshman — BSc International Management @ King's College London</div>
+        <p class="team-bio">Arsh is the co-founder of <span class="brand">Studera</span>, bringing a sharp strategic mindset and a passion for making world-class education accessible to students from all backgrounds. Having been through the university application process himself, Arsh understands the gaps in existing counselling and is committed to building a platform that truly delivers for students everywhere.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- VALUES -->
+  <div class="values-section">
+    <h2 class="values-heading">What We Stand For</h2>
+    <p class="values-sub">The principles that guide everything we build at <span class="brand">Studera</span>.</p>
+    <div class="values-grid">
+      <div class="value-card">
+        <span class="value-icon">🎯</span>
+        <h3>Precision Over Generics</h3>
+        <p>Every student deserves guidance that is specific to their university, programme, country, and background — not a one-size-fits-all approach.</p>
+      </div>
+      <div class="value-card">
+        <span class="value-icon">🤝</span>
+        <h3>Peer-to-Peer Trust</h3>
+        <p>The most credible advice comes from someone who has already walked your exact path. We connect students with mentors who truly understand.</p>
+      </div>
+      <div class="value-card">
+        <span class="value-icon">🌍</span>
+        <h3>Global Accessibility</h3>
+        <p>Great guidance should not be limited to students who can afford expensive counsellors. Studera makes world-class mentorship accessible to all.</p>
+      </div>
+      <div class="value-card">
+        <span class="value-icon">📊</span>
+        <h3>Meritocracy</h3>
+        <p>Our mentors are selected through a strict, data-driven process. GPA, grades, scholarships, and a statement of interest — only the best make the cut.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="about-cta">
+    <h2>Believe in Our Mission?</h2>
+    <p>Fill out our 3–4 minute survey and help us build <span style="font-weight:700">Studera</span> right. Your responses directly shape what we build.</p>
+    <a href="https://azpeasy.github.io/Studera/" target="_blank" class="btn-white">Fill the Survey →</a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <span style="font-family:'DM Serif Display',serif;color:#fff;font-size:1.2rem">🎓 <span class="brand">Studera</span></span>
+    <a href="index.html" style="color:#b8ccc0;font-size:.85rem;text-decoration:none">← Back to Home</a>
+  </div>
+  <span class="footer-bar">© 2026 <span class="brand">Studera</span>. All rights reserved.</span>
+</footer>
+
+</body>
+</html>

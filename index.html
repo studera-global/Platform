@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Studera — Making Students Powerful Everyday</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#147A3E;--green-dark:#0e5a2d;--green-light:#e8f5ee;--green-faint:#f0f7f3;
+  --orange:#F97316;--orange-dark:#ea6d0e;
+  --dark:#0f1a14;--body:#2d3a33;--muted:#6b7c72;
+  --border:#dce8e0;--white:#ffffff;
+  --radius:12px;--radius-lg:20px;
+  --shadow:0 4px 24px rgba(20,122,62,.08);
+  --font-display:'DM Serif Display',serif;
+  --font-body:'DM Sans',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:#fff;color:var(--body);overflow-x:hidden}
+
+/* ── HEX BACKGROUND ── */
+.hex-bg{
+  background-color:var(--green-faint);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='104' viewBox='0 0 90 104'%3E%3Cg fill='none' stroke='%23147A3E' stroke-width='1.1' stroke-opacity='0.1'%3E%3Cpolygon points='71,26 58,48 32,48 19,26 32,4 58,4'/%3E%3Cpolygon points='26,78 13,100 -13,100 -26,78 -13,56 13,56'/%3E%3Cpolygon points='116,78 103,100 77,100 64,78 77,56 103,56'/%3E%3Cpolygon points='71,130 58,152 32,152 19,130 32,108 58,108'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat:repeat;background-size:90px 104px;
+}
+
+/* ── BRAND ── */
+.brand{color:var(--green);font-weight:600}
+
+/* ── NAVBAR ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:900;
+  background:rgba(255,255,255,.95);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0 5%;height:68px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo-text{font-family:var(--font-display);font-size:1.6rem;color:var(--green);line-height:1}
+.nav-logo-cap{font-size:1.4rem;transform:rotate(-10deg);display:inline-block;margin-right:2px}
+.nav-links{display:flex;align-items:center;gap:28px;list-style:none}
+.nav-links a{font-size:.9rem;font-weight:500;color:var(--body);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--green)}
+.nav-cta{background:var(--orange);color:#fff!important;padding:9px 22px;border-radius:99px;font-weight:600!important;font-size:.88rem!important;transition:background .2s,transform .1s!important}
+.nav-cta:hover{background:var(--orange-dark)!important;transform:translateY(-1px)}
+.nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.nav-hamburger span{display:block;width:22px;height:2px;background:var(--dark);border-radius:2px;transition:.3s}
+
+/* ── HERO ── */
+#hero{
+  min-height:100vh;padding-top:68px;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+  background:#fff;
+}
+.hero-inner{
+  width:90%;max-width:1100px;
+  display:grid;grid-template-columns:1fr 1fr;
+  align-items:center;gap:60px;padding:80px 0;
+}
+.hero-left h1{
+  font-family:var(--font-display);
+  font-size:clamp(2.6rem,5vw,4rem);
+  color:var(--dark);line-height:1.1;
+  margin-bottom:16px;
+}
+.hero-left h1 em{color:var(--green);font-style:normal}
+.hero-tagline{
+  font-size:clamp(1.1rem,2vw,1.4rem);
+  color:var(--muted);font-weight:300;
+  line-height:1.6;margin-bottom:10px;
+  min-height:2.4em;
+}
+.hero-reveal{
+  font-family:var(--font-display);
+  font-size:clamp(1.2rem,2.2vw,1.6rem);
+  color:var(--green);
+  opacity:0;transform:translateY(10px);
+  transition:opacity .6s,transform .6s;
+  margin-bottom:32px;min-height:2em;
+}
+.hero-reveal.visible{opacity:1;transform:translateY(0)}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap}
+.btn-primary{
+  background:var(--orange);color:#fff;
+  padding:13px 30px;border-radius:99px;
+  font-weight:600;font-size:.95rem;
+  text-decoration:none;border:none;cursor:pointer;
+  transition:background .2s,transform .15s;display:inline-flex;align-items:center;gap:8px;
+}
+.btn-primary:hover{background:var(--orange-dark);transform:translateY(-2px)}
+.btn-secondary{
+  background:transparent;color:var(--green);
+  padding:13px 30px;border-radius:99px;
+  font-weight:600;font-size:.95rem;
+  text-decoration:none;border:2px solid var(--green);cursor:pointer;
+  transition:background .2s,transform .15s;display:inline-flex;align-items:center;
+}
+.btn-secondary:hover{background:var(--green-light);transform:translateY(-2px)}
+
+/* ── LOGO GRID ── */
+.hero-right{
+  display:flex;flex-direction:column;align-items:center;gap:16px;
+}
+.logos-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:100%;
+}
+.uni-logo-card{
+  background:#fff;border:1.5px solid var(--border);
+  border-radius:var(--radius);padding:16px 10px;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  opacity:0;transform:translateY(20px) scale(.95);
+  transition:opacity .5s,transform .5s,border-color .2s,box-shadow .2s;
+}
+.uni-logo-card.shown{opacity:1;transform:translateY(0) scale(1)}
+.uni-logo-card:hover{border-color:var(--green);box-shadow:var(--shadow)}
+.uni-logo-card img{width:48px;height:48px;object-fit:contain;filter:grayscale(20%)}
+.uni-logo-card span{font-size:.72rem;font-weight:600;color:var(--muted);text-align:center;line-height:1.3}
+.scroll-hint{
+  display:flex;align-items:center;gap:8px;
+  font-size:.82rem;color:var(--muted);
+  animation:bounce 2s infinite;
+}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+.scroll-hint::after{content:"↓";font-size:1rem}
+
+/* ── SECTIONS ── */
+section{padding:90px 5%}
+.section-inner{max-width:1100px;margin:0 auto}
+.section-label{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:.78rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--green);margin-bottom:16px;
+}
+.section-label::before{content:"";display:block;width:24px;height:2px;background:var(--green);border-radius:2px}
+.section-title{
+  font-family:var(--font-display);
+  font-size:clamp(2rem,3.5vw,2.8rem);
+  color:var(--dark);line-height:1.2;margin-bottom:16px;
+}
+.section-sub{font-size:1.05rem;color:var(--muted);line-height:1.7;max-width:600px}
+
+/* ── STATS SECTION ── */
+#stats{background:#fff;padding:80px 5%}
+.stats-header{text-align:center;margin-bottom:16px}
+.countries-tag{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:8px;
+  margin-bottom:50px;
+}
+.country-pill{
+  background:var(--green-light);color:var(--green-dark);
+  font-size:.78rem;font-weight:600;padding:5px 14px;
+  border-radius:99px;border:1px solid rgba(20,122,62,.2);
+}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin-bottom:50px}
+.stat-card{
+  background:var(--green-faint);border:1px solid rgba(20,122,62,.15);
+  border-radius:var(--radius-lg);padding:28px 24px;
+  transition:transform .2s,box-shadow .2s;
+}
+.stat-card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.stat-num{
+  font-family:var(--font-display);font-size:3rem;
+  color:var(--green);line-height:1;margin-bottom:8px;
+}
+.stat-desc{font-size:.9rem;color:var(--body);line-height:1.5}
+.stats-two-col{
+  display:grid;grid-template-columns:1fr 1fr;gap:32px;
+  background:var(--green-faint);border-radius:var(--radius-lg);
+  padding:36px;border:1px solid rgba(20,122,62,.12);
+}
+.col-problem h3,.col-solution h3{
+  font-family:var(--font-display);font-size:1.3rem;
+  margin-bottom:14px;
+}
+.col-problem h3{color:#c0392b}
+.col-solution h3{color:var(--green)}
+.col-problem p,.col-solution p{font-size:.93rem;color:var(--body);line-height:1.7}
+
+/* ── MISSION ── */
+#mission{background:var(--dark)}
+#mission .section-label{color:#7ecf9a}
+#mission .section-label::before{background:#7ecf9a}
+#mission .section-title{color:#fff}
+.mission-quote{
+  font-family:var(--font-display);
+  font-size:clamp(1.3rem,2.5vw,1.9rem);
+  color:#7ecf9a;line-height:1.5;
+  border-left:4px solid var(--green);
+  padding-left:24px;margin:32px 0;
+  font-style:italic;
+}
+.mission-body{
+  display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:40px;
+}
+.mission-body p{font-size:.96rem;color:#b8ccc0;line-height:1.8}
+
+/* ── HOW IT WORKS ── */
+#how{background:var(--green-faint)}
+.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:48px}
+.step-card{
+  background:#fff;border-radius:var(--radius-lg);
+  padding:32px 28px;border:1px solid var(--border);
+  position:relative;transition:transform .2s,box-shadow .2s;
+}
+.step-card:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+.step-num{
+  font-family:var(--font-display);font-size:3.5rem;
+  color:rgba(20,122,62,.1);line-height:1;
+  position:absolute;top:20px;right:24px;
+}
+.step-icon{
+  width:52px;height:52px;background:var(--green-light);
+  border-radius:14px;display:flex;align-items:center;
+  justify-content:center;font-size:1.5rem;margin-bottom:18px;
+}
+.step-card h3{font-size:1.1rem;color:var(--dark);font-weight:600;margin-bottom:10px}
+.step-card p{font-size:.9rem;color:var(--muted);line-height:1.6}
+
+/* ── RND CTA ── */
+#rnd{
+  background:var(--green);
+  position:relative;overflow:hidden;
+}
+#rnd::before{
+  content:"";position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='104' viewBox='0 0 90 104'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1' stroke-opacity='0.07'%3E%3Cpolygon points='71,26 58,48 32,48 19,26 32,4 58,4'/%3E%3Cpolygon points='26,78 13,100 -13,100 -26,78 -13,56 13,56'/%3E%3Cpolygon points='116,78 103,100 77,100 64,78 77,56 103,56'/%3E%3Cpolygon points='71,130 58,152 32,152 19,130 32,108 58,108'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat:repeat;background-size:90px 104px;
+}
+.rnd-inner{position:relative;z-index:1;text-align:center;max-width:700px;margin:0 auto}
+.rnd-badge{
+  display:inline-block;background:rgba(255,255,255,.2);
+  color:#fff;font-size:.78rem;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;
+  padding:6px 18px;border-radius:99px;margin-bottom:20px;
+  border:1px solid rgba(255,255,255,.3);
+}
+#rnd .section-title{color:#fff;text-align:center}
+.rnd-desc{color:rgba(255,255,255,.85);font-size:1.05rem;line-height:1.7;margin:16px 0 32px;text-align:center}
+.rnd-targets{
+  display:flex;justify-content:center;gap:16px;
+  flex-wrap:wrap;margin-bottom:32px;
+}
+.rnd-target{
+  background:rgba(255,255,255,.15);
+  border:1px solid rgba(255,255,255,.3);
+  color:#fff;font-weight:600;font-size:.9rem;
+  padding:8px 20px;border-radius:99px;
+}
+.btn-white{
+  background:#fff;color:var(--green);
+  padding:15px 40px;border-radius:99px;
+  font-weight:700;font-size:1rem;
+  text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+  transition:transform .2s,box-shadow .2s;
+  box-shadow:0 4px 20px rgba(0,0,0,.15);
+}
+.btn-white:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.2)}
+
+/* ── TIMELINE ── */
+#timeline{background:#fff}
+.timeline-container{position:relative;margin-top:60px;padding:0 20px}
+.timeline-track{
+  display:flex;flex-direction:column;gap:0;
+  position:relative;
+}
+.timeline-track::before{
+  content:"";position:absolute;left:28px;top:0;bottom:0;
+  width:2px;background:linear-gradient(to bottom,var(--green),rgba(20,122,62,.1));
+}
+.tl-item{
+  display:flex;gap:28px;position:relative;
+  padding-bottom:48px;
+}
+.tl-item:last-child{padding-bottom:0}
+.tl-dot{
+  flex-shrink:0;width:58px;height:58px;
+  border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:1.4rem;
+  position:relative;z-index:1;
+  border:3px solid #fff;box-shadow:0 0 0 3px var(--green);
+  background:#fff;transition:transform .3s;
+}
+.tl-dot.active{background:var(--green);box-shadow:0 0 0 4px rgba(20,122,62,.3)}
+.tl-dot.active span{filter:brightness(10)}
+.tl-content{padding-top:10px;flex:1}
+.tl-phase{
+  font-size:.72rem;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--muted);margin-bottom:4px;
+}
+.tl-title{font-family:var(--font-display);font-size:1.4rem;color:var(--dark);margin-bottom:6px}
+.tl-dates{font-size:.88rem;color:var(--green);font-weight:600;margin-bottom:8px}
+.tl-desc{font-size:.9rem;color:var(--muted);line-height:1.6}
+.tl-status{
+  display:inline-block;font-size:.72rem;font-weight:700;
+  letter-spacing:.5px;text-transform:uppercase;
+  padding:3px 12px;border-radius:99px;margin-top:8px;
+}
+.tl-status.active{background:var(--green-light);color:var(--green)}
+.tl-status.soon{background:#fff3e0;color:#e65100}
+.tl-status.future{background:#f5f5f5;color:var(--muted)}
+.tl-arrow{
+  position:absolute;left:24px;bottom:-24px;
+  width:10px;height:24px;
+  display:flex;flex-direction:column;align-items:center;
+}
+.tl-arrow::before{
+  content:"";display:block;width:2px;flex:1;background:var(--green);opacity:.3;
+}
+/* parallel badge */
+.tl-parallel{
+  display:inline-flex;align-items:center;gap:6px;
+  background:#fff3e0;color:#e65100;
+  font-size:.72rem;font-weight:700;
+  padding:3px 12px;border-radius:99px;margin-top:6px;margin-left:8px;
+  border:1px solid rgba(230,81,0,.2);
+}
+
+/* ── FAQ ── */
+#faq{background:var(--green-faint)}
+.faq-list{margin-top:48px;display:flex;flex-direction:column;gap:12px;max-width:800px}
+.faq-item{
+  background:#fff;border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;
+  transition:box-shadow .2s;
+}
+.faq-item:hover{box-shadow:var(--shadow)}
+.faq-q{
+  width:100%;background:none;border:none;cursor:pointer;
+  padding:20px 24px;text-align:left;
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:var(--font-body);font-size:.97rem;font-weight:600;color:var(--dark);
+}
+.faq-q .icon{
+  width:26px;height:26px;border-radius:50%;
+  background:var(--green-light);color:var(--green);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;flex-shrink:0;transition:transform .3s;
+}
+.faq-item.open .faq-q .icon{transform:rotate(45deg)}
+.faq-a{
+  max-height:0;overflow:hidden;
+  transition:max-height .4s ease,padding .3s;
+  padding:0 24px;
+}
+.faq-item.open .faq-a{max-height:400px;padding:0 24px 20px}
+.faq-a p{font-size:.93rem;color:var(--muted);line-height:1.7}
+
+/* ── NEWSLETTER ── */
+#newsletter{background:var(--dark)}
+.nl-inner{text-align:center;max-width:560px;margin:0 auto}
+#newsletter .section-title{color:#fff}
+#newsletter .section-sub{color:#b8ccc0;margin:0 auto 32px}
+.nl-form{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.nl-form input{
+  flex:1;min-width:220px;padding:13px 18px;
+  border:1.5px solid rgba(255,255,255,.2);border-radius:99px;
+  background:rgba(255,255,255,.08);color:#fff;
+  font-family:var(--font-body);font-size:.93rem;outline:none;
+  transition:border-color .2s;
+}
+.nl-form input::placeholder{color:rgba(255,255,255,.4)}
+.nl-form input:focus{border-color:var(--orange)}
+.nl-msg{margin-top:12px;font-size:.85rem;color:#7ecf9a;display:none}
+
+/* ── SCHOOLS ── */
+#schools{background:var(--green-faint);padding:70px 5%}
+.schools-inner{
+  max-width:1100px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;
+}
+.schools-text .section-title{font-size:clamp(1.6rem,2.5vw,2.2rem)}
+.schools-form{display:flex;flex-direction:column;gap:12px}
+.schools-form input{
+  padding:13px 18px;border:1.5px solid var(--border);
+  border-radius:var(--radius);font-family:var(--font-body);font-size:.93rem;
+  background:#fff;outline:none;transition:border-color .2s,box-shadow .2s;
+  color:var(--dark);
+}
+.schools-form input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(20,122,62,.1)}
+.schools-msg{font-size:.85rem;color:var(--green);display:none;margin-top:4px}
+
+/* ── QUICK LINKS ── */
+#links{background:#fff;padding:80px 5%}
+.links-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:20px;margin-top:48px;
+}
+.link-card{
+  border:2px solid var(--border);border-radius:var(--radius-lg);
+  padding:36px 32px;text-align:center;
+  transition:border-color .2s,transform .2s,box-shadow .2s;
+  text-decoration:none;display:block;
+}
+.link-card:hover{border-color:var(--green);transform:translateY(-6px);box-shadow:var(--shadow)}
+.link-card-icon{font-size:2.4rem;margin-bottom:16px;display:block}
+.link-card h3{font-family:var(--font-display);font-size:1.3rem;color:var(--dark);margin-bottom:8px}
+.link-card p{font-size:.88rem;color:var(--muted);line-height:1.5;margin-bottom:20px}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--dark);
+  border-top:1px solid rgba(255,255,255,.08);
+}
+.footer-inner{
+  max-width:1100px;margin:0 auto;padding:48px 5% 32px;
+  display:grid;grid-template-columns:1fr auto;gap:40px;align-items:start;
+}
+.footer-brand .nav-logo-text{color:#fff}
+.footer-tagline{font-size:.85rem;color:#7ecf9a;margin-top:6px}
+.footer-links{display:flex;flex-direction:column;gap:10px;align-items:flex-end}
+.footer-links a{font-size:.85rem;color:#b8ccc0;text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:#fff}
+.footer-bar{
+  text-align:center;padding:18px 5%;
+  background:#fff;border-top:1px solid var(--border);
+  font-size:.82rem;color:#555;
+}
+.footer-bar span{font-size:.82rem}
+
+/* ── ANIMATIONS ── */
+.fade-in{opacity:0;transform:translateY(30px);transition:opacity .7s,transform .7s}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .hero-inner{grid-template-columns:1fr;gap:40px;padding:50px 0}
+  .logos-grid{grid-template-columns:repeat(3,1fr);gap:10px}
+  .stats-two-col{grid-template-columns:1fr}
+  .mission-body{grid-template-columns:1fr}
+  .schools-inner{grid-template-columns:1fr}
+  .footer-inner{grid-template-columns:1fr}
+  .footer-links{align-items:flex-start}
+  nav .nav-links{display:none}
+  .nav-hamburger{display:flex}
+  nav .nav-links.open{
+    display:flex;flex-direction:column;
+    position:absolute;top:68px;left:0;right:0;
+    background:#fff;border-bottom:1px solid var(--border);
+    padding:20px 5%;gap:16px;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ NAVBAR ══ -->
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-text">🎓 <span class="brand">Studera</span></span>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#stats">Why Studera</a></li>
+    <li><a href="#mission">Mission</a></li>
+    <li><a href="#timeline">Timeline</a></li>
+    <li><a href="opportunities.html">Opportunities</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="#newsletter" class="nav-cta">Fill the Survey →</a></li>
+  </ul>
+  <button class="nav-hamburger" id="hamburger" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section id="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="section-label">Making Students Powerful Everyday</div>
+      <h1>Your <em>Dream</em><br>University.</h1>
+      <p class="hero-tagline">The right mentor. The exact path.<br>From someone who already walked it.</p>
+      <p class="hero-reveal" id="heroReveal"></p>
+      <div class="hero-btns">
+        <a href="https://azpeasy.github.io/Studera/" target="_blank" rel="noopener" class="btn-primary">Fill the Survey → <span>3–4 min</span></a>
+        <a href="#stats" class="btn-secondary">Learn More</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="logos-grid" id="logosGrid">
+        <div class="uni-logo-card" data-i="0">
+          <img src="https://upload.wikimedia.org/wikipedia/en/thumb/0/04/Utoronto_coa.svg/200px-Utoronto_coa.svg.png" alt="University of Toronto" onerror="this.src='';this.parentElement.querySelector('span').textContent='UofT'"/>
+          <span>University of Toronto</span>
+        </div>
+        <div class="uni-logo-card" data-i="1">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Imperial_College_London_crest.svg/200px-Imperial_College_London_crest.svg.png" alt="Imperial College" onerror="this.src=''"/>
+          <span>Imperial College London</span>
+        </div>
+        <div class="uni-logo-card" data-i="2">
+          <img src="https://upload.wikimedia.org/wikipedia/en/thumb/6/6e/University_of_Waterloo_seal.svg/200px-University_of_Waterloo_seal.svg.png" alt="Waterloo" onerror="this.src=''"/>
+          <span>University of Waterloo</span>
+        </div>
+        <div class="uni-logo-card" data-i="3">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/MIT_Seal.svg/200px-MIT_Seal.svg.png" alt="MIT" onerror="this.src=''"/>
+          <span>MIT</span>
+        </div>
+        <div class="uni-logo-card" data-i="4">
+          <img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e8/University_of_Western_Ontario_logo.svg/200px-University_of_Western_Ontario_logo.svg.png" alt="Western" onerror="this.src=''"/>
+          <span>Western University</span>
+        </div>
+        <div class="uni-logo-card" data-i="5">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Virginia_Tech_logo.svg/200px-Virginia_Tech_logo.svg.png" alt="Virginia Tech" onerror="this.src=''"/>
+          <span>Virginia Tech</span>
+        </div>
+        <div class="uni-logo-card" data-i="6" style="grid-column:2">
+          <img src="https://upload.wikimedia.org/wikipedia/en/thumb/9/9d/CU_Boulder_logo.svg/200px-CU_Boulder_logo.svg.png" alt="CU Boulder" onerror="this.src=''"/>
+          <span>CU Boulder</span>
+        </div>
+      </div>
+      <div class="scroll-hint" id="scrollHint">Scroll to explore</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ STATS / WHY STUDERA ══ -->
+<section id="stats" class="fade-in">
+  <div class="section-inner">
+    <div class="stats-header">
+      <div class="section-label">Data-Backed</div>
+      <h2 class="section-title">We asked students from<br><span style="color:var(--green)">7 countries</span> ✦</h2>
+      <div class="countries-tag">
+        <span class="country-pill">🇵🇰 Pakistan</span>
+        <span class="country-pill">🇺🇸 United States of America</span>
+        <span class="country-pill">🇬🇧 United Kingdom</span>
+        <span class="country-pill">🇨🇦 Canada</span>
+        <span class="country-pill">🇹🇿 Tanzania</span>
+        <span class="country-pill">🇹🇯 Tajikistan</span>
+        <span class="country-pill">🌍 + More</span>
+      </div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card fade-in">
+        <div class="stat-num">68%</div>
+        <div class="stat-desc">of students surveyed are currently taking or have taken college counselling</div>
+      </div>
+      <div class="stat-card fade-in">
+        <div class="stat-num">79%</div>
+        <div class="stat-desc">of those felt guidance was too generic, ineffective, or barely helpful</div>
+      </div>
+      <div class="stat-card fade-in">
+        <div class="stat-num">95%</div>
+        <div class="stat-desc">believed a mentor from their exact university and programme would have made a real difference</div>
+      </div>
+      <div class="stat-card fade-in">
+        <div class="stat-num">90%</div>
+        <div class="stat-desc">of students who received counselling said they would sign up for <span class="brand">Studera</span> once it launches</div>
+      </div>
+    </div>
+    <div class="stats-two-col fade-in">
+      <div class="col-problem">
+        <h3>The Problem</h3>
+        <p>A typical school counsellor works with between 35 to 70 students simultaneously. Everyone receives the same vague personal statement edits, the same university suggestions based only on grades, and the same generic scholarship lists. This one-size-fits-all approach fails the students who need the most precise, personalised guidance to reach their dream university.</p>
+      </div>
+      <div class="col-solution">
+        <h3>The <span class="brand">Studera</span> Solution</h3>
+        <p><span class="brand">Studera</span> connects high school students with current undergraduate students from their exact target university and programme — mentors who share the same country of origin, schooling system, and background. They know exactly what the admissions team looks for, and they can give you the resources no generic counsellor even knows about.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ MISSION ══ -->
+<section id="mission">
+  <div class="section-inner fade-in">
+    <div class="section-label">Our Purpose</div>
+    <h2 class="section-title">Making Students<br>Powerful Everyday.</h2>
+    <div class="mission-quote">
+      "We give students an exact path to their dream university from someone who has already walked it."
+    </div>
+    <div class="mission-body">
+      <p>At <span class="brand" style="color:#7ecf9a">Studera</span>, we believe the greatest power is opportunity. Yet today, most students receive generic college counselling that does not account for their unique background, target university, or dream programme. The guidance is vague. The outcomes are uncertain. The process is unnecessarily difficult.</p>
+      <p><span class="brand" style="color:#7ecf9a">Studera</span> changes this entirely. Our mentors can tell you exactly what the university looks for in applicants, help you craft and edit your essays with precision, guide your extracurricular choices, and navigate financial aid and scholarship opportunities tied to your specific major. The guidance transforms from vague and generic to context-specific and effective.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ HOW IT WORKS ══ -->
+<section id="how">
+  <div class="section-inner fade-in">
+    <div class="section-label">The Process</div>
+    <h2 class="section-title">How <span class="brand">Studera</span> Works</h2>
+    <p class="section-sub">Three simple steps to get you from where you are now to where you want to be.</p>
+    <div class="steps-grid">
+      <div class="step-card fade-in">
+        <div class="step-num">01</div>
+        <div class="step-icon">🎯</div>
+        <h3>Find Your Dream University</h3>
+        <p>Tell us your target university and programme. We use your academic background, country of origin, and schooling system to understand your full profile.</p>
+      </div>
+      <div class="step-card fade-in">
+        <div class="step-num">02</div>
+        <div class="step-icon">🤝</div>
+        <h3>Get Matched with the Right Mentor</h3>
+        <p>We connect you with a current undergraduate student from your exact dream university and programme who shares your background. Not a generic counsellor — someone who truly gets it.</p>
+      </div>
+      <div class="step-card fade-in">
+        <div class="step-num">03</div>
+        <div class="step-icon">📝</div>
+        <h3>Get a Personalised Path</h3>
+        <p>Receive targeted guidance on essays, extracurriculars, scholarships, and financial aid. Everything tailored to your dream university, your programme, and your unique story.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ RND CTA ══ -->
+<section id="rnd">
+  <div class="rnd-inner fade-in">
+    <div class="rnd-badge">🔬 R&amp;D Phase — Active Now</div>
+    <h2 class="section-title">Help Us Build<br><span style="color:#a8e6c1">Studera</span> Right.</h2>
+    <p class="rnd-desc">We are currently collecting data to build a platform that truly works for students everywhere. If you believe in our mission, we encourage you to fill out our survey — it takes only 3 to 4 minutes and your responses will directly shape what we build.</p>
+    <div class="rnd-targets">
+      <span class="rnd-target">📚 High School Students — Grade 9 to 12</span>
+      <span class="rnd-target">🎓 Undergraduate Students — Year 1 to 4</span>
+    </div>
+    <a href="https://azpeasy.github.io/Studera/" target="_blank" rel="noopener" class="btn-white">Fill the Survey — 3 to 4 minutes →</a>
+  </div>
+</section>
+
+<!-- ══ TIMELINE ══ -->
+<section id="timeline">
+  <div class="section-inner fade-in">
+    <div class="section-label">The Roadmap</div>
+    <h2 class="section-title">From Idea to Launch</h2>
+    <p class="section-sub">Here is exactly where we are and where we are headed.</p>
+    <div class="timeline-container">
+      <div class="timeline-track">
+
+        <div class="tl-item fade-in">
+          <div class="tl-dot active"><span>🔬</span></div>
+          <div class="tl-content">
+            <div class="tl-phase">Phase 1</div>
+            <div class="tl-title">R&amp;D &amp; Data Collection</div>
+            <div class="tl-dates">April 1, 2026 → June 5, 2026</div>
+            <p class="tl-desc">Surveying students across 7 countries to understand the real pain points of college counselling and validate the <span class="brand">Studera</span> model. Every response shapes what we build.</p>
+            <span class="tl-status active">In Progress</span>
+          </div>
+        </div>
+
+        <div class="tl-item fade-in">
+          <div class="tl-dot" style="box-shadow:0 0 0 3px #f97316"><span>⚗️</span></div>
+          <div class="tl-content">
+            <div class="tl-phase">Phase 2</div>
+            <div class="tl-title">Alpha Testing</div>
+            <div class="tl-dates">May 20, 2026 → June 10, 2026</div>
+            <p class="tl-desc">Running in parallel with R&amp;D, early alpha testing begins with a small group of selected mentors and mentees to validate the core matching and mentorship model before wider release.</p>
+            <span class="tl-status soon">Starting Soon</span>
+            <span class="tl-parallel">↔ Parallel with R&amp;D</span>
+          </div>
+        </div>
+
+        <div class="tl-item fade-in">
+          <div class="tl-dot"><span>🧪</span></div>
+          <div class="tl-content">
+            <div class="tl-phase">Phase 3</div>
+            <div class="tl-title">Beta Testing — Phase 1</div>
+            <div class="tl-dates">June 10, 2026 → July 1, 2026</div>
+            <p class="tl-desc">Wider beta launch with real mentor-mentee pairs. Gathering feedback on the platform experience, session quality, and outcomes to refine before the official launch.</p>
+            <span class="tl-status future">Upcoming</span>
+          </div>
+        </div>
+
+        <div class="tl-item fade-in">
+          <div class="tl-dot"><span>🚀</span></div>
+          <div class="tl-content">
+            <div class="tl-phase">Phase 4</div>
+            <div class="tl-title"><span class="brand">Studera</span> V1 — Official Launch</div>
+            <div class="tl-dates">August 5, 2026</div>
+            <p class="tl-desc">The full <span class="brand">Studera</span> platform goes live. Students everywhere can sign up, get matched with their ideal mentor, and start their journey to their dream university.</p>
+            <span class="tl-status future">Coming August 2026</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FAQ ══ -->
+<section id="faq">
+  <div class="section-inner fade-in">
+    <div class="section-label">Questions</div>
+    <h2 class="section-title">Frequently Asked Questions</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What is <span class="brand" style="margin:0 4px">Studera</span>?
+          <span class="icon">+</span>
+        </button>
+        <div class="faq-a"><p><span class="brand">Studera</span> is a mentorship platform that connects high school students with current undergraduate students from their exact dream university and programme. Unlike generic college counselling, every mentor on <span class="brand">Studera</span> shares the same university, programme, country of origin, and schooling background as the student — making the guidance uniquely precise and effective.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Who can sign up?
+          <span class="icon">+</span>
+        </button>
+        <div class="faq-a"><p><span class="brand">Studera</span> is designed for two groups. <strong>Mentees</strong> are high school students in Grade 9 to 12 who are preparing for university applications and want targeted, personalised guidance. <strong>Mentors</strong> are current undergraduate students in Year 1 to 4 who are enrolled at a target university and want to share their experience while earning.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Is it free?
+          <span class="icon">+</span>
+        </button>
+        <div class="faq-a"><p>Full pricing details will be announced at launch. What we can say is that <span class="brand">Studera</span> is designed to be accessible — our mission is to democratise high-quality college guidance, not restrict it to those who can afford premium services. Stay tuned for more details.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          When does it launch?
+          <span class="icon">+</span>
+        </button>
+        <div class="faq-a"><p><span class="brand">Studera</span> V1 is targeted for launch on August 5, 2026. We are currently in our R&amp;D phase, with alpha testing beginning May 20 and beta testing starting June 10. Sign up for our newsletter below to be the very first to know when we go live.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          How are mentors selected?
+          <span class="icon">+</span>
+        </button>
+        <div class="faq-a"><p>We have a strict and meritocratic mentor selection process. Every mentor application is evaluated on four criteria: their university GPA, their high school final grades, whether they are on a scholarship, and a Statement of Interest in which they describe the unique opportunities and insights they bring to high school students. Only mentors who meet our quality bar are approved — because your dream university deserves nothing less.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ NEWSLETTER ══ -->
+<section id="newsletter">
+  <div class="section-inner">
+    <div class="nl-inner fade-in">
+      <div class="section-label" style="color:#7ecf9a;justify-content:center">
+        <span style="background:#7ecf9a;width:24px;height:2px;display:block;border-radius:2px"></span>
+        Stay Updated
+      </div>
+      <h2 class="section-title">Be the First to Know<br>When <span style="color:#7ecf9a">Studera</span> Launches.</h2>
+      <p class="section-sub">No spam. Just the things that matter — beta access, launch date, and early sign-up priority.</p>
+      <div class="nl-form" id="nlForm">
+        <input type="text" id="nlName" placeholder="Your name" />
+        <input type="email" id="nlEmail" placeholder="Your email address" />
+        <button class="btn-primary" onclick="submitNewsletter()">Notify Me →</button>
+      </div>
+      <div class="nl-msg" id="nlMsg">✓ You're on the list! We'll be in touch soon.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SCHOOLS ══ -->
+<section id="schools">
+  <div class="schools-inner">
+    <div class="schools-text fade-in">
+      <div class="section-label">For Institutions</div>
+      <h2 class="section-title">Is Your School Interested in Partnering with <span class="brand">Studera</span>?</h2>
+      <p style="color:var(--muted);font-size:.95rem;line-height:1.7;margin-top:12px">We are open to collaborating with forward-thinking schools that want to give their students a genuine advantage in the university application process. Leave your details and we will reach out.</p>
+    </div>
+    <div class="fade-in">
+      <div class="schools-form" id="schoolForm">
+        <input type="text" id="schoolName" placeholder="School name" />
+        <input type="email" id="schoolEmail" placeholder="School email address" />
+        <button class="btn-primary" onclick="submitSchool()">Get in Touch →</button>
+      </div>
+      <div class="schools-msg" id="schoolMsg">✓ Thank you! We will be in touch soon.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ QUICK LINKS ══ -->
+<section id="links">
+  <div class="section-inner">
+    <div class="section-label">Explore More</div>
+    <h2 class="section-title">There's More to Discover</h2>
+    <div class="links-grid">
+      <a href="opportunities.html" class="link-card fade-in">
+        <span class="link-card-icon">🌍</span>
+        <h3>Student Opportunities</h3>
+        <p>Scholarships, conferences, programmes and more — sorted by deadline so you never miss a chance.</p>
+        <span class="btn-primary" style="display:inline-flex">Explore Opportunities →</span>
+      </a>
+      <a href="about.html" class="link-card fade-in">
+        <span class="link-card-icon">👥</span>
+        <h3>About Us</h3>
+        <p>Meet the team behind <span class="brand">Studera</span> and learn why we are building this platform.</p>
+        <span class="btn-primary" style="display:inline-flex">Meet the Team →</span>
+      </a>
+      <a href="mailto:contact@studera.com" class="link-card fade-in">
+        <span class="link-card-icon">✉️</span>
+        <h3>Contact Us</h3>
+        <p>Have a question, a partnership idea, or just want to say hello? We'd love to hear from you.</p>
+        <span class="btn-primary" style="display:inline-flex">Get in Touch →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="nav-logo-text">🎓 <span class="brand">Studera</span></div>
+      <div class="footer-tagline">Making Students Powerful Everyday</div>
+    </div>
+    <div class="footer-links">
+      <a href="opportunities.html">Student Opportunities</a>
+      <a href="about.html">About Us</a>
+      <a href="#faq">FAQ</a>
+      <a href="mailto:contact@studera.com">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>© 2026 <span class="brand">Studera</span>. All rights reserved.</span>
+  </div>
+</footer>
+
+<script>
+// ── HERO SCROLL-LOCK ANIMATION ──
+const cards = document.querySelectorAll('.uni-logo-card');
+const heroSection = document.getElementById('hero');
+const heroReveal = document.getElementById('heroReveal');
+const scrollHint = document.getElementById('scrollHint');
+let heroLocked = true;
+let currentCard = 0;
+let lastScrollY = 0;
+let heroScrollAccum = 0;
+const SCROLL_PER_CARD = 120;
+
+function showNextCard() {
+  if (currentCard < cards.length) {
+    cards[currentCard].classList.add('shown');
+    currentCard++;
+  }
+  if (currentCard >= cards.length) {
+    // all shown — reveal tagline and unlock
+    setTimeout(() => {
+      heroReveal.textContent = 'We create the path to your dream university.';
+      heroReveal.classList.add('visible');
+      scrollHint.style.opacity = '0';
+      setTimeout(() => { heroLocked = false; }, 800);
+    }, 300);
+  }
+}
+
+// Show first card immediately
+setTimeout(() => showNextCard(), 400);
+
+window.addEventListener('wheel', (e) => {
+  if (!heroLocked) return;
+  if (currentCard >= cards.length) return;
+  e.preventDefault();
+  heroScrollAccum += Math.abs(e.deltaY);
+  if (heroScrollAccum >= SCROLL_PER_CARD) {
+    heroScrollAccum = 0;
+    showNextCard();
+  }
+}, { passive: false });
+
+// touch support
+let touchStartY = 0;
+window.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; });
+window.addEventListener('touchmove', e => {
+  if (!heroLocked || currentCard >= cards.length) return;
+  const diff = touchStartY - e.touches[0].clientY;
+  if (diff > 30) { showNextCard(); touchStartY = e.touches[0].clientY; }
+}, { passive: true });
+
+// ── SCROLL ANIMATIONS ──
+const fadeEls = document.querySelectorAll('.fade-in');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.12 });
+fadeEls.forEach(el => observer.observe(el));
+
+// ── FAQ ──
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+// ── NAV HAMBURGER ──
+function toggleNav() {
+  document.getElementById('navLinks').classList.toggle('open');
+}
+
+// ── NEWSLETTER SUBMIT ──
+const NL_URL = 'PASTE_NEWSLETTER_SCRIPT_URL_HERE';
+function submitNewsletter() {
+  const name = document.getElementById('nlName').value.trim();
+  const email = document.getElementById('nlEmail').value.trim();
+  if (!name || !email) { alert('Please enter your name and email.'); return; }
+  document.getElementById('nlMsg').style.display = 'block';
+  document.getElementById('nlForm').style.opacity = '.4';
+  document.getElementById('nlForm').style.pointerEvents = 'none';
+  if (NL_URL !== 'PASTE_NEWSLETTER_SCRIPT_URL_HERE') {
+    fetch(NL_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ type:'newsletter', name, email, timestamp: new Date().toISOString() }) });
+  }
+}
+
+// ── SCHOOL SUBMIT ──
+function submitSchool() {
+  const name = document.getElementById('schoolName').value.trim();
+  const email = document.getElementById('schoolEmail').value.trim();
+  if (!name || !email) { alert('Please enter your school name and email.'); return; }
+  document.getElementById('schoolMsg').style.display = 'block';
+  document.getElementById('schoolForm').style.opacity = '.4';
+  document.getElementById('schoolForm').style.pointerEvents = 'none';
+  if (NL_URL !== 'PASTE_NEWSLETTER_SCRIPT_URL_HERE') {
+    fetch(NL_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ type:'school', name, email, timestamp: new Date().toISOString() }) });
+  }
+}
+</script>
+</body>
+</html>

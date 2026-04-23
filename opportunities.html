@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Student Opportunities — Studera</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#147A3E;--green-dark:#0e5a2d;--green-light:#e8f5ee;--green-faint:#f0f7f3;
+  --orange:#F97316;--orange-dark:#ea6d0e;
+  --dark:#0f1a14;--body:#2d3a33;--muted:#6b7c72;
+  --border:#dce8e0;--white:#ffffff;
+  --radius:12px;--radius-lg:20px;
+  --shadow:0 4px 24px rgba(20,122,62,.08);
+  --font-display:'DM Serif Display',serif;
+  --font-body:'DM Sans',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-body);background:var(--green-faint);color:var(--body)}
+.brand{color:var(--green);font-weight:600}
+
+/* HEX BG */
+body{
+  background-color:var(--green-faint);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='104' viewBox='0 0 90 104'%3E%3Cg fill='none' stroke='%23147A3E' stroke-width='1.1' stroke-opacity='0.08'%3E%3Cpolygon points='71,26 58,48 32,48 19,26 32,4 58,4'/%3E%3Cpolygon points='26,78 13,100 -13,100 -26,78 -13,56 13,56'/%3E%3Cpolygon points='116,78 103,100 77,100 64,78 77,56 103,56'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat:repeat;background-size:90px 104px;
+}
+
+/* NAVBAR */
+nav{
+  position:sticky;top:0;z-index:900;
+  background:rgba(255,255,255,.96);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0 5%;height:68px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none}
+.nav-logo-text{font-family:var(--font-display);font-size:1.5rem;color:var(--green)}
+.nav-links{display:flex;align-items:center;gap:24px;list-style:none}
+.nav-links a{font-size:.88rem;font-weight:500;color:var(--body);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--green)}
+.nav-cta{background:var(--orange);color:#fff!important;padding:8px 20px;border-radius:99px;font-weight:600!important}
+.nav-back{font-size:.88rem;color:var(--green);text-decoration:none;font-weight:600;display:flex;align-items:center;gap:6px}
+.nav-back:hover{text-decoration:underline}
+
+/* HERO BANNER */
+.page-hero{
+  background:var(--green);padding:60px 5%;
+  position:relative;overflow:hidden;
+}
+.page-hero::before{
+  content:"";position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='104' viewBox='0 0 90 104'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1' stroke-opacity='0.07'%3E%3Cpolygon points='71,26 58,48 32,48 19,26 32,4 58,4'/%3E%3Cpolygon points='26,78 13,100 -13,100 -26,78 -13,56 13,56'/%3E%3Cpolygon points='116,78 103,100 77,100 64,78 77,56 103,56'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat:repeat;background-size:90px 104px;
+}
+.page-hero-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1}
+.page-hero h1{font-family:var(--font-display);font-size:clamp(2rem,4vw,3rem);color:#fff;margin-bottom:10px}
+.page-hero p{color:rgba(255,255,255,.8);font-size:1rem;line-height:1.6;max-width:560px}
+
+/* FILTER BAR */
+.filter-section{background:#fff;border-bottom:1px solid var(--border);padding:16px 5%;position:sticky;top:68px;z-index:800}
+.filter-inner{max-width:1100px;margin:0 auto;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.filter-label{font-size:.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-right:4px}
+.filter-btn{
+  padding:7px 16px;border-radius:99px;
+  border:1.5px solid var(--border);background:#fff;
+  font-family:var(--font-body);font-size:.82rem;font-weight:500;
+  color:var(--body);cursor:pointer;transition:all .2s;
+}
+.filter-btn:hover,.filter-btn.active{
+  background:var(--green);color:#fff;border-color:var(--green);
+}
+.filter-divider{width:1px;height:20px;background:var(--border);margin:0 4px}
+
+/* MAIN CONTENT */
+.main{max-width:1100px;margin:0 auto;padding:40px 5%}
+.results-count{font-size:.85rem;color:var(--muted);margin-bottom:24px}
+.results-count strong{color:var(--dark)}
+
+/* OPPORTUNITY CARDS */
+.opp-list{display:flex;flex-direction:column;gap:20px}
+.opp-card{
+  background:#fff;border:1px solid var(--border);
+  border-radius:var(--radius-lg);overflow:hidden;
+  display:grid;grid-template-columns:220px 1fr;
+  transition:transform .2s,box-shadow .2s;
+}
+.opp-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.opp-img{
+  background:var(--green-light);
+  display:flex;align-items:center;justify-content:center;
+  min-height:180px;overflow:hidden;
+}
+.opp-img img{width:100%;height:100%;object-fit:cover}
+.opp-img-placeholder{
+  font-size:3rem;display:flex;align-items:center;
+  justify-content:center;width:100%;height:100%;
+  background:linear-gradient(135deg,var(--green-light),#d4eddf);
+}
+.opp-body{padding:24px 28px;display:flex;flex-direction:column;gap:12px}
+.opp-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.opp-title{font-family:var(--font-display);font-size:1.2rem;color:var(--dark);line-height:1.3}
+.deadline-badge{
+  flex-shrink:0;background:#fff3e0;color:#e65100;
+  font-size:.75rem;font-weight:700;padding:4px 12px;
+  border-radius:99px;border:1px solid rgba(230,81,0,.2);
+  white-space:nowrap;
+}
+.deadline-badge.urgent{background:#fce4e4;color:#c62828;border-color:rgba(198,40,40,.2)}
+.deadline-badge.soon{background:#fff8e1;color:#f57f17;border-color:rgba(245,127,23,.2)}
+.opp-meta{display:flex;flex-wrap:wrap;gap:8px}
+.meta-tag{
+  display:flex;align-items:center;gap:5px;
+  font-size:.78rem;color:var(--muted);
+  background:var(--green-faint);padding:4px 10px;
+  border-radius:6px;border:1px solid rgba(20,122,62,.1);
+}
+.meta-tag strong{color:var(--body);font-weight:600}
+.opp-desc{font-size:.9rem;color:var(--body);line-height:1.6}
+.opp-footer{display:flex;justify-content:flex-end;margin-top:auto}
+.btn-orange{
+  background:var(--orange);color:#fff;
+  padding:10px 24px;border-radius:99px;
+  font-weight:600;font-size:.88rem;
+  text-decoration:none;border:none;cursor:pointer;
+  transition:background .2s,transform .15s;display:inline-flex;align-items:center;gap:6px;
+}
+.btn-orange:hover{background:var(--orange-dark);transform:translateY(-1px)}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:60px 20px}
+.empty-state p{color:var(--muted);font-size:1rem}
+
+/* FOOTER */
+footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.08)}
+.footer-inner{max-width:1100px;margin:0 auto;padding:32px 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.footer-bar{text-align:center;padding:14px 5%;background:#fff;border-top:1px solid var(--border);font-size:.82rem;color:#555;display:block}
+
+@media(max-width:640px){
+  .opp-card{grid-template-columns:1fr}
+  .opp-img{min-height:160px}
+  .filter-inner{gap:8px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-text">🎓 <span class="brand">Studera</span></span>
+  </a>
+  <a href="index.html" class="nav-back">← Back to Home</a>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <h1>Student Opportunities</h1>
+    <p>Scholarships, conferences, programmes and competitions — sorted by the nearest deadline so you never miss a chance. Updated regularly by the <span style="color:#a8e6c1;font-weight:600">Studera</span> team.</p>
+  </div>
+</div>
+
+<div class="filter-section">
+  <div class="filter-inner">
+    <span class="filter-label">Filter:</span>
+    <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+    <div class="filter-divider"></div>
+    <button class="filter-btn" onclick="setFilter('highschool',this)">High School</button>
+    <button class="filter-btn" onclick="setFilter('undergrad',this)">Undergraduate</button>
+    <button class="filter-btn" onclick="setFilter('both',this)">Open to All</button>
+    <div class="filter-divider"></div>
+    <button class="filter-btn" onclick="setFilter('international',this)">International</button>
+    <button class="filter-btn" onclick="setFilter('online',this)">Online</button>
+    <button class="filter-btn" onclick="setFilter('inperson',this)">In-Person</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="results-count" id="resultsCount"></div>
+  <div class="opp-list" id="oppList"></div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <span style="font-family:'DM Serif Display',serif;color:#fff;font-size:1.2rem">🎓 <span class="brand">Studera</span></span>
+    <span style="color:#b8ccc0;font-size:.85rem">Making Students Powerful Everyday</span>
+  </div>
+  <span class="footer-bar">© 2026 <span class="brand">Studera</span>. All rights reserved.</span>
+</footer>
+
+<script>
+const opportunities = [
+  {
+    id:1,
+    title:"Global Young Leaders Conference (GYLC)",
+    emoji:"🌐",
+    deadline:"2026-05-15",
+    urgency:"soon",
+    education:"highschool",
+    location:"Washington D.C., USA",
+    locationType:"inperson",
+    nationality:"international",
+    ageMin:14,ageMax:18,
+    eligibility:"High school students aged 14–18, open internationally",
+    desc:"A prestigious leadership conference bringing together outstanding high school students from around the world for an immersive programme in Washington D.C. and New York. Develop leadership skills, engage with policymakers, and build a global network.",
+    link:"#"
+  },
+  {
+    id:2,
+    title:"Schwarzman Scholars Program",
+    emoji:"🏛️",
+    deadline:"2026-09-20",
+    urgency:"future",
+    education:"undergrad",
+    location:"Tsinghua University, Beijing",
+    locationType:"inperson",
+    nationality:"international",
+    ageMin:18,ageMax:29,
+    eligibility:"Undergraduate students aged 18–29, open internationally",
+    desc:"One of the most competitive graduate scholarships in the world, designed to prepare the next generation of global leaders. Fully funded one-year master's programme at Tsinghua University, Beijing. Covers tuition, accommodation, travel, and stipend.",
+    link:"#"
+  },
+  {
+    id:3,
+    title:"Microsoft Imagine Cup",
+    emoji:"💻",
+    deadline:"2026-04-30",
+    urgency:"urgent",
+    education:"both",
+    location:"Online + Global Finals",
+    locationType:"online",
+    nationality:"international",
+    ageMin:16,ageMax:30,
+    eligibility:"Students aged 16–30, open internationally",
+    desc:"Microsoft's flagship global student technology competition. Build an innovative tech solution addressing a real-world problem. Compete in categories including AI, sustainability, and social impact. Winners receive funding, mentorship, and global exposure.",
+    link:"#"
+  },
+  {
+    id:4,
+    title:"Commonwealth Essay Competition",
+    emoji:"✍️",
+    deadline:"2026-05-01",
+    urgency:"soon",
+    education:"highschool",
+    location:"Online",
+    locationType:"online",
+    nationality:"international",
+    ageMin:11,ageMax:18,
+    eligibility:"Students aged 11–18 from Commonwealth countries",
+    desc:"One of the world's oldest and largest writing competitions for young people, run by the Royal Commonwealth Society. Submit an essay on a globally relevant theme. Outstanding entries receive gold, silver, and bronze awards with certificates and prizes.",
+    link:"#"
+  },
+  {
+    id:5,
+    title:"UWC Short Course — Global Citizenship",
+    emoji:"🌍",
+    deadline:"2026-06-10",
+    urgency:"future",
+    education:"highschool",
+    location:"Various UWC Campuses",
+    locationType:"inperson",
+    nationality:"international",
+    ageMin:15,ageMax:18,
+    eligibility:"High school students aged 15–18, international applications welcome",
+    desc:"United World Colleges short courses offer an immersive international education experience on one of their global campuses. Study alongside peers from 150+ countries, develop intercultural skills, and build the kind of global perspective universities value highly in applicants.",
+    link:"#"
+  },
+  {
+    id:6,
+    title:"UNLEASH Innovation Lab",
+    emoji:"🚀",
+    deadline:"2026-07-01",
+    urgency:"future",
+    education:"undergrad",
+    location:"Global — rotating host cities",
+    locationType:"inperson",
+    nationality:"international",
+    ageMin:18,ageMax:35,
+    eligibility:"Undergraduate and graduate students aged 18–35, open internationally",
+    desc:"A global innovation platform bringing together talented young people to develop sustainable solutions to the UN's Sustainable Development Goals. Work in multidisciplinary teams, receive mentorship from industry leaders, and pitch your solutions to a global audience.",
+    link:"#"
+  }
+];
+
+// Sort by deadline
+opportunities.sort((a,b)=>new Date(a.deadline)-new Date(b.deadline));
+
+let activeFilter = 'all';
+
+function setFilter(f, btn) {
+  activeFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderOpps();
+}
+
+function daysUntil(dateStr) {
+  const diff = new Date(dateStr) - new Date();
+  return Math.ceil(diff / (1000*60*60*24));
+}
+
+function formatDate(dateStr) {
+  return new Date(dateStr).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+}
+
+function urgencyLabel(days, urgency) {
+  if (days < 0) return {text:'Deadline Passed',cls:'urgent'};
+  if (days <= 14) return {text:`${days} days left`,cls:'urgent'};
+  if (days <= 30) return {text:`${days} days left`,cls:'soon'};
+  return {text:`Deadline: ${formatDate(opportunities.find(o=>daysUntil(o.deadline)===days)?.deadline||'')}`,cls:''};
+}
+
+function renderOpps() {
+  const list = document.getElementById('oppList');
+  const filtered = opportunities.filter(o => {
+    if (activeFilter==='all') return true;
+    if (activeFilter==='highschool') return o.education==='highschool'||o.education==='both';
+    if (activeFilter==='undergrad') return o.education==='undergrad'||o.education==='both';
+    if (activeFilter==='both') return o.education==='both';
+    if (activeFilter==='international') return o.nationality==='international';
+    if (activeFilter==='online') return o.locationType==='online';
+    if (activeFilter==='inperson') return o.locationType==='inperson';
+    return true;
+  });
+
+  document.getElementById('resultsCount').innerHTML = `Showing <strong>${filtered.length}</strong> opportunit${filtered.length===1?'y':'ies'}`;
+
+  if (!filtered.length) {
+    list.innerHTML = '<div class="empty-state"><p>No opportunities match this filter right now. Check back soon!</p></div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(o => {
+    const days = daysUntil(o.deadline);
+    const dl = days < 0 ? {text:'Deadline Passed',cls:'urgent'} :
+               days <= 14 ? {text:`${days} days left`,cls:'urgent'} :
+               days <= 30 ? {text:`${days} days left`,cls:'soon'} :
+               {text:`Deadline: ${formatDate(o.deadline)}`,cls:''};
+    return `
+    <div class="opp-card">
+      <div class="opp-img">
+        <div class="opp-img-placeholder">${o.emoji}</div>
+      </div>
+      <div class="opp-body">
+        <div class="opp-top">
+          <div class="opp-title">${o.title}</div>
+          <span class="deadline-badge ${dl.cls}">${dl.text}</span>
+        </div>
+        <div class="opp-meta">
+          <span class="meta-tag">📅 <strong>Deadline:</strong> ${formatDate(o.deadline)}</span>
+          <span class="meta-tag">🎓 <strong>Eligibility:</strong> ${o.eligibility}</span>
+          <span class="meta-tag">📍 <strong>Location:</strong> ${o.location}</span>
+        </div>
+        <p class="opp-desc">${o.desc}</p>
+        <div class="opp-footer">
+          <a href="opportunity.html?id=${o.id}" class="btn-orange">Learn More / Apply →</a>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+renderOpps();
+</script>
+</body>
+</html>

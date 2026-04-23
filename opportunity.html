@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Opportunity — Studera</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#147A3E;--green-dark:#0e5a2d;--green-light:#e8f5ee;--green-faint:#f0f7f3;
+  --orange:#F97316;--orange-dark:#ea6d0e;
+  --dark:#0f1a14;--body:#2d3a33;--muted:#6b7c72;
+  --border:#dce8e0;
+  --radius:12px;--radius-lg:20px;
+  --shadow:0 4px 24px rgba(20,122,62,.08);
+  --font-display:'DM Serif Display',serif;
+  --font-body:'DM Sans',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:var(--font-body);color:var(--body);
+  background-color:var(--green-faint);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='104' viewBox='0 0 90 104'%3E%3Cg fill='none' stroke='%23147A3E' stroke-width='1.1' stroke-opacity='0.08'%3E%3Cpolygon points='71,26 58,48 32,48 19,26 32,4 58,4'/%3E%3Cpolygon points='26,78 13,100 -13,100 -26,78 -13,56 13,56'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat:repeat;background-size:90px 104px;
+}
+.brand{color:var(--green);font-weight:600}
+nav{
+  position:sticky;top:0;z-index:900;
+  background:rgba(255,255,255,.96);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0 5%;height:68px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.nav-logo-text{font-family:var(--font-display);font-size:1.5rem;color:var(--green)}
+.nav-back{font-size:.88rem;color:var(--green);text-decoration:none;font-weight:600}
+.nav-back:hover{text-decoration:underline}
+
+.main{max-width:860px;margin:0 auto;padding:50px 5% 80px}
+.breadcrumb{font-size:.82rem;color:var(--muted);margin-bottom:28px}
+.breadcrumb a{color:var(--green);text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+
+.opp-detail-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow)}
+.opp-detail-banner{
+  background:var(--green);padding:48px 40px;
+  display:flex;align-items:center;gap:24px;
+  position:relative;overflow:hidden;
+}
+.opp-detail-banner::before{
+  content:"";position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='104' viewBox='0 0 90 104'%3E%3Cg fill='none' stroke='%23fff' stroke-width='1' stroke-opacity='0.07'%3E%3Cpolygon points='71,26 58,48 32,48 19,26 32,4 58,4'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat:repeat;background-size:90px 104px;
+}
+.opp-emoji-big{font-size:3.5rem;position:relative;z-index:1}
+.opp-banner-text{position:relative;z-index:1}
+.opp-banner-text h1{font-family:var(--font-display);font-size:clamp(1.4rem,3vw,2rem);color:#fff;margin-bottom:8px;line-height:1.2}
+.deadline-big{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.2);color:#fff;
+  font-size:.85rem;font-weight:600;
+  padding:6px 16px;border-radius:99px;
+  border:1px solid rgba(255,255,255,.3);
+}
+
+.opp-detail-body{padding:36px 40px}
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:32px}
+.detail-item{
+  background:var(--green-faint);border-radius:var(--radius);
+  padding:16px 18px;border:1px solid rgba(20,122,62,.1);
+}
+.detail-item-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:4px}
+.detail-item-value{font-size:.92rem;font-weight:600;color:var(--dark)}
+
+.section-divider{height:1px;background:var(--border);margin:28px 0}
+.detail-section h2{font-family:var(--font-display);font-size:1.3rem;color:var(--dark);margin-bottom:14px}
+.detail-section p{font-size:.95rem;color:var(--body);line-height:1.8;margin-bottom:12px}
+
+.apply-section{
+  background:var(--orange);border-radius:var(--radius-lg);
+  padding:32px 36px;text-align:center;margin-top:32px;
+}
+.apply-section h2{font-family:var(--font-display);font-size:1.5rem;color:#fff;margin-bottom:10px}
+.apply-section p{color:rgba(255,255,255,.85);font-size:.9rem;margin-bottom:20px}
+.btn-white{
+  background:#fff;color:var(--orange);
+  padding:13px 36px;border-radius:99px;
+  font-weight:700;font-size:.95rem;
+  text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+  transition:transform .2s;
+}
+.btn-white:hover{transform:translateY(-2px)}
+
+footer{background:var(--dark);margin-top:60px}
+.footer-bar{text-align:center;padding:14px 5%;background:#fff;border-top:1px solid var(--border);font-size:.82rem;color:#555;display:block}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" style="text-decoration:none">
+    <span class="nav-logo-text">🎓 <span class="brand">Studera</span></span>
+  </a>
+  <a href="opportunities.html" class="nav-back">← Back to Opportunities</a>
+</nav>
+
+<div class="main">
+  <div class="breadcrumb">
+    <a href="index.html">Home</a> → <a href="opportunities.html">Opportunities</a> → <span id="breadcrumbTitle">Loading...</span>
+  </div>
+
+  <div class="opp-detail-card" id="oppDetail">
+    <div style="padding:60px;text-align:center;color:#aaa">Loading opportunity...</div>
+  </div>
+</div>
+
+<footer>
+  <div style="max-width:1100px;margin:0 auto;padding:24px 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+    <span style="font-family:'DM Serif Display',serif;color:#fff;font-size:1.2rem">🎓 <span class="brand">Studera</span></span>
+    <a href="opportunities.html" style="color:#b8ccc0;font-size:.85rem;text-decoration:none">← All Opportunities</a>
+  </div>
+  <span class="footer-bar">© 2026 <span class="brand">Studera</span>. All rights reserved.</span>
+</footer>
+
+<script>
+const opportunities = [
+  {id:1,title:"Global Young Leaders Conference (GYLC)",emoji:"🌐",deadline:"2026-05-15",education:"High School Students",location:"Washington D.C., USA",locationType:"In-Person",nationality:"International",ageRange:"14–18",eligibility:"High school students aged 14–18, open internationally",desc:"A prestigious leadership conference bringing together outstanding high school students from around the world for an immersive programme in Washington D.C. and New York.",fullDesc:"The Global Young Leaders Conference is one of the most prestigious student leadership programmes in the world. Held across Washington D.C. and New York City, this intensive programme brings together exceptional high school students from over 150 countries for a transformative educational experience.\n\nDelegates engage in simulated congressional hearings, visit key government institutions, and interact with policymakers, business leaders, and change-makers. The programme is specifically designed to develop the next generation of global leaders by immersing them in real-world diplomatic and legislative processes.\n\nParticipants leave with a powerful international network, a deeper understanding of global governance, and a credential that universities around the world recognise and value in applicants.",eligibilityFull:"Open to high school students aged 14–18. Applications are welcome from students in all countries. Academic performance and demonstrated leadership potential are key selection criteria.",cost:"Programme fees apply. Limited financial assistance may be available — contact the organisers for details.",link:"https://www.gylc.com"},
+  {id:2,title:"Schwarzman Scholars Program",emoji:"🏛️",deadline:"2026-09-20",education:"Undergraduate Students",location:"Tsinghua University, Beijing, China",locationType:"In-Person",nationality:"International",ageRange:"18–29",eligibility:"Undergraduate students aged 18–29, open internationally",desc:"One of the most competitive graduate scholarships in the world. Fully funded one-year master's programme at Tsinghua University, Beijing.",fullDesc:"The Schwarzman Scholars program is one of the most selective and prestigious scholarship programmes in the world, designed to prepare the next generation of global leaders for a world where China plays a central role.\n\nScholarship recipients complete a one-year master's degree at Schwarzman College at Tsinghua University in Beijing. The programme is fully funded — covering tuition, room and board, travel, living expenses, and an in-country study tour of China.\n\nScholars are selected from across the globe based on leadership potential, entrepreneurial spirit, and the ability to bridge cultural and geopolitical divides. The application process is rigorous and highly competitive, with candidates evaluated through written applications and in-person interviews.",eligibilityFull:"Open to students aged 18–29 from any country. Applicants should have completed or be completing an undergraduate degree. Strong academic performance, demonstrated leadership, and a clear motivation for studying China's role in the world are essential.",cost:"Fully funded. Covers tuition, accommodation, travel, and a living stipend.",link:"https://www.schwarzmanscholars.org"},
+  {id:3,title:"Microsoft Imagine Cup",emoji:"💻",deadline:"2026-04-30",education:"Open to All Students",location:"Online + Global Finals",locationType:"Online + In-Person Finals",nationality:"International",ageRange:"16–30",eligibility:"Students aged 16–30, open internationally",desc:"Microsoft's flagship global student technology competition. Build an innovative tech solution addressing a real-world problem.",fullDesc:"The Microsoft Imagine Cup is Microsoft's premier global student technology competition, running for over two decades. Students form teams of up to four people and build innovative technology solutions that address meaningful real-world challenges.\n\nCompetition tracks include AI and Machine Learning, Sustainability and Climate, Health and Wellbeing, and Social Impact. Teams are judged on innovation, technical execution, impact potential, and presentation quality.\n\nWinners at each regional level advance to the Global Finals, which are hosted at Microsoft headquarters. Top prizes include significant cash awards, Azure credits, and one-on-one mentorship sessions with senior Microsoft leadership. Past winners have gone on to found successful startups and secure significant investment.",eligibilityFull:"Open to students aged 16–30 who are currently enrolled in an accredited educational institution. Teams of 1–4 members are allowed. All nationalities are welcome.",cost:"Free to enter.",link:"https://imaginecup.microsoft.com"},
+  {id:4,title:"Commonwealth Essay Competition",emoji:"✍️",deadline:"2026-05-01",education:"High School Students",location:"Online Submission",locationType:"Online",nationality:"Commonwealth Countries",ageRange:"11–18",eligibility:"Students aged 11–18 from Commonwealth countries",desc:"One of the world's oldest and largest writing competitions for young people, run by the Royal Commonwealth Society.",fullDesc:"The Commonwealth Essay Competition is one of the world's oldest and most prestigious writing competitions for young people, organised by the Royal Commonwealth Society since 1883. It is open to all students aged 18 and under in Commonwealth countries.\n\nEach year, a theme is announced that reflects contemporary global issues — past themes have included identity, climate, justice, and belonging. Students write an essay of up to 1,500 words (Senior category) or 1,000 words (Junior category) responding to the theme.\n\nOutstanding essays are awarded Gold, Silver, and Bronze commendations by an international panel of judges. Gold award winners receive certificates, prizes, and recognition from the Royal Commonwealth Society. The competition is widely recognised by universities as evidence of academic excellence and global awareness.",eligibilityFull:"Open to students aged 11–18 who live in or have a connection to a Commonwealth country. Both senior (15–18) and junior (11–14) categories are available.",cost:"Free to enter.",link:"https://www.commonwealthofnations.org/sectors-human-development/education/essay-competition/"},
+  {id:5,title:"UWC Short Course — Global Citizenship",emoji:"🌍",deadline:"2026-06-10",education:"High School Students",location:"Various UWC Campuses Worldwide",locationType:"In-Person",nationality:"International",ageRange:"15–18",eligibility:"High school students aged 15–18, international applications welcome",desc:"United World Colleges short courses offer an immersive international education experience on one of their global campuses.",fullDesc:"United World Colleges (UWC) is a global education movement whose mission is to make education a force to unite people, nations and cultures for peace and a sustainable future. UWC Short Courses bring this mission to life in an intensive residential programme.\n\nHeld across UWC campuses in countries including Norway, Swaziland, India, USA, and the Netherlands, these courses bring together students from over 150 countries for two to four weeks of immersive, collaborative learning.\n\nThe curriculum focuses on global citizenship, sustainable development, intercultural dialogue, and leadership. Students live in international dormitories, collaborate on projects, and develop the kind of global perspective and cross-cultural competence that leading universities actively seek in applicants.\n\nCompletion of a UWC Short Course is a powerful addition to any university application and demonstrates exactly the kind of international mindset that Studera mentors can help you build upon.",eligibilityFull:"Open to students aged 15–18. Applications are welcome from all nationalities. Selection is based on motivation, academic potential, and commitment to the UWC mission.",cost:"Programme fees apply. Scholarships and bursaries are available — strongly encouraged to apply.",link:"https://www.uwc.org"},
+  {id:6,title:"UNLEASH Innovation Lab",emoji:"🚀",deadline:"2026-07-01",education:"Undergraduate Students",location:"Global — rotating host cities",locationType:"In-Person",nationality:"International",ageRange:"18–35",eligibility:"Undergraduate and graduate students aged 18–35, open internationally",desc:"A global innovation platform bringing together talented young people to develop sustainable solutions to the UN's Sustainable Development Goals.",fullDesc:"UNLEASH is a global innovation platform that brings together talented and motivated young people from across the world to develop sustainable solutions to the United Nations Sustainable Development Goals (SDGs).\n\nParticipants are selected through a competitive global application process and brought together for an intensive innovation lab held in a different country each year. Working in multidisciplinary, multinational teams, participants spend several days developing solutions to specific SDG challenges.\n\nThe programme provides world-class mentorship from industry leaders, NGOs, governments, and social entrepreneurs. The most promising solutions receive funding, incubation support, and the opportunity to present to global decision-makers.\n\nUNLEASH alumni have gone on to found impactful organisations, secure funding from major investors, and build careers at the intersection of innovation and global development.",eligibilityFull:"Open to young people aged 18–35 from any country. Undergraduate, graduate, and young professionals are welcome. A strong motivation to work on global challenges and a collaborative mindset are key.",cost:"Participation is funded for selected participants — covering accommodation, meals, and programme costs. Travel grants are available.",link:"https://unleash.org"}
+];
+
+function formatDate(dateStr){
+  return new Date(dateStr).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+}
+function daysUntil(dateStr){
+  return Math.ceil((new Date(dateStr)-new Date())/(1000*60*60*24));
+}
+
+const params = new URLSearchParams(window.location.search);
+const id = parseInt(params.get('id'));
+const opp = opportunities.find(o=>o.id===id);
+
+if (opp) {
+  document.title = opp.title + ' — Studera';
+  document.getElementById('breadcrumbTitle').textContent = opp.title;
+  const days = daysUntil(opp.deadline);
+  const dlText = days < 0 ? 'Deadline Passed' : days <= 14 ? `${days} days left — Act Fast!` : `${days} days remaining`;
+  const paragraphs = opp.fullDesc.split('\n\n').map(p=>`<p>${p}</p>`).join('');
+  document.getElementById('oppDetail').innerHTML = `
+    <div class="opp-detail-banner">
+      <span class="opp-emoji-big">${opp.emoji}</span>
+      <div class="opp-banner-text">
+        <h1>${opp.title}</h1>
+        <span class="deadline-big">📅 ${dlText}</span>
+      </div>
+    </div>
+    <div class="opp-detail-body">
+      <div class="detail-grid">
+        <div class="detail-item"><div class="detail-item-label">Deadline</div><div class="detail-item-value">${formatDate(opp.deadline)}</div></div>
+        <div class="detail-item"><div class="detail-item-label">Education Level</div><div class="detail-item-value">${opp.education}</div></div>
+        <div class="detail-item"><div class="detail-item-label">Location</div><div class="detail-item-value">${opp.location}</div></div>
+        <div class="detail-item"><div class="detail-item-label">Format</div><div class="detail-item-value">${opp.locationType}</div></div>
+        <div class="detail-item"><div class="detail-item-label">Nationality</div><div class="detail-item-value">${opp.nationality}</div></div>
+        <div class="detail-item"><div class="detail-item-label">Age Range</div><div class="detail-item-value">${opp.ageRange}</div></div>
+      </div>
+      <div class="section-divider"></div>
+      <div class="detail-section">
+        <h2>About This Opportunity</h2>
+        ${paragraphs}
+      </div>
+      <div class="section-divider"></div>
+      <div class="detail-section">
+        <h2>Eligibility</h2>
+        <p>${opp.eligibilityFull}</p>
+      </div>
+      <div class="section-divider"></div>
+      <div class="detail-section">
+        <h2>Cost</h2>
+        <p>${opp.cost}</p>
+      </div>
+      <div class="apply-section">
+        <h2>Ready to Apply?</h2>
+        <p>Visit the official website for full application details, requirements, and to submit your application.</p>
+        <a href="${opp.link}" target="_blank" rel="noopener" class="btn-white">Apply / Learn More →</a>
+      </div>
+    </div>`;
+} else {
+  document.getElementById('oppDetail').innerHTML = '<div style="padding:60px;text-align:center;color:#aaa">Opportunity not found. <a href="opportunities.html" style="color:var(--green)">Back to opportunities →</a></div>';
+}
+</script>
+</body>
+</html>
