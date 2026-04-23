@@ -832,7 +832,7 @@ function showNextCard() {
   if (currentCard >= cards.length) {
     // all shown — reveal tagline and unlock
     setTimeout(() => {
-      heroReveal.textContent = '"Education is the most powerful weapon which you can use to change the world" - Nelson Mandela - '.';
+      heroReveal.textContent = '"Education is the most powerful weapon which you can use to change the world" — Nelson Mandela';
       heroReveal.classList.add('visible');
       scrollHint.style.opacity = '0';
       setTimeout(() => { heroLocked = false; }, 800);
