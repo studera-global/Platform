@@ -472,8 +472,8 @@ footer{
   <div class="hero-inner">
     <div class="hero-left">
       <div class="section-label">Making Students Powerful Everyday</div>
-      <h1>Your <em>Dream</em><br>University.</h1>
-      <p class="hero-tagline">Transforming your college counseling experience.<br>Make your path to university practical, personal and effecient, guided by mentors who have successfully navigated the admissions process.</p>
+      <h1> We create the path to Your <em>Dream</em><br>University.</h1>
+      <p class="hero-tagline">by transforming your college counseling experience.<br>Make your path to university practical, economical and effecient.</p>
       <p class="hero-reveal" id="heroReveal"></p>
       <div class="hero-btns">
         <a href="https://azpeasy.github.io/Studera/" target="_blank" rel="noopener" class="btn-primary">Fill the Survey → <span>3–4 min</span></a>
@@ -483,11 +483,11 @@ footer{
     <div class="hero-right">
       <div class="logos-grid" id="logosGrid">
         <div class="uni-logo-card" data-i="0">
-          <img src="https://upload.wikimedia.org/wikipedia/en/thumb/0/04/Utoronto_coa.svg/200px-Utoronto_coa.svg.png" alt="University of Toronto" onerror="this.src='';this.parentElement.querySelector('span').textContent='UofT'"/>
+          <img src="https://upload.wikimedia.org/wikipedia/en/thumb/0/04/Utoronto_coa.svg/1280px-Utoronto_coa.svg.png" alt="University of Toronto" onerror="this.src='';this.parentElement.querySelector('span').textContent='UofT'"/>
           <span>University of Toronto</span>
         </div>
         <div class="uni-logo-card" data-i="1">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Imperial_College_London_crest.svg/200px-Imperial_College_London_crest.svg.png" alt="Imperial College" onerror="this.src=''"/>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Arms_of_Imperial_College_London.svg/960px-Arms_of_Imperial_College_London.svg.png" alt="Imperial College" onerror="this.src=''"/>
           <span>Imperial College London</span>
         </div>
         <div class="uni-logo-card" data-i="2">
@@ -832,7 +832,7 @@ function showNextCard() {
   if (currentCard >= cards.length) {
     // all shown — reveal tagline and unlock
     setTimeout(() => {
-      heroReveal.textContent = 'We create the path to your dream university.';
+      heroReveal.textContent = '"Education is the most powerful weapon which you can use to change the world" - Nelson Mandela - '.';
       heroReveal.classList.add('visible');
       scrollHint.style.opacity = '0';
       setTimeout(() => { heroLocked = false; }, 800);
