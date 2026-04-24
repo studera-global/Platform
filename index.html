@@ -713,12 +713,23 @@ footer{
         <p>Meet the team behind <span class="brand">Studera</span> and learn why we are building this platform.</p>
         <span class="btn-primary" style="display:inline-flex">Meet the Team →</span>
       </a>
-      <a href="mailto:contact@studera.com" class="link-card fade-in">
-        <span class="link-card-icon">✉️</span>
-        <h3>Contact Us</h3>
-        <p>Have a question, a partnership idea, or just want to say hello? We'd love to hear from you.</p>
-        <span class="btn-primary" style="display:inline-flex">Get in Touch →</span>
-      </a>
+     <div class="link-card fade-in" onclick="document.getElementById('contactPopup').style.display='flex'" style="cursor:pointer">
+  <span class="link-card-icon">✉️</span>
+  <h3>Contact Us</h3>
+  <p>Have a question, a partnership idea, or just want to say hello? We'd love to hear from you.</p>
+  <span class="btn-primary" style="display:inline-flex">Get in Touch →</span>
+</div>
+
+<!-- Contact Popup -->
+<div id="contactPopup" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:16px;padding:40px 36px;max-width:420px;width:90%;text-align:center;position:relative;">
+    <button onclick="document.getElementById('contactPopup').style.display='none'" style="position:absolute;top:14px;right:18px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#aaa;">✕</button>
+    <div style="font-size:2.5rem;margin-bottom:16px;">✉️</div>
+    <h3 style="font-family:'DM Serif Display',serif;font-size:1.4rem;color:#0f1a14;margin-bottom:10px;">Get in Touch</h3>
+    <p style="color:#6b7c72;font-size:.93rem;line-height:1.6;margin-bottom:20px;">Have a question, a partnership idea, or just want to say hello? Reach out to us directly.</p>
+    <a href="mailto:info.studera@gmail.com" style="display:inline-block;background:#F97316;color:#fff;padding:12px 28px;border-radius:99px;font-weight:700;font-size:.95rem;text-decoration:none;">info.studera@gmail.com</a>
+  </div>
+</div>
     </div>
   </div>
 </section>
