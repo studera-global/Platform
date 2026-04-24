@@ -92,15 +92,17 @@ nav{
 .btn-white:hover{transform:translateY(-2px)}
 
 footer{background:var(--dark);margin-top:60px}
+.footer-inner{max-width:1100px;margin:0 auto;padding:32px 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
 .footer-bar{text-align:center;padding:14px 5%;background:#fff;border-top:1px solid var(--border);font-size:.82rem;color:#555;display:block}
 </style>
 </head>
 <body>
 
 <nav>
-  <a href="index.html" style="text-decoration:none">
-    <span class="nav-logo-text">🎓 <span class="brand">Studera</span></span>
-  </a>
+ <a href="index.html" class="nav-logo" style="text-decoration:none;display:flex;align-items:center;">
+  <img src="logo.png" alt="Studera" style="height:52px;width:auto;object-fit:contain;" onerror="this.style.display='none';document.getElementById('oppNavFallback').style.display='flex'"/>
+  <span id="oppNavFallback" style="display:none;font-family:'DM Serif Display',serif;font-size:1.5rem;color:#147A3E;">🎓 <span style="color:#147A3E;font-weight:600">Studera</span></span>
+</a>
   <a href="opportunities.html" class="nav-back">← Back to Opportunities</a>
 </nav>
 
@@ -115,8 +117,8 @@ footer{background:var(--dark);margin-top:60px}
 </div>
 
 <footer>
-  <div style="max-width:1100px;margin:0 auto;padding:24px 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
-    <span style="font-family:'DM Serif Display',serif;color:#fff;font-size:1.2rem">🎓 <span class="brand">Studera</span></span>
+  <div class="footer-inner">
+    <img src="logo.png" alt="Studera" style="height:44px;width:auto;object-fit:contain;filter:brightness(0) invert(1);" onerror="this.style.display='none'"/>
     <a href="opportunities.html" style="color:#b8ccc0;font-size:.85rem;text-decoration:none">← All Opportunities</a>
   </div>
   <span class="footer-bar">© 2026 <span class="brand">Studera</span>. All rights reserved.</span>
@@ -124,17 +126,284 @@ footer{background:var(--dark);margin-top:60px}
 
 <script>
 const opportunities = [
-  {id:1,title:"Global Young Leaders Conference (GYLC)",emoji:"🌐",deadline:"2026-05-15",education:"High School Students",location:"Washington D.C., USA",locationType:"In-Person",nationality:"International",ageRange:"14–18",eligibility:"High school students aged 14–18, open internationally",desc:"A prestigious leadership conference bringing together outstanding high school students from around the world for an immersive programme in Washington D.C. and New York.",fullDesc:"The Global Young Leaders Conference is one of the most prestigious student leadership programmes in the world. Held across Washington D.C. and New York City, this intensive programme brings together exceptional high school students from over 150 countries for a transformative educational experience.\n\nDelegates engage in simulated congressional hearings, visit key government institutions, and interact with policymakers, business leaders, and change-makers. The programme is specifically designed to develop the next generation of global leaders by immersing them in real-world diplomatic and legislative processes.\n\nParticipants leave with a powerful international network, a deeper understanding of global governance, and a credential that universities around the world recognise and value in applicants.",eligibilityFull:"Open to high school students aged 14–18. Applications are welcome from students in all countries. Academic performance and demonstrated leadership potential are key selection criteria.",cost:"Programme fees apply. Limited financial assistance may be available — contact the organisers for details.",link:"https://www.gylc.com"},
-  {id:2,title:"Schwarzman Scholars Program",emoji:"🏛️",deadline:"2026-09-20",education:"Undergraduate Students",location:"Tsinghua University, Beijing, China",locationType:"In-Person",nationality:"International",ageRange:"18–29",eligibility:"Undergraduate students aged 18–29, open internationally",desc:"One of the most competitive graduate scholarships in the world. Fully funded one-year master's programme at Tsinghua University, Beijing.",fullDesc:"The Schwarzman Scholars program is one of the most selective and prestigious scholarship programmes in the world, designed to prepare the next generation of global leaders for a world where China plays a central role.\n\nScholarship recipients complete a one-year master's degree at Schwarzman College at Tsinghua University in Beijing. The programme is fully funded — covering tuition, room and board, travel, living expenses, and an in-country study tour of China.\n\nScholars are selected from across the globe based on leadership potential, entrepreneurial spirit, and the ability to bridge cultural and geopolitical divides. The application process is rigorous and highly competitive, with candidates evaluated through written applications and in-person interviews.",eligibilityFull:"Open to students aged 18–29 from any country. Applicants should have completed or be completing an undergraduate degree. Strong academic performance, demonstrated leadership, and a clear motivation for studying China's role in the world are essential.",cost:"Fully funded. Covers tuition, accommodation, travel, and a living stipend.",link:"https://www.schwarzmanscholars.org"},
-  {id:3,title:"Microsoft Imagine Cup",emoji:"💻",deadline:"2026-04-30",education:"Open to All Students",location:"Online + Global Finals",locationType:"Online + In-Person Finals",nationality:"International",ageRange:"16–30",eligibility:"Students aged 16–30, open internationally",desc:"Microsoft's flagship global student technology competition. Build an innovative tech solution addressing a real-world problem.",fullDesc:"The Microsoft Imagine Cup is Microsoft's premier global student technology competition, running for over two decades. Students form teams of up to four people and build innovative technology solutions that address meaningful real-world challenges.\n\nCompetition tracks include AI and Machine Learning, Sustainability and Climate, Health and Wellbeing, and Social Impact. Teams are judged on innovation, technical execution, impact potential, and presentation quality.\n\nWinners at each regional level advance to the Global Finals, which are hosted at Microsoft headquarters. Top prizes include significant cash awards, Azure credits, and one-on-one mentorship sessions with senior Microsoft leadership. Past winners have gone on to found successful startups and secure significant investment.",eligibilityFull:"Open to students aged 16–30 who are currently enrolled in an accredited educational institution. Teams of 1–4 members are allowed. All nationalities are welcome.",cost:"Free to enter.",link:"https://imaginecup.microsoft.com"},
-  {id:4,title:"Commonwealth Essay Competition",emoji:"✍️",deadline:"2026-05-01",education:"High School Students",location:"Online Submission",locationType:"Online",nationality:"Commonwealth Countries",ageRange:"11–18",eligibility:"Students aged 11–18 from Commonwealth countries",desc:"One of the world's oldest and largest writing competitions for young people, run by the Royal Commonwealth Society.",fullDesc:"The Commonwealth Essay Competition is one of the world's oldest and most prestigious writing competitions for young people, organised by the Royal Commonwealth Society since 1883. It is open to all students aged 18 and under in Commonwealth countries.\n\nEach year, a theme is announced that reflects contemporary global issues — past themes have included identity, climate, justice, and belonging. Students write an essay of up to 1,500 words (Senior category) or 1,000 words (Junior category) responding to the theme.\n\nOutstanding essays are awarded Gold, Silver, and Bronze commendations by an international panel of judges. Gold award winners receive certificates, prizes, and recognition from the Royal Commonwealth Society. The competition is widely recognised by universities as evidence of academic excellence and global awareness.",eligibilityFull:"Open to students aged 11–18 who live in or have a connection to a Commonwealth country. Both senior (15–18) and junior (11–14) categories are available.",cost:"Free to enter.",link:"https://www.commonwealthofnations.org/sectors-human-development/education/essay-competition/"},
-  {id:5,title:"UWC Short Course — Global Citizenship",emoji:"🌍",deadline:"2026-06-10",education:"High School Students",location:"Various UWC Campuses Worldwide",locationType:"In-Person",nationality:"International",ageRange:"15–18",eligibility:"High school students aged 15–18, international applications welcome",desc:"United World Colleges short courses offer an immersive international education experience on one of their global campuses.",fullDesc:"United World Colleges (UWC) is a global education movement whose mission is to make education a force to unite people, nations and cultures for peace and a sustainable future. UWC Short Courses bring this mission to life in an intensive residential programme.\n\nHeld across UWC campuses in countries including Norway, Swaziland, India, USA, and the Netherlands, these courses bring together students from over 150 countries for two to four weeks of immersive, collaborative learning.\n\nThe curriculum focuses on global citizenship, sustainable development, intercultural dialogue, and leadership. Students live in international dormitories, collaborate on projects, and develop the kind of global perspective and cross-cultural competence that leading universities actively seek in applicants.\n\nCompletion of a UWC Short Course is a powerful addition to any university application and demonstrates exactly the kind of international mindset that Studera mentors can help you build upon.",eligibilityFull:"Open to students aged 15–18. Applications are welcome from all nationalities. Selection is based on motivation, academic potential, and commitment to the UWC mission.",cost:"Programme fees apply. Scholarships and bursaries are available — strongly encouraged to apply.",link:"https://www.uwc.org"},
-  {id:6,title:"UNLEASH Innovation Lab",emoji:"🚀",deadline:"2026-07-01",education:"Undergraduate Students",location:"Global — rotating host cities",locationType:"In-Person",nationality:"International",ageRange:"18–35",eligibility:"Undergraduate and graduate students aged 18–35, open internationally",desc:"A global innovation platform bringing together talented young people to develop sustainable solutions to the UN's Sustainable Development Goals.",fullDesc:"UNLEASH is a global innovation platform that brings together talented and motivated young people from across the world to develop sustainable solutions to the United Nations Sustainable Development Goals (SDGs).\n\nParticipants are selected through a competitive global application process and brought together for an intensive innovation lab held in a different country each year. Working in multidisciplinary, multinational teams, participants spend several days developing solutions to specific SDG challenges.\n\nThe programme provides world-class mentorship from industry leaders, NGOs, governments, and social entrepreneurs. The most promising solutions receive funding, incubation support, and the opportunity to present to global decision-makers.\n\nUNLEASH alumni have gone on to found impactful organisations, secure funding from major investors, and build careers at the intersection of innovation and global development.",eligibilityFull:"Open to young people aged 18–35 from any country. Undergraduate, graduate, and young professionals are welcome. A strong motivation to work on global challenges and a collaborative mindset are key.",cost:"Participation is funded for selected participants — covering accommodation, meals, and programme costs. Travel grants are available.",link:"https://unleash.org"}
+  {
+    id:1,
+    title:"Citi Freshman Discovery Program 2026",
+    emoji:"🏦",
+    deadline:"2026-04-27",
+    education:"undergrad",
+    location:"Online (USA)",
+    locationType:"online",
+    nationality:"usa",
+    ageMin:18,ageMax:22,
+    eligibility:"First-year US university students, all majors, graduation 2028–2029",
+    desc:"A virtual workshop series by Citi helping first-year college students explore careers in financial services. Attend workshops, chat with senior leaders, and network with professionals across banking, finance, and technology. Open to all majors — no finance background required.",
+    fullDesc:"The Citi Freshman Discovery Program is a virtual workshop series designed specifically for first-year college students. Over the course of several weeks, participants attend workshops, engage with senior leaders, and network with professionals across banking, finance, and technology sectors.\n\nThe programme is open to all majors — no prior finance background is required. It offers an excellent opportunity to explore career paths within one of the world's largest financial institutions. Participants gain practical insights into the industry, build professional networks, and receive guidance on early-career development.",
+    eligibilityFull:"First-year university students in the United States only. All majors are welcome. Expected graduation years: 2028 or 2029.",
+    cost:"Free to participate.",
+    link:"https://citi.wd5.myworkdayjobs.com/en-US/Citi_Early_Careers_Events_Site/job/Freshmen-Discovery-Program--Virtual---US--2026_26954151"
+  },
+  {
+    id:2,
+    title:"FutureMinds Summit Thailand 2026 (GYN)",
+    emoji:"🇹🇭",
+    deadline:"2026-06-15",
+    education:"both",
+    location:"Bangkok, Thailand",
+    locationType:"inperson",
+    nationality:"international",
+    ageMin:16,ageMax:30,
+    eligibility:"Young leaders aged 16–30, open internationally — scholarships covering airfare, visa, accommodation & meals available",
+    desc:"A four-day global gathering of young leaders in Bangkok advancing the UN Sustainable Development Goals. Explore SDG 4, 5, 9, and 13 through sessions, workshops, and cross-sector dialogue. Around 80 participants gather to transform ideas into impactful initiatives with scientists, NGOs, and AI experts.",
+    fullDesc:"FutureMinds Summit Thailand 2026 is a four-day global gathering of young leaders in Bangkok, Thailand, focused on advancing the United Nations Sustainable Development Goals (SDGs 4, 5, 9, and 13). Approximately 80 participants from around the world come together to transform ideas into impactful initiatives through sessions, workshops, and cross-sector dialogue.\n\nThe summit features collaboration with scientists, NGOs, and AI experts. It is organised by the Global Youth Network (GYN) and offers a unique opportunity for young leaders to develop practical solutions to global challenges while building an international network.",
+    eligibilityFull:"Young leaders aged 16–30 from any country. Scholarships are available covering airfare, visa, accommodation, and meals.",
+    cost:"Scholarships available covering all major expenses. Self-funded options also available.",
+    link:"https://thegyn.org/fms-thailand/"
+  },
+  {
+    id:3,
+    title:"Einstein Fellowship 2026 — Germany (Fully Funded)",
+    emoji:"🔬",
+    deadline:"2026-05-15",
+    education:"undergrad",
+    location:"Caputh, Brandenburg, Germany",
+    locationType:"inperson",
+    nationality:"international",
+    ageMin:18,ageMax:35,
+    eligibility:"Under 35 with a university degree in humanities, social sciences, or natural sciences — open internationally",
+    desc:"One of the world's most prestigious fellowships for young thinkers. Pursue a bold interdisciplinary project in a field outside your specialisation, residing in Einstein's historic summerhouse in Caputh for 5–6 months. Includes a €10,000 stipend, covered accommodation, and travel reimbursement.",
+    fullDesc:"The Einstein Fellowship is one of the world's most prestigious fellowships for young thinkers. It offers recipients the opportunity to pursue a bold interdisciplinary project in a field outside their specialisation, residing in Albert Einstein's historic summerhouse in Caputh, Brandenburg, Germany for 5–6 months.\n\nThe fellowship includes a €10,000 stipend, covered accommodation, and travel reimbursement. Fellows are free to work on any project that challenges conventional thinking and crosses disciplinary boundaries. The programme is designed for exceptional individuals who have demonstrated outstanding intellectual achievement and creative potential.",
+    eligibilityFull:"Applicants must be under 35 years of age and hold a university degree in the humanities, social sciences, or natural sciences. Open to applicants from all countries.",
+    cost:"Fully funded — includes €10,000 stipend, accommodation, and travel reimbursement.",
+    link:"https://www.einsteinforum.de/fellowship/"
+  },
+  {
+    id:4,
+    title:"National Geographic & TNC Externship — Summer 2026",
+    emoji:"🌿",
+    deadline:"2026-05-17",
+    education:"both",
+    location:"Online (Remote, Worldwide)",
+    locationType:"online",
+    nationality:"international",
+    ageMin:18,ageMax:25,
+    eligibility:"Ages 18–25, open worldwide — no prior conservation experience required",
+    desc:"An 8-week fully remote externship by National Geographic Society and The Nature Conservancy. Explore freshwater conservation challenges, develop storytelling skills, and build community-driven solutions. Includes a $500 stipend upon completion. Over 1,100 alumni from 117 countries.",
+    fullDesc:"The National Geographic Society and The Nature Conservancy externship is an 8-week fully remote programme that equips young people with the skills to address freshwater conservation challenges. Participants explore conservation issues, develop storytelling skills, and build community-driven solutions.\n\nThe programme has a strong alumni network of over 1,100 participants from 117 countries. Upon completion, participants receive a $500 stipend. No prior conservation experience is required — only a passion for the environment and a willingness to learn.",
+    eligibilityFull:"Open to applicants aged 18–25 from any country. No prior conservation experience required.",
+    cost:"Free to participate. Includes a $500 stipend upon completion.",
+    link:"https://www.nationalgeographic.org/society/externships/"
+  },
+  {
+    id:5,
+    title:"UN SDG Action Awards 2026 — Heroes of Tomorrow",
+    emoji:"🏆",
+    deadline:"2026-05-17",
+    education:"both",
+    location:"Rome, Italy (Ceremony)",
+    locationType:"inperson",
+    nationality:"international",
+    ageMin:16,ageMax:99,
+    eligibility:"Individuals or initiatives with proven measurable impact aligned with the SDGs — open globally",
+    desc:"The UN's flagship global awards recognising changemakers driving sustainable development. Finalists receive coaching, global media exposure through UN WebTV and RAI Italy, a custom trophy, and travel to the ceremony in Rome. Three categories: Changemaker, Creativity, and Resilience.",
+    fullDesc:"The UN SDG Action Awards are the United Nations' flagship global awards recognising individuals and initiatives driving sustainable development. Finalists receive coaching, global media exposure through UN WebTV and RAI Italy, a custom trophy, and travel to the ceremony in Rome.\n\nThe awards have three categories: Changemaker, Creativity, and Resilience. They celebrate those who are turning the Sustainable Development Goals into action and inspiring others to do the same. The ceremony is a high-profile event attended by UN officials, diplomats, and global leaders.",
+    eligibilityFull:"Open to individuals or initiatives from any country, of any age, with proven measurable impact aligned with the SDGs.",
+    cost:"Free to enter. Finalists receive travel to Rome and accommodation.",
+    link:"https://sdgactionawards.org/"
+  },
+  {
+    id:6,
+    title:"Commonwealth Essay Competition 2026",
+    emoji:"✍️",
+    deadline:"2026-05-01",
+    education:"highschool",
+    location:"Online Submission",
+    locationType:"online",
+    nationality:"international",
+    ageMin:11,ageMax:18,
+    eligibility:"Students aged 11–18 from Commonwealth countries",
+    desc:"One of the world's oldest and largest writing competitions for young people, run by the Royal Commonwealth Society since 1883. Submit an essay on a globally relevant theme. Gold, Silver, and Bronze awards with certificates and international recognition.",
+    fullDesc:"The Commonwealth Essay Competition is one of the world's oldest and largest writing competitions for young people, organised by the Royal Commonwealth Society since 1883. It is open to all students aged 18 and under in Commonwealth countries.\n\nEach year, a theme is announced that reflects contemporary global issues. Students write an essay of up to 1,500 words (Senior category) or 1,000 words (Junior category) responding to the theme. Outstanding essays are awarded Gold, Silver, and Bronze commendations by an international panel of judges. Gold award winners receive certificates, prizes, and recognition from the Royal Commonwealth Society.",
+    eligibilityFull:"Open to students aged 11–18 who live in or have a connection to a Commonwealth country. Both senior (15–18) and junior (11–14) categories are available.",
+    cost:"Free to enter.",
+    link:"https://www.commonwealthofnations.org/sectors-human-development/education/essay-competition/"
+  },
+  {
+    id:7,
+    title:"ASEF Young Leaders Summit — Capacity Training 2026",
+    emoji:"🌏",
+    deadline:"2026-05-12",
+    education:"both",
+    location:"Online + Tromsø, Norway (for selected 40)",
+    locationType:"online",
+    nationality:"international",
+    ageMin:18,ageMax:30,
+    eligibility:"Ages 18–30 from Asian or European countries — open internationally, no fee",
+    desc:"A fully funded youth leadership programme by the Asia-Europe Foundation focusing on Anticipatory Leadership for a Human-Centred Future. Includes online training (June–July), local action phase, and — for top 40 selected participants — a fully funded in-person summit in Tromsø, Norway in August 2026.",
+    fullDesc:"The ASEF Young Leaders Summit is a fully funded youth leadership programme by the Asia-Europe Foundation focusing on Anticipatory Leadership for a Human-Centred Future. The programme includes online training (June–July), a local action phase, and for the top 40 selected participants, a fully funded in-person summit in Tromsø, Norway in August 2026 within the Arctic Circle.\n\nThe summit focuses on anticipatory leadership, climate change, and international cooperation. Participants engage with experts from both Asia and Europe, develop project management skills, and build a transcontinental professional network.",
+    eligibilityFull:"Open to applicants aged 18–30 from Asian or European countries. The programme is free to participate.",
+    cost:"Fully funded for selected participants. Covers accommodation, meals, and travel subsidies for the Norway summit.",
+    link:"https://asiaeuropefoundation.formstack.com/forms/asefyls2026_applicationform"
+  },
+  {
+    id:8,
+    title:"Youth Empowerment Forum (YEF) 2026 — Geneva, Switzerland",
+    emoji:"🇨🇭",
+    deadline:"2026-06-30",
+    education:"both",
+    location:"Geneva, Switzerland",
+    locationType:"inperson",
+    nationality:"international",
+    ageMin:16,ageMax:46,
+    eligibility:"Ages 16–46 from any country — fully funded, partially funded, and self-funded options available",
+    desc:"A four-day global leadership conference in Geneva with 250 young changemakers. Includes policy dialogues, UN Palais des Nations visit, WTO headquarters briefing, and expert-led workshops. A $1,000 Impact Grant is awarded to the best delegate-led SDG initiative.",
+    fullDesc:"The Youth Empowerment Forum (YEF) 2026 is a four-day global leadership conference in Geneva, Switzerland, bringing together 250 young changemakers from around the world. The programme includes policy dialogues, a visit to the UN Palais des Nations, a briefing at WTO headquarters, and expert-led workshops.\n\nA $1,000 Impact Grant is awarded to the best delegate-led SDG initiative. The forum is designed to equip participants with practical leadership skills and a deep understanding of international governance structures. Participants gain direct exposure to the work of UN agencies and international organisations.",
+    eligibilityFull:"Open to applicants aged 16–46 from any country. Fully funded, partially funded, and self-funded options are available.",
+    cost:"Fully funded and partially funded scholarships available. Self-funded options also exist.",
+    link:"https://thecgdl.org/yef-2-0-funded-seats-form/"
+  },
+  {
+    id:9,
+    title:"STEM Science Olympiad 2026 — Pakistan (NSTC-23)",
+    emoji:"🧪",
+    deadline:"2026-06-30",
+    education:"highschool",
+    location:"Pakistan (Nationwide + International)",
+    locationType:"inperson",
+    nationality:"pakistan",
+    ageMin:14,ageMax:20,
+    eligibility:"Pakistani students up to FSc Part-I / O-Level / A-Level Part-I with 60%+ in Science/Maths — under 20 years",
+    desc:"Pakistan's most prestigious national science talent contest, run by HEC and PIEAS. Selected students represent Pakistan at International Science Olympiads in Biology, Chemistry, Physics, and Mathematics. Fully free — covers registration, residential training camps, and international participation. Winners receive cash prizes and direct PIEAS admission.",
+    fullDesc:"The STEM Science Olympiad (NSTC-23) is Pakistan's most prestigious national science talent contest, run by the Higher Education Commission (HEC) and PIEAS. Selected students represent Pakistan at International Science Olympiads in Biology, Chemistry, Physics, and Mathematics.\n\nThe programme is completely free — covering registration, residential training camps, and international participation. Winners receive cash prizes and direct admission to PIEAS. The competition is highly selective and identifies the most talented science students in the country.",
+    eligibilityFull:"Pakistani students up to FSc Part-I, O-Level, or A-Level Part-I with 60% or above in Science and Mathematics. Applicants must be under 20 years of age.",
+    cost:"Fully free. Covers registration, training camps, and international participation.",
+    link:"https://stem.edu.pk/"
+  },
+  {
+    id:10,
+    title:"International Festival of Youth 2026 — Ekaterinburg",
+    emoji:"🌍",
+    deadline:"2026-04-30",
+    education:"both",
+    location:"Ekaterinburg, Russia",
+    locationType:"inperson",
+    nationality:"international",
+    ageMin:14,ageMax:35,
+    eligibility:"Ages 14–35, open to 5,000 international participants from 190 countries",
+    desc:"A major global youth festival bringing together 10,000 young leaders — 5,000 from Russia and 5,000 internationally. Seven-day programme from September 11–17, 2026 covering leadership, cross-cultural dialogue, innovation, and global cooperation. Travel costs covered for participants aged 14–17.",
+    fullDesc:"The International Festival of Youth 2026 in Ekaterinburg, Russia is a major global youth festival bringing together 10,000 young leaders — 5,000 from Russia and 5,000 internationally. The seven-day programme runs from September 11–17, 2026 and covers leadership, cross-cultural dialogue, innovation, and global cooperation.\n\nThe festival features speakers, workshops, cultural exchanges, and networking opportunities with young leaders from 190 countries. Travel costs are covered for participants aged 14–17. The event is designed to foster international understanding and collaboration among the next generation of global leaders.",
+    eligibilityFull:"Open to applicants aged 14–35 from any country. A total of 5,000 international participants will be selected.",
+    cost:"Travel costs covered for participants aged 14–17. Other participants may have varying cost arrangements.",
+    link:"https://wyffest.com/en"
+  },
+  {
+    id:11,
+    title:"NextGen Climate Bootcamp 2026 — Climate Tracker Asia",
+    emoji:"🌱",
+    deadline:"2026-07-31",
+    education:"both",
+    location:"Asia (Philippines-based, online + in-person)",
+    locationType:"online",
+    nationality:"international",
+    ageMin:18,ageMax:25,
+    eligibility:"Young journalists and students aged 18–25, focus on Asia-Pacific applicants",
+    desc:"A fellowship by Climate Tracker Asia equipping young and aspiring journalists with the skills for effective climate reporting. Includes online training sessions, interactive workshops, and an in-person bootcamp. Fellows receive a stipend, mentorship, and the opportunity to publish real climate stories.",
+    fullDesc:"The NextGen Climate Bootcamp is a fellowship by Climate Tracker Asia equipping young and aspiring journalists with the skills for effective climate reporting. The programme includes online training sessions, interactive workshops, and an in-person bootcamp in the Philippines.\n\nFellows receive a stipend, mentorship from experienced climate journalists, and the opportunity to publish real climate stories. The programme is designed for young people who want to make an impact through storytelling and journalism. Participants build a portfolio of published work while learning from experts in the field.",
+    eligibilityFull:"Young journalists and students aged 18–25. Preference is given to applicants from Asia-Pacific countries.",
+    cost:"Stipend provided. Participation is funded for selected fellows.",
+    link:"https://climatetracker.asia/nextgen-climate-bootcamp-2026-climup/"
+  },
+  {
+    id:12,
+    title:"European Leadership Conference Switzerland 2026",
+    emoji:"🇨🇭",
+    deadline:"2026-07-15",
+    education:"both",
+    location:"Switzerland",
+    locationType:"inperson",
+    nationality:"international",
+    ageMin:16,ageMax:99,
+    eligibility:"Open to all ages and nationalities — funded scholarships available",
+    desc:"A four-day leadership conference in Switzerland (August 1–4, 2026) engaging delegates from across the globe. Features UN collaborations, leadership workshops, networking with global changemakers, and opportunities to be featured in Rising Leaders Magazine. Funded scholarships and visa assistance available.",
+    fullDesc:"The European Leadership Conference Switzerland 2026 is a four-day leadership conference taking place from August 1–4, 2026, engaging delegates from across the globe. The conference features UN collaborations, leadership workshops, networking with global changemakers, and opportunities to be featured in Rising Leaders Magazine.\n\nThe conference is designed for emerging leaders who want to develop their skills, build international networks, and gain exposure to global governance institutions. Funded scholarships and visa assistance are available for selected participants. Delegates leave with a certificate, new connections, and a deeper understanding of European and global leadership frameworks.",
+    eligibilityFull:"Open to all ages and nationalities. Funded scholarships are available for qualified applicants.",
+    cost:"Funded scholarships available. Self-funded options also exist.",
+    link:"https://risingleadersmag.org/events-switzerland/"
+  },
+  {
+    id:13,
+    title:"Warsaw Academy of Young Diplomats — Scholarships 2027",
+    emoji:"🏛️",
+    deadline:"2026-04-27",
+    education:"undergrad",
+    location:"Warsaw, Poland",
+    locationType:"inperson",
+    nationality:"international",
+    ageMin:18,ageMax:40,
+    eligibility:"Students and graduates interested in diplomacy from any country — need-based fully and partially funded scholarships",
+    desc:"One of Central Europe's most respected diplomatic training programmes, run by the European Academy of Diplomacy. 140+ hours of hands-on training, 4 in-person sessions in Warsaw, study visits, and an Executive Diploma in the Art of Diplomacy. Up to 2 fully funded and 4 partially funded scholarships available.",
+    fullDesc:"The Warsaw Academy of Young Diplomats is one of Central Europe's most respected diplomatic training programmes, run by the European Academy of Diplomacy. The programme includes 140+ hours of hands-on training, 4 in-person sessions in Warsaw, study visits, and an Executive Diploma in the Art of Diplomacy.\n\nParticipants gain practical skills in diplomacy, negotiation, and international relations. The programme is designed for students and graduates interested in careers in diplomacy, international organisations, and global governance. Up to 2 fully funded and 4 partially funded scholarships are available based on need.",
+    eligibilityFull:"Students and graduates interested in diplomacy from any country. Need-based scholarships available.",
+    cost:"Up to 2 fully funded and 4 partially funded scholarships available. Self-funded options also exist.",
+    link:"https://glorno.com/index.php/2026/04/17/warsaw-academy-of-young-diplomats-scholarships-2027-poland-fully-funded/"
+  },
+  {
+    id:14,
+    title:"ASEF Young Leaders Summit Norway Training 2026",
+    emoji:"🇳🇴",
+    deadline:"2026-05-12",
+    education:"both",
+    location:"Tromsø, Norway",
+    locationType:"inperson",
+    nationality:"international",
+    ageMin:18,ageMax:30,
+    eligibility:"Top 40 selected participants from ASEFYLS 2026 online training — from Asian or European countries",
+    desc:"For the top 40 performers from the ASEFYLS 2026 online training, a fully funded in-person leadership summit in Tromsø, Norway (23–29 August 2026) within the Arctic Circle. Covers accommodation, meals, and travel subsidies. Focuses on anticipatory leadership, climate change, and international cooperation.",
+    fullDesc:"For the top 40 performers from the ASEFYLS 2026 online training, this is a fully funded in-person leadership summit in Tromsø, Norway (23–29 August 2026) within the Arctic Circle. The programme covers accommodation, meals, and travel subsidies.\n\nThe summit focuses on anticipatory leadership, climate change, and international cooperation. Participants engage with experts from both Asia and Europe, collaborate on cross-border projects, and experience the unique Arctic environment. This is the in-person culmination of the ASEF Young Leaders Summit programme.",
+    eligibilityFull:"Open only to the top 40 selected participants from the ASEFYLS 2026 online training. Applicants must be from Asian or European countries.",
+    cost:"Fully funded — covers accommodation, meals, and travel subsidies.",
+    link:"https://asiaeuropefoundation.formstack.com/forms/asefyls2026_applicationform"
+  },
+  {
+    id:15,
+    title:"Youth Development Forum 2026 — Berlin, Germany",
+    emoji:"🇩🇪",
+    deadline:"2026-05-10",
+    education:"both",
+    location:"Berlin, Germany",
+    locationType:"inperson",
+    nationality:"international",
+    ageMin:16,ageMax:46,
+    eligibility:"Ages 16–46 from any country — fully funded, partially funded, and guaranteed participation options",
+    desc:"A four-day international conference (May 7–10, 2026) in Berlin bringing 200 young changemakers from 150+ countries. Organised by CGDL, the forum focuses on youth diplomacy, leadership, sustainable development, and AI governance. Features expert dialogues, workshops, cultural immersion, and networking with diplomats and innovators.",
+    fullDesc:"The Youth Development Forum 2026 is a four-day international conference (May 7–10, 2026) in Berlin, Germany, bringing 200 young changemakers from 150+ countries. Organised by CGDL, the forum focuses on youth diplomacy, leadership, sustainable development, and AI governance.\n\nThe programme features expert dialogues, workshops, cultural immersion, and networking with diplomats and innovators. Participants gain practical skills in diplomacy, public speaking, and project management. The forum is designed for young leaders who want to make an impact at the intersection of policy, technology, and sustainable development.",
+    eligibilityFull:"Open to applicants aged 16–46 from any country. Fully funded, partially funded, and guaranteed participation options are available.",
+    cost:"Fully funded and partially funded scholarships available. Guaranteed participation option for self-funded delegates.",
+    link:"https://thecgdl.org/yef-2-0-funded-seats-form/"
+  },
+  {
+    id:16,
+    title:"DGFSL 2026 Summit — Dubai, UAE",
+    emoji:"🇦🇪",
+    deadline:"2026-05-15",
+    education:"both",
+    location:"Dubai, United Arab Emirates",
+    locationType:"inperson",
+    nationality:"international",
+    ageMin:18,ageMax:45,
+    eligibility:"Open internationally. Fully funded seats evaluated on merit, leadership potential, and alignment with Summit's strategic themes. Application fee may apply for other participation tracks.",
+    desc:"The Dubai Global Futures and Sustainable Leadership Summit 2026 brings together emerging leaders from around the world to engage in dialogue on sustainable development, global futures, and strategic leadership. Participants take part in workshops, panels, and networking sessions with industry experts, policymakers, and fellow changemakers.",
+    fullDesc:"The Dubai Global Futures and Sustainable Leadership Summit 2026 brings together emerging leaders from around the world to engage in dialogue on sustainable development, global futures, and strategic leadership. Participants take part in workshops, panels, and networking sessions with industry experts, policymakers, and fellow changemakers.\n\nThe summit is hosted in Dubai, UAE, a global hub for innovation and future-focused thinking. Topics include sustainable development, AI governance, climate action, and youth leadership. Official applications are submitted exclusively through the AfriLead EduTourism Network. The summit offers unique networking opportunities with leaders from government, business, and civil society.",
+    eligibilityFull:"Open internationally. Fully funded seats are evaluated on merit, leadership potential, and alignment with the Summit's strategic themes. Application fees may apply for other participation tracks.",
+    cost:"Fully funded seats available for exceptional candidates. Other participation tracks may require an application fee.",
+    link:"https://afrileadnetwork.org/dgfsl-2026-summit-application-form/"
+  }
 ];
 
 function formatDate(dateStr){
   return new Date(dateStr).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
 }
+
 function daysUntil(dateStr){
   return Math.ceil((new Date(dateStr)-new Date())/(1000*60*60*24));
 }
@@ -147,8 +416,18 @@ if (opp) {
   document.title = opp.title + ' — Studera';
   document.getElementById('breadcrumbTitle').textContent = opp.title;
   const days = daysUntil(opp.deadline);
-  const dlText = days < 0 ? 'Deadline Passed' : days <= 14 ? `${days} days left — Act Fast!` : `${days} days remaining`;
-  const paragraphs = opp.fullDesc.split('\n\n').map(p=>`<p>${p}</p>`).join('');
+  let dlText;
+  if (days < 0) {
+    dlText = 'Deadline Passed';
+  } else if (days <= 7) {
+    dlText = `${days} days left — Act Fast!`;
+  } else if (days <= 30) {
+    dlText = `${days} days remaining`;
+  } else {
+    dlText = `Deadline: ${formatDate(opp.deadline)}`;
+  }
+  const paragraphs = opp.fullDesc.split('\n\n').map(p => `<p>${p}</p>`).join('');
+  
   document.getElementById('oppDetail').innerHTML = `
     <div class="opp-detail-banner">
       <span class="opp-emoji-big">${opp.emoji}</span>
@@ -159,37 +438,4 @@ if (opp) {
     </div>
     <div class="opp-detail-body">
       <div class="detail-grid">
-        <div class="detail-item"><div class="detail-item-label">Deadline</div><div class="detail-item-value">${formatDate(opp.deadline)}</div></div>
-        <div class="detail-item"><div class="detail-item-label">Education Level</div><div class="detail-item-value">${opp.education}</div></div>
-        <div class="detail-item"><div class="detail-item-label">Location</div><div class="detail-item-value">${opp.location}</div></div>
-        <div class="detail-item"><div class="detail-item-label">Format</div><div class="detail-item-value">${opp.locationType}</div></div>
-        <div class="detail-item"><div class="detail-item-label">Nationality</div><div class="detail-item-value">${opp.nationality}</div></div>
-        <div class="detail-item"><div class="detail-item-label">Age Range</div><div class="detail-item-value">${opp.ageRange}</div></div>
-      </div>
-      <div class="section-divider"></div>
-      <div class="detail-section">
-        <h2>About This Opportunity</h2>
-        ${paragraphs}
-      </div>
-      <div class="section-divider"></div>
-      <div class="detail-section">
-        <h2>Eligibility</h2>
-        <p>${opp.eligibilityFull}</p>
-      </div>
-      <div class="section-divider"></div>
-      <div class="detail-section">
-        <h2>Cost</h2>
-        <p>${opp.cost}</p>
-      </div>
-      <div class="apply-section">
-        <h2>Ready to Apply?</h2>
-        <p>Visit the official website for full application details, requirements, and to submit your application.</p>
-        <a href="${opp.link}" target="_blank" rel="noopener" class="btn-white">Apply / Learn More →</a>
-      </div>
-    </div>`;
-} else {
-  document.getElementById('oppDetail').innerHTML = '<div style="padding:60px;text-align:center;color:#aaa">Opportunity not found. <a href="opportunities.html" style="color:var(--green)">Back to opportunities →</a></div>';
-}
-</script>
-</body>
-</html>
+        <div class="detail-item"><div class="detail-item-label">Deadline</div><div class="detail-item-value">${formatDate(opp.deadline)}</div></
