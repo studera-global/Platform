@@ -41,7 +41,7 @@ nav{
   display:flex;align-items:center;justify-content:space-between;
 }
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
-.nav-logo-img{height:36px;width:auto;object-fit:contain;}
+.nav-logo-img{height:56px;width:auto;object-fit:contain;}
 .nav-logo-text{font-family:var(--font-display);font-size:1.6rem;color:var(--green);line-height:1}
 .nav-logo-cap{font-size:1.4rem;transform:rotate(-10deg);display:inline-block;margin-right:2px}
 .nav-links{display:flex;align-items:center;gap:28px;list-style:none}
@@ -113,14 +113,15 @@ nav{
 }
 .uni-logo-card{
   background:#fff;border:1.5px solid var(--border);
-  border-radius:var(--radius);padding:16px 10px;
+  border-radius:var(--radius);padding:14px 10px 8px;
   display:flex;flex-direction:column;align-items:center;gap:8px;
   opacity:0;transform:translateY(20px) scale(.95);
   transition:opacity .5s,transform .5s,border-color .2s,box-shadow .2s;
 }
+.uni-logo-card img{margin-bottom:2px}
 .uni-logo-card.shown{opacity:1;transform:translateY(0) scale(1)}
 .uni-logo-card:hover{border-color:var(--green);box-shadow:var(--shadow)}
-.uni-logo-card img{width:48px;height:48px;object-fit:contain;filter:grayscale(20%)}
+.uni-logo-card img{width:66px;height:66px;object-fit:contain;filter:grayscale(20%)}
 .uni-logo-card span{font-size:.72rem;font-weight:600;color:var(--muted);text-align:center;line-height:1.3}
 .scroll-hint{
   display:flex;align-items:center;gap:8px;
@@ -508,15 +509,15 @@ footer{
           <img src="virginiatech.png" alt="Virginia Tech" onerror="this.src=''"/>
           <span>Virginia Tech</span>
         </div>
-        <div class="uni-logo-card" data-i="6" style="grid-column:2">
+        <div class="uni-logo-card" data-i="6">
           <img src="tanm.png" alt="Texas" onerror="this.src=''"/>
           <span>Texas A&M</span>
         </div>
-         <div class="uni-logo-card" data-i="7" style="grid-column:2">
+         <div class="uni-logo-card" data-i="7">
           <img src="kcl.png" alt="King's College London" onerror="this.src=''"/>
           <span>King's College London</span>
         </div>
-          <div class="uni-logo-card" data-i="8" style="grid-column:2">
+          <div class="uni-logo-card" data-i="8">
           <img src="UCONN.png" alt="University of Connecticut" onerror="this.src=''"/>
           <span>University of Connecticut</span>
         </div>
