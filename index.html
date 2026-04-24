@@ -41,6 +41,7 @@ nav{
   display:flex;align-items:center;justify-content:space-between;
 }
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo-img{height:36px;width:auto;object-fit:contain;}
 .nav-logo-text{font-family:var(--font-display);font-size:1.6rem;color:var(--green);line-height:1}
 .nav-logo-cap{font-size:1.4rem;transform:rotate(-10deg);display:inline-block;margin-right:2px}
 .nav-links{display:flex;align-items:center;gap:28px;list-style:none}
@@ -79,7 +80,7 @@ nav{
 .hero-reveal{
   font-family:var(--font-display);
   font-size:clamp(1.2rem,2.2vw,1.6rem);
-  color:var(--green);
+  color:var(--dark);
   opacity:0;transform:translateY(10px);
   transition:opacity .6s,transform .6s;
   margin-bottom:32px;min-height:2em;
@@ -452,7 +453,8 @@ footer{
 <!-- ══ NAVBAR ══ -->
 <nav id="navbar">
   <a href="index.html" class="nav-logo">
-    <span class="nav-logo-text">🎓 <span class="brand">Studera</span></span>
+    <img src="images/logo.svg" alt="Studera" class="nav-logo-img" onerror="this.style.display='none';document.getElementById('navLogoText').style.display='flex'"/>
+    <span class="nav-logo-text" id="navLogoText" style="display:none">🎓 <span class="brand">Studera</span></span>
   </a>
   <ul class="nav-links" id="navLinks">
     <li><a href="#stats">Why Studera</a></li>
@@ -483,32 +485,40 @@ footer{
    <div class="hero-right">
       <div class="logos-grid" id="logosGrid">
         <div class="uni-logo-card" data-i="0">
-          <img src="https://upload.wikimedia.org/wikipedia/en/thumb/0/04/Utoronto_coa.svg/200px-Utoronto_coa.svg.png" alt="University of Toronto" onerror="this.src='';this.parentElement.querySelector('span').textContent='UofT'"/>
+          <img src="uoft.png" alt="University of Toronto" onerror="this.src='';this.parentElement.querySelector('span').textContent='UofT'"/>
           <span>University of Toronto</span>
         </div>
         <div class="uni-logo-card" data-i="1">
-          <img src="https://upload.wikimedia.org/wikipedia/sco/thumb/a/ad/Imperial_College_London_crest.svg/1920px-Imperial_College_London_crest.svg.png" alt="Imperial College" onerror="this.src=''"/>
+          <img src="imperial.png" alt="Imperial College" onerror="this.src=''"/>
           <span>Imperial College London</span>
         </div>
         <div class="uni-logo-card" data-i="2">
-          <img src="https://upload.wikimedia.org/wikipedia/en/thumb/6/6e/University_of_Waterloo_seal.svg/200px-University_of_Waterloo_seal.svg.png" alt="Waterloo" onerror="this.src=''"/>
+          <img src="waterloo.png" alt="Waterloo" onerror="this.src=''"/>
           <span>University of Waterloo</span>
         </div>
         <div class="uni-logo-card" data-i="3">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/MIT_Seal.svg/200px-MIT_Seal.svg.png" alt="MIT" onerror="this.src=''"/>
+          <img src="MIT.png" alt="MIT" onerror="this.src=''"/>
           <span>MIT</span>
         </div>
         <div class="uni-logo-card" data-i="4">
-          <img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e8/University_of_Western_Ontario_logo.svg/200px-University_of_Western_Ontario_logo.svg.png" alt="Western" onerror="this.src=''"/>
-          <span>Western University</span>
+          <img src="emory.png" alt="Emory" onerror="this.src=''"/>
+          <span>Emory University</span>
         </div>
         <div class="uni-logo-card" data-i="5">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Virginia_Tech_logo.svg/200px-Virginia_Tech_logo.svg.png" alt="Virginia Tech" onerror="this.src=''"/>
+          <img src="virginiatech.png" alt="Virginia Tech" onerror="this.src=''"/>
           <span>Virginia Tech</span>
         </div>
         <div class="uni-logo-card" data-i="6" style="grid-column:2">
-          <img src="https://upload.wikimedia.org/wikipedia/en/thumb/9/9d/CU_Boulder_logo.svg/200px-CU_Boulder_logo.svg.png" alt="CU Boulder" onerror="this.src=''"/>
-          <span>CU Boulder</span>
+          <img src="tanm.png" alt="Texas" onerror="this.src=''"/>
+          <span>Texas A&M</span>
+        </div>
+         <div class="uni-logo-card" data-i="6" style="grid-column:2">
+          <img src="kcl.png" alt="King's College London" onerror="this.src=''"/>
+          <span>King's College London</span>
+        </div>
+          <div class="uni-logo-card" data-i="6" style="grid-column:2">
+          <img src="UCONN.png" alt="University of Connecticut" onerror="this.src=''"/>
+          <span>University of Connecticut</span>
         </div>
       </div>
       <div class="scroll-hint" id="scrollHint">Scroll to explore</div>
@@ -521,7 +531,7 @@ footer{
   <div class="section-inner">
     <div class="stats-header">
       <div class="section-label">Data-Backed</div>
-      <h2 class="section-title">We asked students from<br><span style="color:var(--green)">8 countries</span> ✦</h2>
+      <h2 class="section-title">We asked students from<br><span style="color:var(--green)">8 countries</span></h2>
       <div class="countries-tag">
         <span class="country-pill">Pakistan</span>
         <span class="country-pill">United States of America</span>
@@ -614,6 +624,9 @@ footer{
     <div class="rnd-badge">🔬 R&amp;D Phase — Active Now</div>
     <h2 class="section-title">Help Us Build<br><span style="color:#a8e6c1">Studera</span> Right.</h2>
     <p class="rnd-desc">We are currently collecting data to build a platform that truly works for students everywhere. If you believe in our mission, we encourage you to fill out our survey — it takes only 3 to 4 minutes and your responses will directly shape what we build.</p>
+    <div style="margin-bottom:14px;">
+      <span style="display:inline-block;background:rgba(249,115,22,0.35);color:#fff;font-size:.8rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:7px 20px;border-radius:99px;border:1px solid rgba(255,255,255,.3);">Eligibility to Fill Form</span>
+    </div>
     <div class="rnd-targets">
       <span class="rnd-target">📚 High School Students — Grade 9 to 12</span>
       <span class="rnd-target">🎓 Undergraduate Students — Year 1 to 4</span>
@@ -681,6 +694,34 @@ footer{
   </div>
 </section>
 
+<!-- ══ QUICK LINKS ══ -->
+<section id="links">
+  <div class="section-inner">
+    <div class="section-label">Explore More</div>
+    <h2 class="section-title">There's More to Discover</h2>
+    <div class="links-grid">
+      <a href="opportunities.html" class="link-card fade-in">
+        <span class="link-card-icon">🌍</span>
+        <h3>Student Opportunities</h3>
+        <p>Scholarships, conferences, programmes and more — sorted by deadline so you never miss a chance.</p>
+        <span class="btn-primary" style="display:inline-flex">Explore Opportunities →</span>
+      </a>
+      <a href="about.html" class="link-card fade-in">
+        <span class="link-card-icon">👥</span>
+        <h3>About Us</h3>
+        <p>Meet the team behind <span class="brand">Studera</span> and learn why we are building this platform.</p>
+        <span class="btn-primary" style="display:inline-flex">Meet the Team →</span>
+      </a>
+      <a href="mailto:contact@studera.com" class="link-card fade-in">
+        <span class="link-card-icon">✉️</span>
+        <h3>Contact Us</h3>
+        <p>Have a question, a partnership idea, or just want to say hello? We'd love to hear from you.</p>
+        <span class="btn-primary" style="display:inline-flex">Get in Touch →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- ══ FAQ ══ -->
 <section id="faq">
   <div class="section-inner fade-in">
@@ -689,7 +730,7 @@ footer{
     <div class="faq-list">
       <div class="faq-item">
         <button class="faq-q" onclick="toggleFaq(this)">
-          What is <span class="brand" style="margin:0 4px">Studera</span>?
+          What is Studera?
           <span class="icon">+</span>
         </button>
         <div class="faq-a"><p><span class="brand">Studera</span> is a mentorship platform that connects high school students with current undergraduate students from their exact dream university and programme. Unlike generic college counselling, every mentor on <span class="brand">Studera</span> shares the same university, programme, country of origin, and schooling background as the student — making the guidance uniquely precise and effective.</p></div>
@@ -765,34 +806,6 @@ footer{
   </div>
 </section>
 
-<!-- ══ QUICK LINKS ══ -->
-<section id="links">
-  <div class="section-inner">
-    <div class="section-label">Explore More</div>
-    <h2 class="section-title">There's More to Discover</h2>
-    <div class="links-grid">
-      <a href="opportunities.html" class="link-card fade-in">
-        <span class="link-card-icon">🌍</span>
-        <h3>Student Opportunities</h3>
-        <p>Scholarships, conferences, programmes and more — sorted by deadline so you never miss a chance.</p>
-        <span class="btn-primary" style="display:inline-flex">Explore Opportunities →</span>
-      </a>
-      <a href="about.html" class="link-card fade-in">
-        <span class="link-card-icon">👥</span>
-        <h3>About Us</h3>
-        <p>Meet the team behind <span class="brand">Studera</span> and learn why we are building this platform.</p>
-        <span class="btn-primary" style="display:inline-flex">Meet the Team →</span>
-      </a>
-      <a href="mailto:contact@studera.com" class="link-card fade-in">
-        <span class="link-card-icon">✉️</span>
-        <h3>Contact Us</h3>
-        <p>Have a question, a partnership idea, or just want to say hello? We'd love to hear from you.</p>
-        <span class="btn-primary" style="display:inline-flex">Get in Touch →</span>
-      </a>
-    </div>
-  </div>
-</section>
-
 <!-- ══ FOOTER ══ -->
 <footer>
   <div class="footer-inner">
@@ -832,7 +845,7 @@ function showNextCard() {
   if (currentCard >= cards.length) {
     // all shown — reveal tagline and unlock
     setTimeout(() => {
-      heroReveal.textContent = '"Education is the most powerful weapon which you can use to change the world" — Nelson Mandela';
+      heroReveal.innerHTML = '<span style="color:var(--green)">&ldquo;Education is the most powerful weapon which you can use to change the world&rdquo;</span> <span style="color:var(--dark);font-size:90%">— Nelson Mandela</span>';
       heroReveal.classList.add('visible');
       scrollHint.style.opacity = '0';
       setTimeout(() => { heroLocked = false; }, 800);
