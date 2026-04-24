@@ -426,7 +426,7 @@ if (opp) {
   } else {
     dlText = `Deadline: ${formatDate(opp.deadline)}`;
   }
-  const paragraphs = opp.fullDesc.split('\n\n').map(p => `<p>${p}</p>`).join('');
+   const paragraphs = opp.fullDesc.split('\n\n').map(p => `<p>${p}</p>`).join('');
   
   document.getElementById('oppDetail').innerHTML = `
     <div class="opp-detail-banner">
@@ -438,4 +438,35 @@ if (opp) {
     </div>
     <div class="opp-detail-body">
       <div class="detail-grid">
-        <div class="detail-item"><div class="detail-item-label">Deadline</div><div class="detail-item-value">${formatDate(opp.deadline)}</div></
+        <div class="detail-item"><div class="detail-item-label">Deadline</div><div class="detail-item-value">${formatDate(opp.deadline)}</div></div>
+        <div class="detail-item"><div class="detail-item-label">Education Level</div><div class="detail-item-value">${opp.education === 'highschool' ? 'High School' : opp.education === 'undergrad' ? 'Undergraduate' : 'Open to All'}</div></div>
+        <div class="detail-item"><div class="detail-item-label">Location</div><div class="detail-item-value">${opp.location}</div></div>
+        <div class="detail-item"><div class="detail-item-label">Format</div><div class="detail-item-value">${opp.locationType === 'online' ? 'Online' : 'In-Person'}</div></div>
+        <div class="detail-item"><div class="detail-item-label">Nationality</div><div class="detail-item-value">${opp.nationality === 'international' ? 'International' : opp.nationality === 'usa' ? 'USA Only' : 'Pakistan Only'}</div></div>
+        <div class="detail-item"><div class="detail-item-label">Age Range</div><div class="detail-item-value">${opp.ageMin}–${opp.ageMax}</div></div>
+      </div>
+      <div class="section-divider"></div>
+      <div class="detail-section">
+        <h2>About This Opportunity</h2>
+        ${paragraphs}
+      </div>
+      <div class="section-divider"></div>
+      <div class="detail-section">
+        <h2>Eligibility</h2>
+        <p>${opp.eligibilityFull}</p>
+      </div>
+      <div class="section-divider"></div>
+      <div class="detail-section">
+        <h2>Cost / Funding</h2>
+        <p>${opp.cost}</p>
+      </div>
+      <div class="apply-section">
+        <h2>Ready to Apply?</h2>
+        <p>Visit the official website for full application details, requirements, and to submit your application.</p>
+        <a href="${opp.link}" target="_blank" rel="noopener" class="btn-white">Apply / Learn More →</a>
+      </div>
+    </div>
+  `;
+} else {
+  document.getElementById('oppDetail').innerHTML = '<div style="padding:60px;text-align:center;color:#aaa">Opportunity not found. <a href="opportunities.html" style="color:var(--green)">Back to opportunities →</a></div>';
+}
