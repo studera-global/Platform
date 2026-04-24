@@ -18,140 +18,64 @@
   --font-body:'DM Sans',sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font-body);background:var(--green-faint);color:var(--body)}
-.brand{color:var(--green);font-weight:600}
-
-/* HEX BG */
 body{
-  background-color:var(--green-faint);
+  font-family:var(--font-body);background:var(--green-faint);color:var(--body);
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='104' viewBox='0 0 90 104'%3E%3Cg fill='none' stroke='%23147A3E' stroke-width='1.1' stroke-opacity='0.08'%3E%3Cpolygon points='71,26 58,48 32,48 19,26 32,4 58,4'/%3E%3Cpolygon points='26,78 13,100 -13,100 -26,78 -13,56 13,56'/%3E%3Cpolygon points='116,78 103,100 77,100 64,78 77,56 103,56'/%3E%3C/g%3E%3C/svg%3E");
   background-repeat:repeat;background-size:90px 104px;
 }
-
-/* NAVBAR */
-nav{
-  position:sticky;top:0;z-index:900;
-  background:rgba(255,255,255,.96);backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--border);
-  padding:0 5%;height:68px;
-  display:flex;align-items:center;justify-content:space-between;
-}
+.brand{color:var(--green);font-weight:600}
+nav{position:sticky;top:0;z-index:900;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 5%;height:68px;display:flex;align-items:center;justify-content:space-between;}
 .nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none}
-.nav-logo-text{font-family:var(--font-display);font-size:1.5rem;color:var(--green)}
-.nav-links{display:flex;align-items:center;gap:24px;list-style:none}
-.nav-links a{font-size:.88rem;font-weight:500;color:var(--body);text-decoration:none;transition:color .2s}
-.nav-links a:hover{color:var(--green)}
-.nav-cta{background:var(--orange);color:#fff!important;padding:8px 20px;border-radius:99px;font-weight:600!important}
-.nav-back{font-size:.88rem;color:var(--green);text-decoration:none;font-weight:600;display:flex;align-items:center;gap:6px}
+.nav-back{font-size:.88rem;color:var(--green);text-decoration:none;font-weight:600}
 .nav-back:hover{text-decoration:underline}
-
-/* HERO BANNER */
-.page-hero{
-  background:var(--green);padding:60px 5%;
-  position:relative;overflow:hidden;
-}
-.page-hero::before{
-  content:"";position:absolute;inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='104' viewBox='0 0 90 104'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1' stroke-opacity='0.07'%3E%3Cpolygon points='71,26 58,48 32,48 19,26 32,4 58,4'/%3E%3Cpolygon points='26,78 13,100 -13,100 -26,78 -13,56 13,56'/%3E%3Cpolygon points='116,78 103,100 77,100 64,78 77,56 103,56'/%3E%3C/g%3E%3C/svg%3E");
-  background-repeat:repeat;background-size:90px 104px;
-}
+.page-hero{background:var(--green);padding:60px 5%;position:relative;overflow:hidden;}
+.page-hero::before{content:"";position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='104' viewBox='0 0 90 104'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1' stroke-opacity='0.07'%3E%3Cpolygon points='71,26 58,48 32,48 19,26 32,4 58,4'/%3E%3Cpolygon points='26,78 13,100 -13,100 -26,78 -13,56 13,56'/%3E%3C/g%3E%3C/svg%3E");background-repeat:repeat;background-size:90px 104px;}
 .page-hero-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1}
 .page-hero h1{font-family:var(--font-display);font-size:clamp(2rem,4vw,3rem);color:#fff;margin-bottom:10px}
 .page-hero p{color:rgba(255,255,255,.8);font-size:1rem;line-height:1.6;max-width:560px}
-
-/* FILTER BAR */
 .filter-section{background:#fff;border-bottom:1px solid var(--border);padding:16px 5%;position:sticky;top:68px;z-index:800}
 .filter-inner{max-width:1100px;margin:0 auto;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
 .filter-label{font-size:.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-right:4px}
-.filter-btn{
-  padding:7px 16px;border-radius:99px;
-  border:1.5px solid var(--border);background:#fff;
-  font-family:var(--font-body);font-size:.82rem;font-weight:500;
-  color:var(--body);cursor:pointer;transition:all .2s;
-}
-.filter-btn:hover,.filter-btn.active{
-  background:var(--green);color:#fff;border-color:var(--green);
-}
+.filter-btn{padding:7px 16px;border-radius:99px;border:1.5px solid var(--border);background:#fff;font-family:var(--font-body);font-size:.82rem;font-weight:500;color:var(--body);cursor:pointer;transition:all .2s;}
+.filter-btn:hover,.filter-btn.active{background:var(--green);color:#fff;border-color:var(--green);}
 .filter-divider{width:1px;height:20px;background:var(--border);margin:0 4px}
-
-/* MAIN CONTENT */
 .main{max-width:1100px;margin:0 auto;padding:40px 5%}
 .results-count{font-size:.85rem;color:var(--muted);margin-bottom:24px}
 .results-count strong{color:var(--dark)}
-
-/* OPPORTUNITY CARDS */
 .opp-list{display:flex;flex-direction:column;gap:20px}
-.opp-card{
-  background:#fff;border:1px solid var(--border);
-  border-radius:var(--radius-lg);overflow:hidden;
-  display:grid;grid-template-columns:220px 1fr;
-  transition:transform .2s,box-shadow .2s;
-}
+.opp-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;display:grid;grid-template-columns:220px 1fr;transition:transform .2s,box-shadow .2s;}
 .opp-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
-.opp-img{
-  background:var(--green-light);
-  display:flex;align-items:center;justify-content:center;
-  min-height:180px;overflow:hidden;
-}
+.opp-img{background:var(--green-light);display:flex;align-items:center;justify-content:center;min-height:180px;overflow:hidden;}
 .opp-img img{width:100%;height:100%;object-fit:cover}
-.opp-img-placeholder{
-  font-size:3rem;display:flex;align-items:center;
-  justify-content:center;width:100%;height:100%;
-  background:linear-gradient(135deg,var(--green-light),#d4eddf);
-}
+.opp-img-placeholder{font-size:3rem;display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:linear-gradient(135deg,var(--green-light),#d4eddf);}
 .opp-body{padding:24px 28px;display:flex;flex-direction:column;gap:12px}
 .opp-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 .opp-title{font-family:var(--font-display);font-size:1.2rem;color:var(--dark);line-height:1.3}
-.deadline-badge{
-  flex-shrink:0;background:#fff3e0;color:#e65100;
-  font-size:.75rem;font-weight:700;padding:4px 12px;
-  border-radius:99px;border:1px solid rgba(230,81,0,.2);
-  white-space:nowrap;
-}
+.deadline-badge{flex-shrink:0;background:#fff3e0;color:#e65100;font-size:.75rem;font-weight:700;padding:4px 12px;border-radius:99px;border:1px solid rgba(230,81,0,.2);white-space:nowrap;}
 .deadline-badge.urgent{background:#fce4e4;color:#c62828;border-color:rgba(198,40,40,.2)}
 .deadline-badge.soon{background:#fff8e1;color:#f57f17;border-color:rgba(245,127,23,.2)}
 .opp-meta{display:flex;flex-wrap:wrap;gap:8px}
-.meta-tag{
-  display:flex;align-items:center;gap:5px;
-  font-size:.78rem;color:var(--muted);
-  background:var(--green-faint);padding:4px 10px;
-  border-radius:6px;border:1px solid rgba(20,122,62,.1);
-}
+.meta-tag{display:flex;align-items:center;gap:5px;font-size:.78rem;color:var(--muted);background:var(--green-faint);padding:4px 10px;border-radius:6px;border:1px solid rgba(20,122,62,.1);}
 .meta-tag strong{color:var(--body);font-weight:600}
 .opp-desc{font-size:.9rem;color:var(--body);line-height:1.6}
 .opp-footer{display:flex;justify-content:flex-end;margin-top:auto}
-.btn-orange{
-  background:var(--orange);color:#fff;
-  padding:10px 24px;border-radius:99px;
-  font-weight:600;font-size:.88rem;
-  text-decoration:none;border:none;cursor:pointer;
-  transition:background .2s,transform .15s;display:inline-flex;align-items:center;gap:6px;
-}
+.btn-orange{background:var(--orange);color:#fff;padding:10px 24px;border-radius:99px;font-weight:600;font-size:.88rem;text-decoration:none;border:none;cursor:pointer;transition:background .2s,transform .15s;display:inline-flex;align-items:center;gap:6px;}
 .btn-orange:hover{background:var(--orange-dark);transform:translateY(-1px)}
-
-/* EMPTY STATE */
 .empty-state{text-align:center;padding:60px 20px}
 .empty-state p{color:var(--muted);font-size:1rem}
-
-/* FOOTER */
 footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.08)}
 .footer-inner{max-width:1100px;margin:0 auto;padding:32px 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
 .footer-bar{text-align:center;padding:14px 5%;background:#fff;border-top:1px solid var(--border);font-size:.82rem;color:#555;display:block}
-
-@media(max-width:640px){
-  .opp-card{grid-template-columns:1fr}
-  .opp-img{min-height:160px}
-  .filter-inner{gap:8px}
-}
+@media(max-width:640px){.opp-card{grid-template-columns:1fr}.opp-img{min-height:160px}.filter-inner{gap:8px}}
 </style>
 </head>
 <body>
 
 <nav>
- <a href="index.html" class="nav-logo" style="text-decoration:none;display:flex;align-items:center;">
-  <img src="logo.png" alt="Studera" style="height:52px;width:auto;object-fit:contain;" onerror="this.style.display='none';document.getElementById('oppNavFallback').style.display='flex'"/>
-  <span id="oppNavFallback" style="display:none;font-family:'DM Serif Display',serif;font-size:1.5rem;color:#147A3E;">🎓 <span style="color:#147A3E;font-weight:600">Studera</span></span>
-</a>
+  <a href="index.html" class="nav-logo" style="text-decoration:none;display:flex;align-items:center;">
+    <img src="logo.png" alt="Studera" style="height:52px;width:auto;object-fit:contain;" onerror="this.style.display='none';document.getElementById('oppNavFallback').style.display='flex'"/>
+    <span id="oppNavFallback" style="display:none;font-family:'DM Serif Display',serif;font-size:1.5rem;color:#147A3E;">🎓 <span style="color:#147A3E;font-weight:600">Studera</span></span>
+  </a>
   <a href="index.html" class="nav-back">← Back to Home</a>
 </nav>
 
@@ -185,8 +109,8 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.08)}
 <footer>
   <div class="footer-inner">
     <span style="display:flex;align-items:center;gap:10px;">
-<img src="logo.png" alt="Studera" style="height:44px;width:auto;object-fit:contain;filter:brightness(0) invert(1);" onerror="this.style.display='none'"/>
-</span>
+      <img src="logo.png" alt="Studera" style="height:44px;width:auto;object-fit:contain;filter:brightness(0) invert(1);" onerror="this.style.display='none'"/>
+    </span>
     <span style="color:#b8ccc0;font-size:.85rem">info.studera@gmail.com</span>
   </div>
   <span class="footer-bar">© 2026 <span class="brand">Studera</span>. All rights reserved.</span>
@@ -196,97 +120,231 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.08)}
 const opportunities = [
   {
     id:1,
-    title:"Global Young Leaders Conference (GYLC)",
-    emoji:"🌐",
-    deadline:"2026-05-15",
-    urgency:"soon",
-    education:"highschool",
-    location:"Washington D.C., USA",
-    locationType:"inperson",
-    nationality:"international",
-    ageMin:14,ageMax:18,
-    eligibility:"High school students aged 14–18, open internationally",
-    desc:"A prestigious leadership conference bringing together outstanding high school students from around the world for an immersive programme in Washington D.C. and New York. Develop leadership skills, engage with policymakers, and build a global network.",
-    link:"#"
+    title:"Citi Freshman Discovery Program 2026",
+    emoji:"🏦",
+    deadline:"2026-04-27",
+    education:"undergrad",
+    location:"Online (USA)",
+    locationType:"online",
+    nationality:"usa",
+    ageMin:18,ageMax:22,
+    eligibility:"First-year US university students, all majors, graduation 2028–2029",
+    desc:"A virtual workshop series by Citi helping first-year college students explore careers in financial services. Attend workshops, chat with senior leaders, and network with professionals across banking, finance, and technology. Open to all majors — no finance background required.",
+    link:"https://citi.wd5.myworkdayjobs.com/en-US/Citi_Early_Careers_Events_Site/job/Freshmen-Discovery-Program--Virtual---US--2026_26954151"
   },
   {
     id:2,
-    title:"Schwarzman Scholars Program",
-    emoji:"🏛️",
-    deadline:"2026-09-20",
-    urgency:"future",
-    education:"undergrad",
-    location:"Tsinghua University, Beijing",
+    title:"FutureMinds Summit Thailand 2026 (GYN)",
+    emoji:"🇹🇭",
+    deadline:"2026-06-15",
+    education:"both",
+    location:"Bangkok, Thailand",
     locationType:"inperson",
     nationality:"international",
-    ageMin:18,ageMax:29,
-    eligibility:"Undergraduate students aged 18–29, open internationally",
-    desc:"One of the most competitive graduate scholarships in the world, designed to prepare the next generation of global leaders. Fully funded one-year master's programme at Tsinghua University, Beijing. Covers tuition, accommodation, travel, and stipend.",
-    link:"#"
+    ageMin:16,ageMax:30,
+    eligibility:"Young leaders aged 16–30, open internationally — scholarships covering airfare, visa, accommodation & meals available",
+    desc:"A four-day global gathering of young leaders in Bangkok advancing the UN Sustainable Development Goals. Explore SDG 4, 5, 9, and 13 through sessions, workshops, and cross-sector dialogue. Around 80 participants gather to transform ideas into impactful initiatives with scientists, NGOs, and AI experts.",
+    link:"https://thegyn.org/fms-thailand/"
   },
   {
     id:3,
-    title:"Microsoft Imagine Cup",
-    emoji:"💻",
-    deadline:"2026-04-30",
-    urgency:"urgent",
-    education:"both",
-    location:"Online + Global Finals",
-    locationType:"online",
+    title:"Einstein Fellowship 2026 — Germany (Fully Funded)",
+    emoji:"🔬",
+    deadline:"2026-05-15",
+    education:"undergrad",
+    location:"Caputh, Brandenburg, Germany",
+    locationType:"inperson",
     nationality:"international",
-    ageMin:16,ageMax:30,
-    eligibility:"Students aged 16–30, open internationally",
-    desc:"Microsoft's flagship global student technology competition. Build an innovative tech solution addressing a real-world problem. Compete in categories including AI, sustainability, and social impact. Winners receive funding, mentorship, and global exposure.",
-    link:"#"
+    ageMin:18,ageMax:35,
+    eligibility:"Under 35 with a university degree in humanities, social sciences, or natural sciences — open internationally",
+    desc:"One of the world's most prestigious fellowships for young thinkers. Pursue a bold interdisciplinary project in a field outside your specialisation, residing in Einstein's historic summerhouse in Caputh for 5–6 months. Includes a €10,000 stipend, covered accommodation, and travel reimbursement.",
+    link:"https://www.einsteinforum.de/fellowship/"
   },
   {
     id:4,
-    title:"Commonwealth Essay Competition",
+    title:"National Geographic & TNC Externship — Summer 2026",
+    emoji:"🌿",
+    deadline:"2026-05-17",
+    education:"both",
+    location:"Online (Remote, Worldwide)",
+    locationType:"online",
+    nationality:"international",
+    ageMin:18,ageMax:25,
+    eligibility:"Ages 18–25, open worldwide — no prior conservation experience required",
+    desc:"An 8-week fully remote externship by National Geographic Society and The Nature Conservancy. Explore freshwater conservation challenges, develop storytelling skills, and build community-driven solutions. Includes a $500 stipend upon completion. Over 1,100 alumni from 117 countries.",
+    link:"https://www.nationalgeographic.org/society/externships/"
+  },
+  {
+    id:5,
+    title:"UN SDG Action Awards 2026 — Heroes of Tomorrow",
+    emoji:"🏆",
+    deadline:"2026-05-17",
+    education:"both",
+    location:"Rome, Italy (Ceremony)",
+    locationType:"inperson",
+    nationality:"international",
+    ageMin:16,ageMax:99,
+    eligibility:"Individuals or initiatives with proven measurable impact aligned with the SDGs — open globally",
+    desc:"The UN's flagship global awards recognising changemakers driving sustainable development. Finalists receive coaching, global media exposure through UN WebTV and RAI Italy, a custom trophy, and travel to the ceremony in Rome. Three categories: Changemaker, Creativity, and Resilience.",
+    link:"https://sdgactionawards.org/"
+  },
+  {
+    id:6,
+    title:"Commonwealth Essay Competition 2026",
     emoji:"✍️",
     deadline:"2026-05-01",
-    urgency:"soon",
     education:"highschool",
-    location:"Online",
+    location:"Online Submission",
     locationType:"online",
     nationality:"international",
     ageMin:11,ageMax:18,
     eligibility:"Students aged 11–18 from Commonwealth countries",
-    desc:"One of the world's oldest and largest writing competitions for young people, run by the Royal Commonwealth Society. Submit an essay on a globally relevant theme. Outstanding entries receive gold, silver, and bronze awards with certificates and prizes.",
-    link:"#"
+    desc:"One of the world's oldest and largest writing competitions for young people, run by the Royal Commonwealth Society since 1883. Submit an essay on a globally relevant theme. Gold, Silver, and Bronze awards with certificates and international recognition.",
+    link:"https://www.commonwealthofnations.org/sectors-human-development/education/essay-competition/"
   },
   {
-    id:5,
-    title:"UWC Short Course — Global Citizenship",
-    emoji:"🌍",
-    deadline:"2026-06-10",
-    urgency:"future",
+    id:7,
+    title:"ASEF Young Leaders Summit — Capacity Training 2026",
+    emoji:"🌏",
+    deadline:"2026-05-12",
+    education:"both",
+    location:"Online + Tromsø, Norway (for selected 40)",
+    locationType:"online",
+    nationality:"international",
+    ageMin:18,ageMax:30,
+    eligibility:"Ages 18–30 from Asian or European countries — open internationally, no fee",
+    desc:"A fully funded youth leadership programme by the Asia-Europe Foundation focusing on Anticipatory Leadership for a Human-Centred Future. Includes online training (June–July), local action phase, and — for top 40 selected participants — a fully funded in-person summit in Tromsø, Norway in August 2026.",
+    link:"https://asiaeuropefoundation.formstack.com/forms/asefyls2026_applicationform"
+  },
+  {
+    id:8,
+    title:"Youth Empowerment Forum (YEF) 2026 — Geneva, Switzerland",
+    emoji:"🇨🇭",
+    deadline:"2026-06-30",
+    education:"both",
+    location:"Geneva, Switzerland",
+    locationType:"inperson",
+    nationality:"international",
+    ageMin:16,ageMax:46,
+    eligibility:"Ages 16–46 from any country — fully funded, partially funded, and self-funded options available",
+    desc:"A four-day global leadership conference in Geneva with 250 young changemakers. Includes policy dialogues, UN Palais des Nations visit, WTO headquarters briefing, and expert-led workshops. A $1,000 Impact Grant is awarded to the best delegate-led SDG initiative.",
+    link:"https://thecgdl.org/yef-2-0-funded-seats-form/"
+  },
+  {
+    id:9,
+    title:"STEM Science Olympiad 2026 — Pakistan (NSTC-23)",
+    emoji:"🧪",
+    deadline:"2026-06-30",
     education:"highschool",
-    location:"Various UWC Campuses",
+    location:"Pakistan (Nationwide + International)",
     locationType:"inperson",
-    nationality:"international",
-    ageMin:15,ageMax:18,
-    eligibility:"High school students aged 15–18, international applications welcome",
-    desc:"United World Colleges short courses offer an immersive international education experience on one of their global campuses. Study alongside peers from 150+ countries, develop intercultural skills, and build the kind of global perspective universities value highly in applicants.",
-    link:"#"
+    nationality:"pakistan",
+    ageMin:14,ageMax:20,
+    eligibility:"Pakistani students up to FSc Part-I / O-Level / A-Level Part-I with 60%+ in Science/Maths — under 20 years",
+    desc:"Pakistan's most prestigious national science talent contest, run by HEC and PIEAS. Selected students represent Pakistan at International Science Olympiads in Biology, Chemistry, Physics, and Mathematics. Fully free — covers registration, residential training camps, and international participation. Winners receive cash prizes and direct PIEAS admission.",
+    link:"https://stem.edu.pk/"
   },
   {
-    id:6,
-    title:"UNLEASH Innovation Lab",
-    emoji:"🚀",
-    deadline:"2026-07-01",
-    urgency:"future",
-    education:"undergrad",
-    location:"Global — rotating host cities",
+    id:10,
+    title:"International Festival of Youth 2026 — Ekaterinburg",
+    emoji:"🌍",
+    deadline:"2026-04-30",
+    education:"both",
+    location:"Ekaterinburg, Russia",
     locationType:"inperson",
     nationality:"international",
-    ageMin:18,ageMax:35,
-    eligibility:"Undergraduate and graduate students aged 18–35, open internationally",
-    desc:"A global innovation platform bringing together talented young people to develop sustainable solutions to the UN's Sustainable Development Goals. Work in multidisciplinary teams, receive mentorship from industry leaders, and pitch your solutions to a global audience.",
-    link:"#"
+    ageMin:14,ageMax:35,
+    eligibility:"Ages 14–35, open to 5,000 international participants from 190 countries",
+    desc:"A major global youth festival bringing together 10,000 young leaders — 5,000 from Russia and 5,000 internationally. Seven-day programme from September 11–17, 2026 covering leadership, cross-cultural dialogue, innovation, and global cooperation. Travel costs covered for participants aged 14–17.",
+    link:"https://wyffest.com/en"
+  },
+  {
+    id:11,
+    title:"NextGen Climate Bootcamp 2026 — Climate Tracker Asia",
+    emoji:"🌱",
+    deadline:"2026-07-31",
+    education:"both",
+    location:"Asia (Philippines-based, online + in-person)",
+    locationType:"online",
+    nationality:"international",
+    ageMin:18,ageMax:25,
+    eligibility:"Young journalists and students aged 18–25, focus on Asia-Pacific applicants",
+    desc:"A fellowship by Climate Tracker Asia equipping young and aspiring journalists with the skills for effective climate reporting. Includes online training sessions, interactive workshops, and an in-person bootcamp. Fellows receive a stipend, mentorship, and the opportunity to publish real climate stories.",
+    link:"https://climatetracker.asia/nextgen-climate-bootcamp-2026-climup/"
+  },
+  {
+    id:12,
+    title:"European Leadership Conference Switzerland 2026",
+    emoji:"🇨🇭",
+    deadline:"2026-07-15",
+    education:"both",
+    location:"Switzerland",
+    locationType:"inperson",
+    nationality:"international",
+    ageMin:16,ageMax:99,
+    eligibility:"Open to all ages and nationalities — funded scholarships available",
+    desc:"A four-day leadership conference in Switzerland (August 1–4, 2026) engaging delegates from across the globe. Features UN collaborations, leadership workshops, networking with global changemakers, and opportunities to be featured in Rising Leaders Magazine. Funded scholarships and visa assistance available.",
+    link:"https://risingleadersmag.org/events-switzerland/"
+  },
+  {
+    id:13,
+    title:"Warsaw Academy of Young Diplomats — Scholarships 2027",
+    emoji:"🏛️",
+    deadline:"2026-04-27",
+    education:"undergrad",
+    location:"Warsaw, Poland",
+    locationType:"inperson",
+    nationality:"international",
+    ageMin:18,ageMax:40,
+    eligibility:"Students and graduates interested in diplomacy from any country — need-based fully and partially funded scholarships",
+    desc:"One of Central Europe's most respected diplomatic training programmes, run by the European Academy of Diplomacy. 140+ hours of hands-on training, 4 in-person sessions in Warsaw, study visits, and an Executive Diploma in the Art of Diplomacy. Up to 2 fully funded and 4 partially funded scholarships available. Application deadline: 27 April 2026.",
+    link:"https://glorno.com/index.php/2026/04/17/warsaw-academy-of-young-diplomats-scholarships-2027-poland-fully-funded/"
+  },
+  {
+    id:14,
+    title:"ASEF Young Leaders Summit Norway Training 2026",
+    emoji:"🇳🇴",
+    deadline:"2026-05-12",
+    education:"both",
+    location:"Tromsø, Norway",
+    locationType:"inperson",
+    nationality:"international",
+    ageMin:18,ageMax:30,
+    eligibility:"Top 40 selected participants from ASEFYLS 2026 online training — from Asian or European countries",
+    desc:"For the top 40 performers from the ASEFYLS 2026 online training, a fully funded in-person leadership summit in Tromsø, Norway (23–29 August 2026) within the Arctic Circle. Covers accommodation, meals, and travel subsidies. Focuses on anticipatory leadership, climate change, and international cooperation.",
+    link:"https://asiaeuropefoundation.formstack.com/forms/asefyls2026_applicationform"
+  },
+  {
+    id:15,
+    title:"Youth Development Forum 2026 — Berlin, Germany",
+    emoji:"🇩🇪",
+    deadline:"2026-05-10",
+    education:"both",
+    location:"Berlin, Germany",
+    locationType:"inperson",
+    nationality:"international",
+    ageMin:16,ageMax:46,
+    eligibility:"Ages 16–46 from any country — fully funded, partially funded, and guaranteed participation options",
+    desc:"A four-day international conference (May 7–10, 2026) in Berlin bringing 200 young changemakers from 150+ countries. Organised by CGDL, the forum focuses on youth diplomacy, leadership, sustainable development, and AI governance. Features expert dialogues, workshops, cultural immersion, and networking with diplomats and innovators.",
+    link:"https://thecgdl.org/yef-2-0-funded-seats-form/"
+  },
+  {
+    id:16,
+    title:"DGFSL 2026 Summit — Dubai, UAE",
+    emoji:"🇦🇪",
+    deadline:"2026-05-15",
+    education:"both",
+    location:"Dubai, United Arab Emirates",
+    locationType:"inperson",
+    nationality:"international",
+    ageMin:18,ageMax:45,
+    eligibility:"Open internationally. Fully funded seats evaluated on merit, leadership potential, and alignment with Summit's strategic themes. Application fee may apply for other participation tracks.",
+    desc:"The Dubai Global Futures and Sustainable Leadership Summit 2026 brings together emerging leaders from around the world to engage in dialogue on sustainable development, global futures, and strategic leadership. Participants take part in workshops, panels, and networking sessions with industry experts, policymakers, and fellow changemakers. Official applications are submitted exclusively through the AfriLead EduTourism Network.",
+    link:"https://afrileadnetwork.org/dgfsl-2026-summit-application-form/"
   }
 ];
 
-// Sort by deadline
+// Sort by deadline ascending
 opportunities.sort((a,b)=>new Date(a.deadline)-new Date(b.deadline));
 
 let activeFilter = 'all';
@@ -299,19 +357,11 @@ function setFilter(f, btn) {
 }
 
 function daysUntil(dateStr) {
-  const diff = new Date(dateStr) - new Date();
-  return Math.ceil(diff / (1000*60*60*24));
+  return Math.ceil((new Date(dateStr) - new Date()) / (1000*60*60*24));
 }
 
 function formatDate(dateStr) {
   return new Date(dateStr).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-}
-
-function urgencyLabel(days, urgency) {
-  if (days < 0) return {text:'Deadline Passed',cls:'urgent'};
-  if (days <= 14) return {text:`${days} days left`,cls:'urgent'};
-  if (days <= 30) return {text:`${days} days left`,cls:'soon'};
-  return {text:`Deadline: ${formatDate(opportunities.find(o=>daysUntil(o.deadline)===days)?.deadline||'')}`,cls:''};
 }
 
 function renderOpps() {
@@ -337,7 +387,7 @@ function renderOpps() {
   list.innerHTML = filtered.map(o => {
     const days = daysUntil(o.deadline);
     const dl = days < 0 ? {text:'Deadline Passed',cls:'urgent'} :
-               days <= 14 ? {text:`${days} days left`,cls:'urgent'} :
+               days <= 7  ? {text:`${days} days left`,cls:'urgent'} :
                days <= 30 ? {text:`${days} days left`,cls:'soon'} :
                {text:`Deadline: ${formatDate(o.deadline)}`,cls:''};
     return `
