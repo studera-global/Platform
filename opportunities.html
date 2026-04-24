@@ -148,9 +148,10 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.08)}
 <body>
 
 <nav>
-  <a href="index.html" class="nav-logo">
-    <span class="nav-logo-text">🎓 <span class="brand">Studera</span></span>
-  </a>
+ <a href="index.html" class="nav-logo" style="text-decoration:none;display:flex;align-items:center;">
+  <img src="logo.png" alt="Studera" style="height:52px;width:auto;object-fit:contain;" onerror="this.style.display='none';document.getElementById('oppNavFallback').style.display='flex'"/>
+  <span id="oppNavFallback" style="display:none;font-family:'DM Serif Display',serif;font-size:1.5rem;color:#147A3E;">🎓 <span style="color:#147A3E;font-weight:600">Studera</span></span>
+</a>
   <a href="index.html" class="nav-back">← Back to Home</a>
 </nav>
 
@@ -183,8 +184,11 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.08)}
 
 <footer>
   <div class="footer-inner">
-    <span style="font-family:'DM Serif Display',serif;color:#fff;font-size:1.2rem">🎓 <span class="brand">Studera</span></span>
-    <span style="color:#b8ccc0;font-size:.85rem">Making Students Powerful Everyday</span>
+    <span style="display:flex;align-items:center;gap:10px;">
+  <img src="logo.png" alt="Studera" style="height:44px;width:auto;object-fit:contain;filter:brightness(10);" onerror="this.style.display='none'"/>
+  <span style="font-family:'DM Serif Display',serif;color:#fff;font-size:1.2rem">🎓 <span style="color:#7ecf9a;font-weight:600">Studera</span></span>
+</span>
+    <span style="color:#b8ccc0;font-size:.85rem">info.studera@gmail.com</span>
   </div>
   <span class="footer-bar">© 2026 <span class="brand">Studera</span>. All rights reserved.</span>
 </footer>
