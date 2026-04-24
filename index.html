@@ -910,7 +910,7 @@ function toggleNav() {
 }
 
 // ── NEWSLETTER SUBMIT ──
-const NL_URL = 'PASTE_NEWSLETTER_SCRIPT_URL_HERE';
+const NL_URL = 'https://script.google.com/macros/s/AKfycbx3jaRGzP-ty91cfXxOpdNqI2Nl_GSf85nRXvZIiIKavokxVdnwHkGQVGzSMGlskivy/exec';
 function submitNewsletter() {
   const name = document.getElementById('nlName').value.trim();
   const email = document.getElementById('nlEmail').value.trim();
@@ -918,7 +918,7 @@ function submitNewsletter() {
   document.getElementById('nlMsg').style.display = 'block';
   document.getElementById('nlForm').style.opacity = '.4';
   document.getElementById('nlForm').style.pointerEvents = 'none';
-  if (NL_URL !== 'PASTE_NEWSLETTER_SCRIPT_URL_HERE') {
+  if (NL_URL !== 'https://script.google.com/macros/s/AKfycbx3jaRGzP-ty91cfXxOpdNqI2Nl_GSf85nRXvZIiIKavokxVdnwHkGQVGzSMGlskivy/exec') {
     fetch(NL_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ type:'newsletter', name, email, timestamp: new Date().toISOString() }) });
   }
@@ -932,7 +932,7 @@ function submitSchool() {
   document.getElementById('schoolMsg').style.display = 'block';
   document.getElementById('schoolForm').style.opacity = '.4';
   document.getElementById('schoolForm').style.pointerEvents = 'none';
-  if (NL_URL !== 'PASTE_NEWSLETTER_SCRIPT_URL_HERE') {
+  if (NL_URL !== 'https://script.google.com/macros/s/AKfycbx3jaRGzP-ty91cfXxOpdNqI2Nl_GSf85nRXvZIiIKavokxVdnwHkGQVGzSMGlskivy/exec') {
     fetch(NL_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ type:'school', name, email, timestamp: new Date().toISOString() }) });
   }
