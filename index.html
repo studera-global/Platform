@@ -822,13 +822,15 @@ footer{
 <footer>
   <div class="footer-inner">
     <div class="footer-brand">
-    <img src="logo.png" alt="Studera" class="nav-logo-img" 
-      
+      <img src="logo.png" alt="Studera" style="height:44px;width:auto;object-fit:contain;margin-bottom:8px;display:block;" onerror="this.style.display='none';document.getElementById('footerLogoFallback').style.display='block'"/>
+      <div class="nav-logo-text" id="footerLogoFallback" style="display:none">🎓 <span class="brand">Studera</span></div>
+      <div class="footer-tagline">Making Students Powerful Everyday</div>
+    </div>
     <div class="footer-links">
       <a href="opportunities.html">Student Opportunities</a>
       <a href="about.html">About Us</a>
       <a href="#faq">FAQ</a>
-      info.studera@gmail.com
+      <a href="mailto:info.studera@gmail.com">info.studera@gmail.com</a>
     </div>
   </div>
   <div class="footer-bar">
