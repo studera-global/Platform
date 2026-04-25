@@ -37,8 +37,19 @@ nav{position:sticky;top:0;z-index:900;background:rgba(255,255,255,.96);backdrop-
 .filter-inner{max-width:1100px;margin:0 auto;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
 .filter-label{font-size:.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-right:4px}
 .filter-btn{padding:7px 16px;border-radius:99px;border:1.5px solid var(--border);background:#fff;font-family:var(--font-body);font-size:.82rem;font-weight:500;color:var(--body);cursor:pointer;transition:all .2s;}
-.filter-btn:hover,.filter-btn.active{background:var(--green);color:#fff;border-color:var(--green);}
+.filter-btn:hover{background:var(--green-light);border-color:var(--green);color:var(--green)}
+.filter-btn.active{background:var(--green);color:#fff;border-color:var(--green);}
 .filter-divider{width:1px;height:20px;background:var(--border);margin:0 4px}
+.filter-dropdown-wrap{position:relative;display:inline-block}
+.filter-dropdown-btn{padding:7px 16px;border-radius:99px;border:1.5px solid var(--border);background:#fff;font-family:var(--font-body);font-size:.82rem;font-weight:500;color:var(--body);cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.filter-dropdown-btn:hover,.filter-dropdown-btn.active{background:var(--green);color:#fff;border-color:var(--green)}
+.filter-dropdown-btn::after{content:"▾";font-size:.7rem}
+.filter-dropdown-menu{display:none;position:absolute;top:calc(100% + 6px);left:0;background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);min-width:180px;z-index:999;padding:6px 0;max-height:260px;overflow-y:auto}
+.filter-dropdown-menu.open{display:block}
+.filter-dropdown-item{display:flex;align-items:center;gap:8px;padding:8px 14px;font-size:.83rem;color:var(--body);cursor:pointer;transition:background .15s;user-select:none}
+.filter-dropdown-item:hover{background:var(--green-faint)}
+.filter-dropdown-item input[type=checkbox]{accent-color:var(--green);width:14px;height:14px;cursor:pointer;flex-shrink:0}
+.filter-dropdown-item.checked{color:var(--green);font-weight:600}
 .main{max-width:1100px;margin:0 auto;padding:40px 5%}
 .results-count{font-size:.85rem;color:var(--muted);margin-bottom:24px}
 .results-count strong{color:var(--dark)}
@@ -88,16 +99,28 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.08)}
 
 <div class="filter-section">
   <div class="filter-inner">
-    <span class="filter-label">Filter:</span>
-    <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+
+    <!-- ALL -->
+    <button class="filter-btn active" id="btnAll" onclick="resetAll()">All</button>
     <div class="filter-divider"></div>
-    <button class="filter-btn" onclick="setFilter('highschool',this)">High School</button>
-    <button class="filter-btn" onclick="setFilter('undergrad',this)">Undergraduate</button>
-    <button class="filter-btn" onclick="setFilter('both',this)">Open to All</button>
+
+    <!-- LEVEL MULTI-SELECT -->
+    <span class="filter-label">Level:</span>
+    <button class="filter-btn" id="btnHighschool" onclick="toggleLevel('highschool',this)">High School</button>
+    <button class="filter-btn" id="btnUndergrad" onclick="toggleLevel('undergrad',this)">Undergraduate</button>
+    <button class="filter-btn" id="btnBoth" onclick="toggleLevel('both',this)">Open to All</button>
     <div class="filter-divider"></div>
-    <button class="filter-btn" onclick="setFilter('international',this)">International</button>
-    <button class="filter-btn" onclick="setFilter('online',this)">Online</button>
-    <button class="filter-btn" onclick="setFilter('inperson',this)">In-Person</button>
+
+    <!-- ELIGIBILITY -->
+    <span class="filter-label">Eligibility:</span>
+    <button class="filter-btn" id="btnInternational" onclick="toggleElig2(this)">🌍 International</button>
+    <div class="filter-divider"></div>
+
+    <!-- FORMAT MULTI-SELECT -->
+    <span class="filter-label">Format:</span>
+    <button class="filter-btn" id="btnOnline" onclick="toggleFormat('online',this)">Online</button>
+    <button class="filter-btn" id="btnInperson" onclick="toggleFormat('inperson',this)">In-Person</button>
+
   </div>
 </div>
 
@@ -616,12 +639,62 @@ const opportunities = [
 // Sort by deadline ascending
 opportunities.sort((a,b)=>new Date(a.deadline)-new Date(b.deadline));
 
-let activeFilter = 'all';
+// Filter state
+let levelSelected = new Set();  // set of 'highschool','undergrad','both'
+let eligSelected = new Set();   // set of nationality values
+let formatSelected = new Set(); // set of 'online','inperson'
 
-function setFilter(f, btn) {
-  activeFilter = f;
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
+function toggleLevel(val, btn) {
+  if (levelSelected.has(val)) {
+    levelSelected.delete(val);
+    btn.classList.remove('active');
+  } else {
+    levelSelected.add(val);
+    btn.classList.add('active');
+  }
+  updateAllBtn();
+  renderOpps();
+}
+
+function toggleElig2(btn) {
+  if (eligSelected.has('international')) {
+    eligSelected.delete('international');
+    btn.classList.remove('active');
+  } else {
+    eligSelected.add('international');
+    btn.classList.add('active');
+  }
+  updateAllBtn();
+  renderOpps();
+}
+function toggleFormat(val, btn) {
+  if (formatSelected.has(val)) {
+    formatSelected.delete(val);
+    btn.classList.remove('active');
+  } else {
+    formatSelected.add(val);
+    btn.classList.add('active');
+  }
+  updateAllBtn();
+  renderOpps();
+}
+
+function updateAllBtn() {
+  const anyActive = levelSelected.size > 0 || eligSelected.size > 0 || formatSelected.size > 0;
+  document.getElementById('btnAll').classList.toggle('active', !anyActive);
+}
+
+function resetAll() {
+  levelSelected.clear();
+  eligSelected.clear();
+  formatSelected.clear();
+  document.getElementById('btnHighschool').classList.remove('active');
+  document.getElementById('btnUndergrad').classList.remove('active');
+  document.getElementById('btnBoth').classList.remove('active');
+  document.getElementById('btnInternational').classList.remove('active');
+  document.getElementById('btnOnline').classList.remove('active');
+  document.getElementById('btnInperson').classList.remove('active');
+  document.getElementById('btnAll').classList.add('active');
   renderOpps();
 }
 
@@ -636,14 +709,17 @@ function formatDate(dateStr) {
 function renderOpps() {
   const list = document.getElementById('oppList');
   const filtered = opportunities.filter(o => {
-    if (activeFilter==='all') return true;
-    if (activeFilter==='highschool') return o.education==='highschool'||o.education==='both';
-    if (activeFilter==='undergrad') return o.education==='undergrad'||o.education==='both';
-    if (activeFilter==='both') return o.education==='both';
-    if (activeFilter==='international') return o.nationality==='international';
-    if (activeFilter==='online') return o.locationType==='online';
-    if (activeFilter==='inperson') return o.locationType==='inperson';
-    return true;
+    // Level: OR within group (nothing selected = show all)
+    const levelOk = levelSelected.size === 0
+      || (levelSelected.has('highschool') && (o.education === 'highschool' || o.education === 'both'))
+      || (levelSelected.has('undergrad')  && (o.education === 'undergrad'  || o.education === 'both'))
+      || (levelSelected.has('both')       && o.education === 'both');
+    // Eligibility: OR within group
+    const natOk = eligSelected.size === 0 || eligSelected.has(o.nationality);
+    // Format: OR within group
+    const fmtOk = formatSelected.size === 0 || formatSelected.has(o.locationType);
+    // AND between groups
+    return levelOk && natOk && fmtOk;
   });
 
   document.getElementById('resultsCount').innerHTML = `Showing <strong>${filtered.length}</strong> opportunit${filtered.length===1?'y':'ies'}`;
