@@ -145,16 +145,22 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.06)}
 
 <!-- NAV -->
 <nav>
-  <a href="index.html" class="nav-logo">
-    <img src="logo.png" alt="Studera" class="nav-logo-img" onerror="this.style.display='none';document.getElementById('techNavFallback').style.display='block'"/>
-    <span id="techNavFallback" style="display:none;font-family:'DM Serif Display',serif;font-size:1.5rem;color:#147A3E;font-weight:600">Studera</span>
+   <a href="index.html" class="nav-logo">
+    <img src="logo.png" alt="Studera" class="nav-logo-img" onerror="this.style.display='none';document.getElementById('navLogoText').style.display='flex'"/>
+    <span class="nav-logo-text" id="navLogoText" style="display:none">🎓 <span class="brand">Studera</span></span>
   </a>
-  <ul class="nav-links">
-    <li><a href="index.html">Home</a></li>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#stats">Why Studera</a></li>
+    <li><a href="#mission">Mission</a></li>
+    <li><a href="#timeline">Timeline</a></li>
     <li><a href="opportunities.html">Opportunities</a></li>
     <li><a href="about.html">About</a></li>
-    <li><a href="https://azpeasy.github.io/Studera/" target="_blank" class="nav-cta-btn">Fill the Survey →</a></li>
+    <li><a href="technology.html">Technology</a></li>
+    <li><a href="#newsletter" class="nav-cta">Fill the Survey →</a></li>
   </ul>
+  <button class="nav-hamburger" id="hamburger" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <!-- HERO -->
@@ -365,20 +371,24 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.06)}
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
-    <span style="display:flex;align-items:center;gap:8px;">
-      <img src="logo.png" alt="Studera" style="height:38px;width:auto;object-fit:contain;filter:brightness(0) invert(1);" onerror="this.style.display='none'"/>
-      <span style="font-family:'DM Serif Display',serif;color:#7ecf9a;font-size:1.1rem;font-weight:600">Studera</span>
-    </span>
-    <div style="display:flex;gap:20px;flex-wrap:wrap">
-      <a href="index.html" style="color:#b8ccc0;font-size:.85rem;text-decoration:none">Home</a>
-      <a href="opportunities.html" style="color:#b8ccc0;font-size:.85rem;text-decoration:none">Opportunities</a>
-      <a href="about.html" style="color:#b8ccc0;font-size:.85rem;text-decoration:none">About</a>
-      <a href="mailto:info.studera@gmail.com" style="color:#b8ccc0;font-size:.85rem;text-decoration:none">Contact</a>
+    <div class="footer-brand">
+      <img src="logo.png" alt="Studera" style="height:44px;width:auto;object-fit:contain;margin-bottom:8px;display:block;" onerror="this.style.display='none';document.getElementById('footerLogoFallback').style.display='block'"/>
+      <div class="nav-logo-text" id="footerLogoFallback" style="display:none">🎓 <span class="brand">Studera</span></div>
+      <div class="footer-tagline">Making Students Powerful Everyday</div>
+    </div>
+    <div class="footer-links">
+      <a href="opportunities.html">Student Opportunities</a>
+      <a href="about.html">About Us</a>
+      <a href="#faq">FAQ</a>
+      <a href="technology.html">Technology</a>
+      <a href="mailto:info.studera@gmail.com">info.studera@gmail.com</a>
     </div>
   </div>
-  <span class="footer-bar">© 2026 <span class="brand">Studera</span>. All rights reserved.</span>
+  <div class="footer-bar">
+    <span>© 2026 <span class="brand">Studera</span>. All rights reserved.</span>
+  </div>
 </footer>
-
+    
 <script>
 const fadeEls = document.querySelectorAll('.fade-in');
 const observer = new IntersectionObserver(entries => {
