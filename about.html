@@ -27,20 +27,25 @@ body{
 .brand{color:var(--green);font-weight:600}
 
 nav{
-  position:sticky;top:0;z-index:900;
-  background:rgba(255,255,255,.96);backdrop-filter:blur(12px);
+  position:fixed;top:0;left:0;right:0;z-index:900;
+  background:rgba(255,255,255,.95);backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
   padding:0 5%;height:68px;
   display:flex;align-items:center;justify-content:space-between;
 }
-.nav-logo-text{font-family:var(--font-display);font-size:1.5rem;color:var(--green);text-decoration:none}
-.nav-logo-img{height:56px;width:auto;display:block}
-.footer-logo-img{height:44px;width:auto;display:block}
-.nav-back{font-size:.88rem;color:var(--green);text-decoration:none;font-weight:600}
-.nav-back:hover{text-decoration:underline}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo-img{height:56px;width:auto;object-fit:contain;}
+.nav-logo-text{font-family:var(--font-display);font-size:1.6rem;color:var(--green);line-height:1}
+.nav-links{display:flex;align-items:center;gap:28px;list-style:none}
+.nav-links a{font-size:.9rem;font-weight:500;color:var(--body);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--green)}
+.nav-cta{background:var(--orange);color:#fff!important;padding:9px 22px;border-radius:99px;font-weight:600!important;font-size:.88rem!important;transition:background .2s,transform .1s!important}
+.nav-cta:hover{background:var(--orange-dark)!important;transform:translateY(-1px)}
+.nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.nav-hamburger span{display:block;width:22px;height:2px;background:var(--dark);border-radius:2px;transition:.3s}
 
 .page-hero{
-  background:var(--dark);padding:70px 5%;
+  background:var(--dark);padding:70px 5%;padding-top:calc(70px + 68px);
   position:relative;overflow:hidden;text-align:center;
 }
 .page-hero::before{
@@ -146,19 +151,48 @@ nav{
 }
 .btn-white:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.15)}
 
-footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.08);margin-top:0}
-.footer-inner{max-width:1100px;margin:0 auto;padding:28px 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
-.footer-bar{text-align:center;padding:14px 5%;background:#fff;border-top:1px solid var(--border);font-size:.82rem;color:#555;display:block}
+footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.08);}
+.footer-inner{max-width:1100px;margin:0 auto;padding:48px 5% 32px;display:grid;grid-template-columns:1fr auto;gap:40px;align-items:start;}
+.footer-brand .nav-logo-text{color:#fff}
+.footer-tagline{font-size:.85rem;color:#7ecf9a;margin-top:6px}
+.footer-links{display:flex;flex-direction:column;gap:10px;align-items:flex-end}
+.footer-links a{font-size:.85rem;color:#b8ccc0;text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:#fff}
+.footer-bar{text-align:center;padding:18px 5%;background:#fff;border-top:1px solid var(--border);font-size:.82rem;color:#555;}
+.footer-bar span{font-size:.82rem}
+@media(max-width:768px){
+  .footer-inner{grid-template-columns:1fr}
+  .footer-links{align-items:flex-start}
+  nav .nav-links{display:none}
+  .nav-hamburger{display:flex}
+  nav .nav-links.open{
+    display:flex;flex-direction:column;
+    position:absolute;top:68px;left:0;right:0;
+    background:#fff;border-bottom:1px solid var(--border);
+    padding:20px 5%;gap:16px;
+  }
+}
 </style>
 </head>
 <body>
 
-<nav>
-  <a href="index.html" style="text-decoration:none">
-  <img src="logo.png" alt="Studera" class="nav-logo-img" onerror="this.style.display='none';document.getElementById('navLogoText').style.display='flex'"/>
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="logo.png" alt="Studera" class="nav-logo-img" onerror="this.style.display='none';document.getElementById('navLogoText').style.display='flex'"/>
     <span class="nav-logo-text" id="navLogoText" style="display:none">🎓 <span class="brand">Studera</span></span>
   </a>
-  <a href="index.html" class="nav-back">← Back to Home</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html#stats">Why Studera</a></li>
+    <li><a href="index.html#mission">Mission</a></li>
+    <li><a href="index.html#timeline">Timeline</a></li>
+    <li><a href="opportunities.html">Opportunities</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="technology.html">Technology</a></li>
+    <li><a href="index.html#newsletter" class="nav-cta">Stay Updated</a></li>
+  </ul>
+  <button class="nav-hamburger" id="hamburger" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <div class="page-hero">
@@ -252,12 +286,29 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.08);margin-
 
 <footer>
   <div class="footer-inner">
-    <img src="logo.png" alt="Studera" class="footer-logo-img" />
-    info.studera@gmail.com
-    <a href="index.html" style="color:#b8ccc0;font-size:.85rem;text-decoration:none">← Back to Home</a>
+    <div class="footer-brand">
+      <img src="logo.png" alt="Studera" style="height:44px;width:auto;object-fit:contain;margin-bottom:8px;display:block;" onerror="this.style.display='none';document.getElementById('footerLogoFallback').style.display='block'"/>
+      <div class="nav-logo-text" id="footerLogoFallback" style="display:none">🎓 <span class="brand">Studera</span></div>
+      <div class="footer-tagline">Making Students Powerful Everyday</div>
+    </div>
+    <div class="footer-links">
+      <a href="opportunities.html">Student Opportunities</a>
+      <a href="about.html">About Us</a>
+      <a href="index.html#faq">FAQ</a>
+      <a href="technology.html">Technology</a>
+      <a href="mailto:info.studera@gmail.com">info.studera@gmail.com</a>
+    </div>
   </div>
-  <span class="footer-bar">© 2026 <span class="brand">Studera</span>. All rights reserved.</span>
+  <div class="footer-bar">
+    <span>© 2026 <span class="brand">Studera</span>. All rights reserved.</span>
+  </div>
 </footer>
+
+<script>
+function toggleNav() {
+  document.getElementById('navLinks').classList.toggle('open');
+}
+</script>
 
 </body>
 </html>
