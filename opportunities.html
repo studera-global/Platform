@@ -109,6 +109,14 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.08);}
   }
 }
 @media(max-width:640px){.opp-card{grid-template-columns:1fr}.opp-img{min-height:160px}.filter-inner{gap:8px}}
+
+/* ── LED TICKER ── */
+.led-ticker{background:#0f1a14;overflow:hidden;height:38px;display:flex;align-items:center;border-bottom:2px solid #147A3E;position:relative;z-index:50}
+.led-track{display:flex;white-space:nowrap;animation:ledScroll 22s linear infinite}
+.led-track:hover{animation-play-state:paused}
+.led-item{font-size:.78rem;font-weight:700;color:#a8e6c1;letter-spacing:1px;padding:0 60px;text-transform:uppercase;flex-shrink:0}
+.led-sep{color:#147A3E;opacity:.6;margin:0 8px}
+@keyframes ledScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 </style>
 </head>
 <body>
@@ -139,6 +147,27 @@ footer{background:var(--dark);border-top:1px solid rgba(255,255,255,.08);}
   </div>
 </div>
 
+
+<!-- AUTH BANNER -->
+<div id="authBanner" style="display:none;background:#147A3E;padding:12px 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+  <div style="display:flex;align-items:center;gap:10px;"><span>🎯</span>
+    <div><span style="font-size:.88rem;font-weight:700;color:#fff;" id="authBannerName">Opportunities filtered for you</span>
+    <span style="font-size:.78rem;color:rgba(255,255,255,.7);display:block;">Showing results matched to your profile</span></div>
+  </div>
+  <div style="display:flex;gap:10px;">
+    <a href="dashboard.html" style="font-size:.82rem;color:#a8e6c1;font-weight:600;text-decoration:none;padding:7px 16px;border:1px solid rgba(255,255,255,.3);border-radius:99px;">Dashboard</a>
+    <button onclick="signOutOpps()" style="font-size:.82rem;color:rgba(255,255,255,.7);background:none;border:1px solid rgba(255,255,255,.2);border-radius:99px;cursor:pointer;padding:7px 16px;font-family:inherit">Sign Out</button>
+  </div>
+</div>
+<!-- SIGN IN PROMPT -->
+<div id="signInPrompt" style="display:none;background:var(--green-faint);border-bottom:1px solid var(--border);padding:14px 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+  <p style="font-size:.88rem;color:var(--body);">✨ Sign in to view <strong>personalised opportunities</strong> filtered to your profile.</p>
+  <a href="updates.html" style="font-size:.85rem;font-weight:700;color:#fff;background:var(--green);padding:9px 20px;border-radius:99px;text-decoration:none;">Sign in to personalise →</a>
+</div>
+<!-- INCOMPLETE PROFILE NOTE -->
+<div id="incompleteOppNote" style="display:none;background:#fff3cd;border-bottom:1.5px solid #f59e0b;padding:12px 5%;">
+  <p style="font-size:.83rem;color:#92400e;">⚠️ <strong>Profile incomplete</strong> — <a href="profile.html" style="color:#92400e;font-weight:700;text-decoration:underline">Complete your profile</a> so the Doctor Algorithm can filter opportunities for you.</p>
+</div>
 <div class="filter-section">
   <div class="filter-inner">
 
@@ -816,6 +845,24 @@ function renderOpps() {
 }
 
 renderOpps();
+
+function toggleNav(){document.getElementById('navLinks').classList.toggle('open');}
+(function initAuth(){
+  let user={};try{user=JSON.parse(sessionStorage.getItem('studera_user')||'{}');}catch(e){}
+  const isAuth=window.location.search.includes('auth=1')||user.logged_in;
+  if(isAuth&&user.logged_in){
+    document.getElementById('authBanner').style.display='flex';
+    document.getElementById('signInPrompt').style.display='none';
+    document.getElementById('authBannerName').textContent='Filtered for '+( user.name||'you');
+    const nl=document.getElementById('navAuthLink');if(nl){nl.textContent='Dashboard';nl.href='dashboard.html';}
+    if(!user.profile_complete) document.getElementById('incompleteOppNote').style.display='block';
+  } else {
+    document.getElementById('authBanner').style.display='none';
+    document.getElementById('signInPrompt').style.display='flex';
+  }
+})();
+function signOutOpps(){sessionStorage.clear();window.location.href='opportunities.html';}
+
 </script>
 </body>
 </html>
