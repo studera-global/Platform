@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Activate Account — Studera</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--green:#147A3E;--green-dark:#0e5a2d;--green-light:#e8f5ee;--green-faint:#f0f7f3;--orange:#F97316;--dark:#0f1a14;--body:#2d3a33;--muted:#6b7c72;--border:#dce8e0;--radius:14px;--radius-lg:20px;--shadow:0 4px 24px rgba(20,122,62,.10);--font-display:'DM Serif Display',serif;--font-body:'DM Sans',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-body);background:var(--green-faint);color:var(--body);min-height:100vh;display:flex;flex-direction:column;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='104' viewBox='0 0 90 104'%3E%3Cg fill='none' stroke='%23147A3E' stroke-width='1.1' stroke-opacity='0.06'%3E%3Cpolygon points='71,26 58,48 32,48 19,26 32,4 58,4'/%3E%3C/g%3E%3C/svg%3E");background-size:90px 104px;}
+.brand{color:var(--green);font-weight:600}
+nav{background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 5%;height:64px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{display:flex;align-items:center;text-decoration:none}
+.nav-logo-img{height:52px;width:auto;object-fit:contain}
+.nav-logo-text{font-family:var(--font-display);font-size:1.4rem;color:var(--green)}
+.page{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 16px}
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);width:100%;max-width:480px;}
+.step{display:none;padding:40px}
+.step.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.step-icon{font-size:2.4rem;display:block;margin-bottom:16px}
+.step-title{font-family:var(--font-display);font-size:1.8rem;color:var(--dark);margin-bottom:8px}
+.step-sub{font-size:.92rem;color:var(--muted);line-height:1.6;margin-bottom:28px}
+.progress-steps{display:flex;gap:0;margin-bottom:32px}
+.prog-step{flex:1;height:4px;background:var(--border);border-radius:99px;margin:0 3px;transition:background .4s}
+.prog-step.done{background:var(--green)}
+.prog-step.active{background:var(--orange)}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:.82rem;font-weight:600;color:var(--body);margin-bottom:6px}
+.field input{width:100%;padding:13px 16px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:var(--font-body);font-size:.92rem;color:var(--body);outline:none;transition:border-color .2s}
+.field input:focus{border-color:var(--green)}
+.field-row{position:relative}
+.field input.error{border-color:#e53e3e}
+.toggle-pw{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:.85rem;color:var(--muted);font-family:var(--font-body)}
+.btn-primary{width:100%;padding:15px;border-radius:99px;background:var(--green);color:#fff;border:none;font-family:var(--font-body);font-size:.95rem;font-weight:700;cursor:pointer;transition:background .2s;margin-top:4px}
+.btn-primary:hover{background:var(--green-dark)}
+.btn-primary:disabled{background:var(--border);color:var(--muted);cursor:not-allowed}
+.status-msg{padding:12px 16px;border-radius:var(--radius);font-size:.88rem;margin-bottom:16px;display:none}
+.status-msg.show{display:block}
+.status-msg.success{background:var(--green-light);color:var(--green);border:1px solid #b7dfc8}
+.status-msg.error{background:#fff5f5;color:#c53030;border:1px solid #fed7d7}
+.pw-strength{height:3px;border-radius:99px;margin-top:6px;transition:all .3s;background:var(--border)}
+.pw-hint{font-size:.75rem;color:var(--muted);margin-top:4px}
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.success-wrap{text-align:center;padding:8px 0}
+.success-icon{font-size:3.5rem;display:block;margin-bottom:20px}
+.studera-id-box{background:var(--green-faint);border:2px solid var(--green);border-radius:var(--radius-lg);padding:20px;text-align:center;margin:20px 0}
+.studera-id-label{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.studera-id-value{font-family:var(--font-display);font-size:2.2rem;color:var(--green);letter-spacing:5px}
+footer{background:var(--dark);padding:20px 5%;text-align:center;margin-top:auto}
+.footer-bar{font-size:.82rem;color:#6b7c72}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="logo.png" alt="Studera" class="nav-logo-img" onerror="this.style.display='none';document.getElementById('actNL').style.display='block'"/>
+    <span id="actNL" style="display:none" class="nav-logo-text"><span class="brand">Studera</span></span>
+  </a>
+</nav>
+
+<div class="page">
+<div class="card">
+
+  <!-- STEP 1: ACTIVATION CODE + DOB -->
+  <div class="step active" id="step1">
+    <div class="progress-steps"><div class="prog-step active" id="ps1"></div><div class="prog-step" id="ps2"></div><div class="prog-step" id="ps3"></div></div>
+    <span class="step-icon">🔐</span>
+    <h1 class="step-title">Activate Your Account</h1>
+    <p class="step-sub">Enter the activation code from your email, along with your date of birth to verify your identity.</p>
+    <div class="status-msg" id="s1status"></div>
+    <div class="field">
+      <label>Activation Code</label>
+      <input type="text" id="actCode" placeholder="e.g. A3K9PQ2R" maxlength="8" style="text-transform:uppercase;letter-spacing:3px;font-family:var(--font-display);font-size:1.2rem"/>
+    </div>
+    <div class="field">
+      <label>Date of Birth</label>
+      <input type="date" id="actDOB"/>
+    </div>
+    <button class="btn-primary" onclick="verifyCode()">Verify →</button>
+  </div>
+
+  <!-- STEP 2: SET PASSWORD -->
+  <div class="step" id="step2">
+    <div class="progress-steps"><div class="prog-step done" id="ps1b"></div><div class="prog-step active" id="ps2b"></div><div class="prog-step" id="ps3b"></div></div>
+    <span class="step-icon">🔒</span>
+    <h1 class="step-title">Set Your Password</h1>
+    <p class="step-sub">Choose a strong password for your Studera account. You will use this every time you log in.</p>
+    <div class="status-msg" id="s2status"></div>
+    <div class="field">
+      <label>New Password</label>
+      <div class="field-row">
+        <input type="password" id="pw1" placeholder="At least 8 characters" oninput="checkPwStrength(this.value)"/>
+        <button class="toggle-pw" onclick="togglePw('pw1',this)" type="button">Show</button>
+      </div>
+      <div class="pw-strength" id="pwStrength"></div>
+      <div class="pw-hint" id="pwHint">Enter a password to see strength</div>
+    </div>
+    <div class="field">
+      <label>Confirm Password</label>
+      <div class="field-row">
+        <input type="password" id="pw2" placeholder="Repeat your password"/>
+        <button class="toggle-pw" onclick="togglePw('pw2',this)" type="button">Show</button>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="setPassword()">Activate Account →</button>
+  </div>
+
+  <!-- STEP 3: SUCCESS -->
+  <div class="step" id="step3">
+    <div class="progress-steps"><div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done" style="background:var(--green)"></div></div>
+    <div class="success-wrap">
+      <span class="success-icon">🎉</span>
+      <h1 class="step-title">Account Activated!</h1>
+      <p class="step-sub">Your Studera account is now live. Save your Studera ID — you can use it to log in anytime.</p>
+      <div class="studera-id-box">
+        <div class="studera-id-label">Your Studera ID</div>
+        <div class="studera-id-value" id="displayStuderaID">STS0001</div>
+        <div style="font-size:.75rem;color:var(--muted);margin-top:6px">Use this or your email to log in</div>
+      </div>
+      <button class="btn-primary" onclick="window.location.href='dashboard.html'" style="margin-top:8px">Go to My Dashboard →</button>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<footer><div class="footer-bar"><span class="brand">Studera</span> © 2026. All rights reserved.</div></footer>
+
+<script>
+const SUPABASE_URL='YOUR_SUPABASE_URL_HERE';
+const SUPABASE_ANON_KEY='YOUR_SUPABASE_ANON_KEY_HERE';
+
+// Read activation code from URL param: activate.html?code=ABC123&email=x@y.com
+const params=new URLSearchParams(window.location.search);
+if(params.get('code')) document.getElementById('actCode').value=params.get('code').toUpperCase();
+
+function showStep(n){
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('step'+n).classList.add('active');
+}
+function setStatus(id,msg,type){const el=document.getElementById(id);el.textContent=msg;el.className=`status-msg show ${type}`;}
+function togglePw(id,btn){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password';btn.textContent=i.type==='password'?'Show':'Hide';}
+function delay(ms){return new Promise(r=>setTimeout(r,ms));}
+
+function checkPwStrength(pw){
+  const bar=document.getElementById('pwStrength');const hint=document.getElementById('pwHint');
+  if(!pw){bar.style.background='var(--border)';bar.style.width='0';hint.textContent='Enter a password to see strength';return;}
+  let score=0;
+  if(pw.length>=8)score++;if(pw.length>=12)score++;
+  if(/[A-Z]/.test(pw))score++;if(/[0-9]/.test(pw))score++;if(/[^A-Za-z0-9]/.test(pw))score++;
+  const levels=[{c:'#e53e3e',w:'25%',t:'Too weak'},{c:'#F97316',w:'50%',t:'Fair'},{c:'#eab308',w:'75%',t:'Good'},{c:' #147A3E',w:'100%',t:'Strong ✓'}];
+  const lvl=levels[Math.min(score-1,3)]||levels[0];
+  bar.style.background=lvl.c;bar.style.width=lvl.w;hint.textContent=lvl.t;
+}
+
+async function verifyCode(){
+  const code=document.getElementById('actCode').value.trim().toUpperCase();
+  const dob=document.getElementById('actDOB').value;
+  if(!code||code.length<6){setStatus('s1status','Please enter your activation code.','error');return;}
+  if(!dob){setStatus('s1status','Please enter your date of birth.','error');return;}
+  const btn=document.querySelector('#step1 .btn-primary');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Verifying...';
+  await delay(1000);
+  btn.disabled=false;btn.textContent='Verify →';
+  // In production: verify code + DOB against Supabase users table
+  showStep(2);
+}
+
+async function setPassword(){
+  const pw1=document.getElementById('pw1').value;
+  const pw2=document.getElementById('pw2').value;
+  if(!pw1||pw1.length<8){setStatus('s2status','Password must be at least 8 characters.','error');return;}
+  if(pw1!==pw2){setStatus('s2status','Passwords do not match.','error');return;}
+  const btn=document.querySelector('#step2 .btn-primary');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Activating...';
+  await delay(1200);
+  btn.disabled=false;btn.textContent='Activate Account →';
+  // In production: update user password via Supabase Auth + mark is_active=true
+  const userData=JSON.parse(sessionStorage.getItem('studera_user')||'{}');
+  const sid=userData.studera_id||'STS0001';
+  document.getElementById('displayStuderaID').textContent=sid;
+  sessionStorage.setItem('studera_user',JSON.stringify({...userData,activated:true,logged_in:true}));
+  showStep(3);
+}
+</script>
+</body>
+</html>

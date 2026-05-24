@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Find Your Account — Studera</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--green:#147A3E;--green-dark:#0e5a2d;--green-light:#e8f5ee;--green-faint:#f0f7f3;--orange:#F97316;--dark:#0f1a14;--body:#2d3a33;--muted:#6b7c72;--border:#dce8e0;--radius:14px;--radius-lg:20px;--shadow:0 4px 24px rgba(20,122,62,.10);--font-display:'DM Serif Display',serif;--font-body:'DM Sans',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-body);background:var(--green-faint);color:var(--body);min-height:100vh;display:flex;flex-direction:column;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='104' viewBox='0 0 90 104'%3E%3Cg fill='none' stroke='%23147A3E' stroke-width='1.1' stroke-opacity='0.06'%3E%3Cpolygon points='71,26 58,48 32,48 19,26 32,4 58,4'/%3E%3C/g%3E%3C/svg%3E");background-size:90px 104px;}
+.brand{color:var(--green);font-weight:600}
+nav{background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 5%;height:64px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{display:flex;align-items:center;text-decoration:none}
+.nav-logo-img{height:52px;width:auto;object-fit:contain}
+.nav-logo-text{font-family:var(--font-display);font-size:1.4rem;color:var(--green)}
+.nav-back{font-size:.88rem;color:var(--green);text-decoration:none;font-weight:600}
+.nav-back:hover{text-decoration:underline}
+.page{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 16px}
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);width:100%;max-width:500px;overflow:hidden}
+.step{display:none;padding:40px}
+.step.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.step-icon{font-size:2.6rem;display:block;margin-bottom:16px}
+.step-title{font-family:var(--font-display);font-size:1.9rem;color:var(--dark);margin-bottom:8px}
+.step-sub{font-size:.92rem;color:var(--muted);line-height:1.6;margin-bottom:28px}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:.82rem;font-weight:600;color:var(--body);margin-bottom:6px}
+.field input{width:100%;padding:13px 16px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:var(--font-body);font-size:.92rem;color:var(--body);outline:none;transition:border-color .2s;background:#fff}
+.field input:focus{border-color:var(--green)}
+.btn-primary{width:100%;padding:15px;border-radius:99px;background:var(--green);color:#fff;border:none;font-family:var(--font-body);font-size:.95rem;font-weight:700;cursor:pointer;transition:background .2s;margin-top:4px}
+.btn-primary:hover{background:var(--green-dark)}
+.btn-primary:disabled{background:var(--border);color:var(--muted);cursor:not-allowed}
+.btn-secondary{width:100%;padding:13px;border-radius:99px;border:1.5px solid var(--border);background:#fff;font-family:var(--font-body);font-size:.88rem;font-weight:600;color:var(--body);cursor:pointer;transition:all .2s;margin-top:10px}
+.btn-secondary:hover{border-color:var(--green);color:var(--green)}
+.status-msg{padding:12px 16px;border-radius:var(--radius);font-size:.88rem;margin-bottom:16px;display:none}
+.status-msg.show{display:block}
+.status-msg.success{background:var(--green-light);color:var(--green);border:1px solid #b7dfc8}
+.status-msg.error{background:#fff5f5;color:#c53030;border:1px solid #fed7d7}
+.status-msg.info{background:#ebf8ff;color:#2b6cb0;border:1px solid #bee3f8}
+.found-box{background:var(--green-faint);border:2px solid var(--green);border-radius:var(--radius-lg);padding:24px;text-align:center;margin-bottom:20px}
+.found-icon{font-size:2.4rem;display:block;margin-bottom:10px}
+.found-id{font-family:var(--font-display);font-size:2rem;color:var(--green);letter-spacing:4px;margin:8px 0}
+.found-name{font-size:1rem;font-weight:600;color:var(--dark);margin-bottom:4px}
+.found-role{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.email-sent-box{text-align:center;padding:8px 0}
+.email-sent-icon{font-size:3rem;display:block;margin-bottom:16px}
+footer{background:var(--dark);padding:20px 5%;text-align:center;margin-top:auto}
+.footer-bar{font-size:.82rem;color:#6b7c72}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="logo.png" alt="Studera" class="nav-logo-img" onerror="this.style.display='none';document.getElementById('faNL').style.display='block'"/>
+    <span id="faNL" style="display:none" class="nav-logo-text"><span class="brand">Studera</span></span>
+  </a>
+  <a href="updates.html" class="nav-back">← Back to Updates</a>
+</nav>
+
+<div class="page">
+<div class="card">
+
+  <!-- STEP 1: EMAIL SEARCH -->
+  <div class="step active" id="step1">
+    <span class="step-icon">🔍</span>
+    <h1 class="step-title">Find Your Studera Account</h1>
+    <p class="step-sub">If you filled out our survey, your account has already been created. Enter the email address you used in the survey to find it.</p>
+    <div class="status-msg" id="s1status"></div>
+    <div class="field">
+      <label>Email Address from Survey</label>
+      <input type="email" id="searchEmail" placeholder="e.g. yourname@email.com" autocomplete="email"/>
+    </div>
+    <button class="btn-primary" onclick="searchAccount()">Search for my Account →</button>
+    <button class="btn-secondary" onclick="window.location.href='signup.html'">I am new — Create an Account</button>
+  </div>
+
+  <!-- STEP 2: ACCOUNT FOUND -->
+  <div class="step" id="step2">
+    <span class="step-icon">✅</span>
+    <h1 class="step-title">Account Found!</h1>
+    <p class="step-sub">We found your Studera account. It is registered but needs to be activated before you can log in.</p>
+    <div class="found-box">
+      <span class="found-icon">🎓</span>
+      <div class="found-name" id="foundName">—</div>
+      <div class="found-id" id="foundID">STS0000</div>
+      <div class="found-role" id="foundRole">Student Account</div>
+    </div>
+    <p style="font-size:.88rem;color:var(--muted);line-height:1.6;margin-bottom:20px">Your account requires activation. Click below and we will send an activation email to <strong id="foundEmail">—</strong> with everything you need to complete setup.</p>
+    <button class="btn-primary" onclick="sendActivationEmail()">Send Activation Email →</button>
+    <button class="btn-secondary" onclick="showStep('step1')">← Search again</button>
+  </div>
+
+  <!-- STEP 3: EMAIL SENT -->
+  <div class="step" id="step3">
+    <div class="email-sent-box">
+      <span class="email-sent-icon">📬</span>
+      <h1 class="step-title">Check Your Email</h1>
+      <p class="step-sub">We have sent an Account Activation email to <strong id="sentEmail">—</strong>. Open it and click the activation link inside to complete your account setup.</p>
+      <div style="background:var(--green-faint);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin:20px 0;text-align:left">
+        <p style="font-size:.82rem;font-weight:700;color:var(--dark);margin-bottom:8px">The email will contain:</p>
+        <p style="font-size:.82rem;color:var(--muted);line-height:1.8">✅ Your personal activation link<br>✅ Your activation code<br>✅ Your Studera ID<br>✅ Next steps to build your profile</p>
+      </div>
+      <button class="btn-secondary" onclick="window.location.href='login.html'">Already activated? Log In →</button>
+    </div>
+  </div>
+
+  <!-- NOT FOUND -->
+  <div class="step" id="stepNotFound">
+    <span class="step-icon">🔎</span>
+    <h1 class="step-title">Not Found</h1>
+    <p class="step-sub">We could not find an account linked to that email address. This might mean you did not fill out our survey, or used a different email address.</p>
+    <div style="background:#fff7f0;border:1px solid #fdd9bc;border-radius:var(--radius);padding:16px;margin-bottom:20px">
+      <p style="font-size:.88rem;color:var(--orange-dark);line-height:1.6">Try a different email, or create a new account below.</p>
+    </div>
+    <button class="btn-primary" onclick="showStep('step1')">Try a different email</button>
+    <button class="btn-secondary" onclick="window.location.href='signup.html'">Create a new account →</button>
+  </div>
+
+</div>
+</div>
+
+<footer><div class="footer-bar"><span class="brand">Studera</span> © 2026. All rights reserved.</div></footer>
+
+<script>
+const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
+
+// DEMO DATA — replace with real Supabase query in production
+// Format: { email, full_name, studera_id, role, category }
+const DEMO_ACCOUNTS = [
+  { email: 'test@example.com', full_name: 'Test Student', studera_id: 'STS0001', role: 'student', category: 1 },
+  { email: 'mentor@example.com', full_name: 'Test Mentor', studera_id: 'STM0001', role: 'mentor', category: 3 }
+];
+
+let foundAccount = null;
+
+function showStep(id) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function setStatus(id, msg, type) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = `status-msg show ${type}`;
+}
+
+async function searchAccount() {
+  const email = document.getElementById('searchEmail').value.trim().toLowerCase();
+  if (!email || !email.includes('@')) {
+    setStatus('s1status', 'Please enter a valid email address.', 'error');
+    return;
+  }
+
+  const btn = document.querySelector('#step1 .btn-primary');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Searching...';
+
+  await delay(1000);
+
+  // Supabase lookup
+  if (SUPABASE_URL !== 'YOUR_SUPABASE_URL_HERE') {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/users?email=eq.${encodeURIComponent(email)}&select=*`, {
+        headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+      });
+      const data = await res.json();
+      btn.disabled = false; btn.textContent = 'Search for my Account →';
+      if (data && data.length > 0) {
+        foundAccount = data[0];
+        showFoundAccount();
+      } else { showStep('stepNotFound'); }
+      return;
+    } catch(e) { console.warn(e); }
+  }
+
+  // Demo mode
+  btn.disabled = false; btn.textContent = 'Search for my Account →';
+  const found = DEMO_ACCOUNTS.find(a => a.email === email);
+  if (found) { foundAccount = found; showFoundAccount(); }
+  else { showStep('stepNotFound'); }
+}
+
+function showFoundAccount() {
+  document.getElementById('foundName').textContent = foundAccount.full_name || 'Studera User';
+  document.getElementById('foundID').textContent = foundAccount.studera_id || 'STS0001';
+  document.getElementById('foundRole').textContent = foundAccount.role === 'mentor' ? 'Mentor Account (STM)' : 'Student Account (STS)';
+  document.getElementById('foundEmail').textContent = foundAccount.email || document.getElementById('searchEmail').value;
+  showStep('step2');
+}
+
+async function sendActivationEmail() {
+  const btn = document.querySelector('#step2 .btn-primary');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Sending...';
+  await delay(1200);
+  btn.disabled = false; btn.textContent = 'Send Activation Email →';
+  document.getElementById('sentEmail').textContent = foundAccount.email || document.getElementById('searchEmail').value;
+  showStep('step3');
+  // In production: trigger Supabase Edge Function or backend to send activation email
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+document.getElementById('searchEmail').addEventListener('keydown', e => {
+  if (e.key === 'Enter') searchAccount();
+});
+</script>
+</body>
+</html>

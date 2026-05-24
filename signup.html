@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Studera — Join the Waitlist</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#147A3E;--green-dark:#0e5a2d;--green-light:#e8f5ee;--green-faint:#f0f7f3;
+  --orange:#F97316;--dark:#0f1a14;--body:#2d3a33;--muted:#6b7c72;
+  --border:#dce8e0;--radius:14px;--radius-lg:20px;
+  --shadow:0 4px 24px rgba(20,122,62,.10);
+  --font-display:'DM Serif Display',serif;
+  --font-body:'DM Sans',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-body);background:var(--green-faint);color:var(--body);min-height:100vh;
+  display:flex;flex-direction:column;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='104' viewBox='0 0 90 104'%3E%3Cg fill='none' stroke='%23147A3E' stroke-width='1.1' stroke-opacity='0.06'%3E%3Cpolygon points='71,26 58,48 32,48 19,26 32,4 58,4'/%3E%3Cpolygon points='26,78 13,100 -13,100 -26,78 -13,56 13,56'/%3E%3C/g%3E%3C/svg%3E");
+  background-size:90px 104px;}
+
+nav{background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);
+  padding:0 5%;height:64px;display:flex;align-items:center;justify-content:space-between;}
+.nav-brand{font-family:var(--font-display);font-size:1.4rem;color:var(--green);text-decoration:none}
+.nav-back{font-size:.88rem;color:var(--green);text-decoration:none;font-weight:600}
+.nav-back:hover{text-decoration:underline}
+
+.page{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 16px}
+
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow);width:100%;max-width:480px;overflow:hidden}
+
+/* STEP PANELS */
+.step{display:none;padding:40px}
+.step.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.step-icon{font-size:2.4rem;margin-bottom:16px;display:block}
+.step-title{font-family:var(--font-display);font-size:1.8rem;color:var(--dark);margin-bottom:8px}
+.step-sub{font-size:.92rem;color:var(--muted);line-height:1.6;margin-bottom:28px}
+
+/* ROLE CARDS */
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.role-card{border:2px solid var(--border);border-radius:var(--radius);padding:20px 16px;
+  cursor:pointer;transition:all .2s;text-align:center;background:#fff}
+.role-card:hover{border-color:var(--green);background:var(--green-faint)}
+.role-card.selected{border-color:var(--green);background:var(--green);color:#fff}
+.role-card.selected .role-icon{filter:none}
+.role-card.selected .role-desc{color:rgba(255,255,255,.8)}
+.role-icon{font-size:2rem;display:block;margin-bottom:10px}
+.role-label{font-weight:700;font-size:.95rem;display:block;margin-bottom:4px}
+.role-desc{font-size:.78rem;color:var(--muted);line-height:1.4}
+
+/* FORM */
+.field{margin-bottom:18px}
+.field label{display:block;font-size:.82rem;font-weight:600;color:var(--body);margin-bottom:6px}
+.field input{width:100%;padding:13px 16px;border:1.5px solid var(--border);border-radius:var(--radius);
+  font-family:var(--font-body);font-size:.92rem;color:var(--body);outline:none;transition:border-color .2s;background:#fff}
+.field input:focus{border-color:var(--green)}
+.field input.error{border-color:#e53e3e}
+.field-error{font-size:.78rem;color:#e53e3e;margin-top:4px;display:none}
+.field-error.show{display:block}
+
+/* OTP INPUT */
+.otp-wrap{display:flex;gap:10px;justify-content:center;margin:24px 0}
+.otp-input{width:52px;height:60px;border:2px solid var(--border);border-radius:var(--radius);
+  font-family:var(--font-display);font-size:1.6rem;text-align:center;color:var(--dark);
+  outline:none;transition:border-color .2s;background:#fff}
+.otp-input:focus{border-color:var(--green)}
+.otp-input.filled{border-color:var(--green);background:var(--green-faint)}
+
+/* BUTTONS */
+.btn-primary{width:100%;padding:15px;border-radius:99px;background:var(--green);color:#fff;
+  border:none;font-family:var(--font-body);font-size:.95rem;font-weight:700;cursor:pointer;
+  transition:background .2s,transform .1s;margin-top:4px}
+.btn-primary:hover{background:var(--green-dark);transform:translateY(-1px)}
+.btn-primary:disabled{background:var(--border);color:var(--muted);cursor:not-allowed;transform:none}
+.btn-secondary{width:100%;padding:13px;border-radius:99px;border:1.5px solid var(--border);
+  background:#fff;font-family:var(--font-body);font-size:.88rem;font-weight:600;
+  color:var(--body);cursor:pointer;transition:all .2s;margin-top:10px}
+.btn-secondary:hover{border-color:var(--green);color:var(--green)}
+
+/* DIVIDER */
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--muted);font-size:.82rem}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* STATUS */
+.status-msg{padding:12px 16px;border-radius:var(--radius);font-size:.88rem;margin-bottom:16px;display:none}
+.status-msg.show{display:block}
+.status-msg.success{background:#e8f5ee;color:var(--green);border:1px solid #b7dfc8}
+.status-msg.error{background:#fff5f5;color:#c53030;border:1px solid #fed7d7}
+.status-msg.info{background:#ebf8ff;color:#2b6cb0;border:1px solid #bee3f8}
+
+/* SPINNER */
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.4);
+  border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* SUCCESS STATE */
+.success-card{text-align:center;padding:48px 40px}
+.success-icon{font-size:3.5rem;display:block;margin-bottom:20px}
+.success-title{font-family:var(--font-display);font-size:2rem;color:var(--dark);margin-bottom:12px}
+.success-body{font-size:.92rem;color:var(--muted);line-height:1.7;margin-bottom:28px}
+.route-btns{display:flex;flex-direction:column;gap:10px}
+.route-btn{padding:15px 24px;border-radius:99px;font-family:var(--font-body);font-weight:700;
+  font-size:.92rem;text-decoration:none;text-align:center;transition:all .2s;display:block}
+.route-btn.green{background:var(--green);color:#fff}
+.route-btn.green:hover{background:var(--green-dark)}
+.route-btn.orange{background:var(--orange);color:#fff}
+.route-btn.orange:hover{background:#ea6d0e}
+
+/* AVATAR UPLOAD */
+.avatar-upload-wrap{display:flex;align-items:center;gap:16px;cursor:pointer;padding:14px;border:1.5px dashed var(--border);border-radius:var(--radius);transition:border-color .2s;background:#fafafa;}
+.avatar-upload-wrap:hover{border-color:var(--green);background:var(--green-faint);}
+.avatar-preview{width:64px;height:64px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;border:2px solid var(--border);}
+.avatar-placeholder{font-size:1.6rem;}
+.avatar-upload-text{font-size:.88rem;font-weight:600;color:var(--body);}
+
+/* PRIVACY CHECKBOX */
+.privacy-check{display:flex;gap:10px;align-items:flex-start;margin-bottom:18px;padding:14px;background:var(--green-faint);border-radius:var(--radius);border:1px solid var(--border);}
+.privacy-check input[type=checkbox]{margin-top:3px;accent-color:var(--green);width:16px;height:16px;flex-shrink:0;cursor:pointer;}
+.privacy-check label{font-size:.83rem;color:var(--body);line-height:1.5;cursor:pointer;}
+.privacy-check a{color:var(--green);font-weight:600;text-decoration:none;}
+.privacy-check a:hover{text-decoration:underline;}{text-align:center;margin-top:16px;font-size:.85rem;color:var(--muted)}
+.resend-btn{color:var(--green);cursor:pointer;font-weight:600;background:none;border:none;font-family:var(--font-body);font-size:.85rem}
+.resend-btn:disabled{color:var(--muted);cursor:not-allowed}
+.countdown{color:var(--orange);font-weight:600}
+
+/* PROGRESS DOTS */
+.dots{display:flex;gap:8px;justify-content:center;margin-bottom:28px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background .3s}
+.dot.active{background:var(--green)}
+.dot.done{background:var(--green-dark)}
+
+footer{background:var(--dark);padding:20px 5%;text-align:center}
+.footer-bar{font-size:.82rem;color:#6b7c72}
+.brand{color:var(--green);font-weight:600}
+
+@media(max-width:500px){
+  .step{padding:28px 24px}
+  .role-grid{grid-template-columns:1fr}
+  .otp-input{width:44px;height:54px;font-size:1.4rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">🎓 Studera</a>
+  <a class="nav-back" href="index.html">← Back to Home</a>
+</nav>
+
+<div class="page">
+<div class="card">
+
+  <!-- STEP 1: ROLE SELECTION -->
+  <div class="step active" id="step1">
+    <span class="step-icon">👋</span>
+    <div class="dots"><div class="dot active" id="d1"></div><div class="dot" id="d2"></div><div class="dot" id="d3"></div></div>
+    <h1 class="step-title">Join Studera</h1>
+    <p class="step-sub">The mentorship platform that connects high school students with undergraduates from their exact target university. First, tell us who you are.</p>
+    <div class="role-grid">
+      <div class="role-card" id="roleStudent" onclick="selectRole('student')">
+        <span class="role-icon">🎒</span>
+        <span class="role-label">I am a Student</span>
+        <span class="role-desc">High school student looking for a mentor from my target university</span>
+      </div>
+      <div class="role-card" id="roleMentor" onclick="selectRole('mentor')">
+        <span class="role-icon">🎓</span>
+        <span class="role-label">I am a Mentor</span>
+        <span class="role-desc">Undergraduate student who wants to guide applicants to my university</span>
+      </div>
+    </div>
+    <button class="btn-primary" id="btnRole" disabled onclick="goToStep2()">Continue →</button>
+  </div>
+
+  <!-- STEP 2: DETAILS -->
+  <div class="step" id="step2">
+    <span class="step-icon" id="step2Icon">🎒</span>
+    <div class="dots"><div class="dot done" id="d1b"></div><div class="dot active" id="d2b"></div><div class="dot" id="d3b"></div></div>
+    <h1 class="step-title" id="step2Title">Create your account</h1>
+    <p class="step-sub" id="step2Sub">Enter your details below. We will send a 6-digit verification code to your email.</p>
+    <div class="status-msg" id="step2Status"></div>
+    <div class="field">
+      <label>Full Name</label>
+      <input type="text" id="inputName" placeholder="e.g. Ali Zayaan" autocomplete="name"/>
+      <div class="field-error" id="errName">Please enter your full name</div>
+    </div>
+    <div class="field">
+      <label>Email Address</label>
+      <input type="email" id="inputEmail" placeholder="e.g. ali@email.com" autocomplete="email"/>
+      <div class="field-error" id="errEmail">Please enter a valid email address</div>
+    </div>
+    <div class="field">
+      <label>Country</label>
+      <input type="text" id="inputCountry" placeholder="e.g. Pakistan" autocomplete="country-name"/>
+      <div class="field-error" id="errCountry">Please enter your country</div>
+    </div>
+
+    <!-- PROFILE PICTURE -->
+    <div class="field">
+      <label>Profile Picture <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+      <div class="avatar-upload-wrap" id="avatarWrap" onclick="document.getElementById('avatarInput').click()">
+        <div class="avatar-preview" id="avatarPreview">
+          <span class="avatar-placeholder" id="avatarPlaceholder">📷</span>
+          <img id="avatarImg" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%;"/>
+        </div>
+        <div class="avatar-upload-text">
+          <span id="avatarUploadLabel">Click to upload a photo</span>
+          <span style="font-size:.75rem;color:var(--muted);display:block;margin-top:2px">JPG or PNG, max 5MB</span>
+        </div>
+      </div>
+      <input type="file" id="avatarInput" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="handleAvatarUpload(this)"/>
+      <div class="field-error" id="errAvatar">File too large. Maximum 5MB.</div>
+    </div>
+
+    <!-- PRIVACY POLICY -->
+    <div class="privacy-check">
+      <input type="checkbox" id="privacyCheck" onchange="document.getElementById('btnDetails').disabled=!this.checked"/>
+      <label for="privacyCheck">I have read and agree to Studera's <a href="privacy_policy.html" target="_blank">Privacy Policy</a> and consent to the collection and processing of my data as described.</label>
+    </div>
+    <div class="field-error" id="errPrivacy" style="margin-top:-8px;margin-bottom:12px">Please accept the Privacy Policy to continue</div>
+
+    <button class="btn-primary" id="btnDetails" onclick="submitDetails()" disabled>Send Verification Code →</button>
+    <button class="btn-secondary" onclick="goToStep1()">← Back</button>
+  </div>
+
+  <!-- STEP 3: OTP VERIFICATION -->
+  <div class="step" id="step3">
+    <span class="step-icon">📬</span>
+    <div class="dots"><div class="dot done"></div><div class="dot done"></div><div class="dot active"></div></div>
+    <h1 class="step-title">Check your email</h1>
+    <p class="step-sub">We sent a 6-digit code to <strong id="emailDisplay"></strong>. Enter it below to verify your account.</p>
+    <div class="status-msg" id="step3Status"></div>
+    <div class="otp-wrap" id="otpWrap">
+      <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+      <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+      <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+      <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+      <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+      <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+    </div>
+    <button class="btn-primary" id="btnVerify" onclick="verifyOTP()" disabled>Verify & Continue →</button>
+    <div class="resend-wrap">
+      Did not receive it?
+      <button class="resend-btn" id="resendBtn" onclick="resendCode()" disabled>
+        Resend code <span class="countdown" id="countdown">(60s)</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="step" id="stepSuccess">
+    <div class="success-card">
+      <span class="success-icon">🎉</span>
+      <h2 class="success-title">You are in!</h2>
+      <p class="success-body" id="successBody">Your account has been created. The next step is to build your profile so we can find you the perfect match.</p>
+      <div class="route-btns" id="routeBtns"></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<footer>
+  <div class="footer-bar">© 2026 <span class="brand">Studera</span>. All rights reserved. &nbsp;|&nbsp; info.studera@gmail.com</div>
+</footer>
+
+<script>
+let avatarBase64 = null;
+
+function handleAvatarUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) {
+    document.getElementById('errAvatar').classList.add('show');
+    return;
+  }
+  document.getElementById('errAvatar').classList.remove('show');
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    avatarBase64 = e.target.result;
+    document.getElementById('avatarImg').src = avatarBase64;
+    document.getElementById('avatarImg').style.display = 'block';
+    document.getElementById('avatarPlaceholder').style.display = 'none';
+    document.getElementById('avatarUploadLabel').textContent = '✓ Photo uploaded';
+  };
+  reader.readAsDataURL(file);
+}
+
+function generateActivationCode() {
+  // 8-char alphanumeric code — unique per user
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  return Array.from({length: 8}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// CONFIGURATION
+// Replace these with your actual Supabase project values
+// Found at: Supabase Dashboard → Settings → API
+// ═══════════════════════════════════════════════════════
+const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
+
+// Page routes — update if your file names differ
+const ROUTES = {
+  student: 'profile.html',   // doctor_algorithm_alpha.html deployed as profile.html
+  mentor:  'mentor.html'     // mentor_profile_builder.html deployed as mentor.html
+};
+
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+let selectedRole = null;
+let userEmail = '';
+let userName = '';
+let userCountry = '';
+let countdownTimer = null;
+let countdownSecs = 60;
+
+// ═══════════════════════════════════════════════════════
+// SUPABASE HELPERS
+// ═══════════════════════════════════════════════════════
+async function supabaseRequest(path, method, body) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    method: method || 'GET',
+    headers: {
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal'
+    },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  return res;
+}
+
+async function supabaseAuth(endpoint, body) {
+  const res = await fetch(`${SUPABASE_URL}/auth/v1/${endpoint}`, {
+    method: 'POST',
+    headers: {
+      'apikey': SUPABASE_ANON_KEY,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+  return res.json();
+}
+
+// ═══════════════════════════════════════════════════════
+// STEP 1 — ROLE SELECTION
+// ═══════════════════════════════════════════════════════
+function selectRole(role) {
+  selectedRole = role;
+  document.getElementById('roleStudent').classList.toggle('selected', role === 'student');
+  document.getElementById('roleMentor').classList.toggle('selected', role === 'mentor');
+  document.getElementById('btnRole').disabled = false;
+}
+
+function goToStep1() {
+  showStep('step1');
+}
+
+function goToStep2() {
+  if (!selectedRole) return;
+  const isStudent = selectedRole === 'student';
+  document.getElementById('step2Icon').textContent = isStudent ? '🎒' : '🎓';
+  document.getElementById('step2Title').textContent = isStudent ? 'Create your student account' : 'Create your mentor account';
+  document.getElementById('step2Sub').textContent = isStudent
+    ? 'Enter your details below. We will send a 6-digit verification code to your email.'
+    : 'Enter your details below. We verify mentor accounts manually within 48 hours, but your profile builder is available immediately.';
+  showStep('step2');
+  setTimeout(() => document.getElementById('inputName').focus(), 200);
+}
+
+// ═══════════════════════════════════════════════════════
+// STEP 2 — DETAILS SUBMISSION
+// ═══════════════════════════════════════════════════════
+function validateEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function showFieldError(id, show) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('show', show);
+}
+
+function setStatus(stepId, msg, type) {
+  const el = document.getElementById(stepId);
+  if (!el) return;
+  el.textContent = msg;
+  el.className = `status-msg show ${type}`;
+}
+
+function clearStatus(stepId) {
+  const el = document.getElementById(stepId);
+  if (el) el.className = 'status-msg';
+}
+
+async function submitDetails() {
+  clearStatus('step2Status');
+  const name = document.getElementById('inputName').value.trim();
+  const email = document.getElementById('inputEmail').value.trim();
+  const country = document.getElementById('inputCountry').value.trim();
+
+  let valid = true;
+  if (!name) { showFieldError('errName', true); valid = false; } else showFieldError('errName', false);
+  if (!validateEmail(email)) { showFieldError('errEmail', true); valid = false; } else showFieldError('errEmail', false);
+  if (!country) { showFieldError('errCountry', true); valid = false; } else showFieldError('errCountry', false);
+  if (!valid) return;
+
+  userName = name;
+  userEmail = email;
+  userCountry = country;
+
+  const btn = document.getElementById('btnDetails');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Sending code...';
+
+  // Check if Supabase is configured
+  if (SUPABASE_URL === 'YOUR_SUPABASE_URL_HERE') {
+    // DEMO MODE — simulate OTP send
+    await delay(1200);
+    btn.disabled = false;
+    btn.textContent = 'Send Verification Code →';
+    proceedToOTP();
+    return;
+  }
+
+  try {
+    // Sign up / send OTP via Supabase Auth
+    const result = await supabaseAuth('otp', {
+      email: email,
+      options: {
+        data: { full_name: name, country: country, role: selectedRole }
+      }
+    });
+
+    btn.disabled = false;
+    btn.textContent = 'Send Verification Code →';
+
+    if (result.error) {
+      setStatus('step2Status', result.error.message || 'Something went wrong. Please try again.', 'error');
+      return;
+    }
+
+    proceedToOTP();
+
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = 'Send Verification Code →';
+    setStatus('step2Status', 'Could not connect. Please check your internet and try again.', 'error');
+  }
+}
+
+function proceedToOTP() {
+  document.getElementById('emailDisplay').textContent = userEmail;
+  showStep('step3');
+  setupOTPInputs();
+  startCountdown();
+}
+
+// ═══════════════════════════════════════════════════════
+// STEP 3 — OTP INPUTS + VERIFICATION
+// ═══════════════════════════════════════════════════════
+function setupOTPInputs() {
+  const inputs = document.querySelectorAll('.otp-input');
+  inputs.forEach((input, i) => {
+    input.value = '';
+    input.classList.remove('filled');
+    input.oninput = () => {
+      const val = input.value.replace(/[^0-9]/g, '');
+      input.value = val;
+      if (val) { input.classList.add('filled'); if (i < 5) inputs[i+1].focus(); }
+      else input.classList.remove('filled');
+      checkOTPComplete();
+    };
+    input.onkeydown = (e) => {
+      if (e.key === 'Backspace' && !input.value && i > 0) inputs[i-1].focus();
+    };
+    input.onpaste = (e) => {
+      e.preventDefault();
+      const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g,'').slice(0,6);
+      pasted.split('').forEach((char, j) => {
+        if (inputs[j]) { inputs[j].value = char; inputs[j].classList.add('filled'); }
+      });
+      checkOTPComplete();
+      if (pasted.length === 6) inputs[5].focus();
+    };
+  });
+  inputs[0].focus();
+}
+
+function checkOTPComplete() {
+  const inputs = document.querySelectorAll('.otp-input');
+  const complete = [...inputs].every(i => i.value.length === 1);
+  document.getElementById('btnVerify').disabled = !complete;
+}
+
+function getOTPValue() {
+  return [...document.querySelectorAll('.otp-input')].map(i => i.value).join('');
+}
+
+async function verifyOTP() {
+  clearStatus('step3Status');
+  const otp = getOTPValue();
+  const btn = document.getElementById('btnVerify');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Verifying...';
+
+  if (SUPABASE_URL === 'YOUR_SUPABASE_URL_HERE') {
+    // DEMO MODE — accept any 6-digit code
+    await delay(1000);
+    await createUserRecord(null);
+    return;
+  }
+
+  try {
+    const result = await supabaseAuth('verify', {
+      type: 'email',
+      email: userEmail,
+      token: otp
+    });
+
+    if (result.error) {
+      btn.disabled = false;
+      btn.textContent = 'Verify & Continue →';
+      setStatus('step3Status', 'Incorrect code. Please check your email and try again.', 'error');
+      return;
+    }
+
+    await createUserRecord(result.user?.id);
+
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = 'Verify & Continue →';
+    setStatus('step3Status', 'Verification failed. Please try again.', 'error');
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// CREATE USER RECORD IN DATABASE
+// ═══════════════════════════════════════════════════════
+async function createUserRecord(authId) {
+  const activationCode = generateActivationCode();
+
+  if (SUPABASE_URL !== 'YOUR_SUPABASE_URL_HERE' && authId) {
+    try {
+      await supabaseRequest('users', 'POST', {
+        auth_id: authId,
+        email: userEmail,
+        full_name: userName,
+        country: userCountry,
+        role: selectedRole,
+        is_verified: true,
+        activation_code: activationCode,
+        avatar_url: avatarBase64 || null
+      });
+    } catch(e) {
+      console.warn('User record creation failed:', e);
+    }
+  }
+
+  // Store in session for profile builders to pick up
+  try {
+    sessionStorage.setItem('studera_user', JSON.stringify({
+      name: userName, email: userEmail,
+      country: userCountry, role: selectedRole,
+      auth_id: authId, verified: true,
+      activation_code: activationCode,
+      avatar: avatarBase64
+    }));
+  } catch(e) {}
+
+  showSuccess(activationCode);
+}
+
+// ═══════════════════════════════════════════════════════
+// SUCCESS STATE
+// ═══════════════════════════════════════════════════════
+function showSuccess(activationCode) {
+  const isStudent = selectedRole === 'student';
+  document.getElementById('successBody').innerHTML = isStudent
+    ? `Welcome to Studera, <strong>${userName}</strong>. Your account is ready and permanent. When the app launches, use the code below to activate your account — no new signup needed.`
+    : `Welcome to Studera, <strong>${userName}</strong>. Your mentor account is ready. Our team will verify your credentials within 48 hours. When the app launches, use the code below to activate your account.`;
+
+  const routeBtns = document.getElementById('routeBtns');
+  routeBtns.innerHTML = `
+    <div style="background:var(--green-faint);border:2px solid var(--green);border-radius:var(--radius);padding:18px;text-align:center;margin-bottom:12px;">
+      <div style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Your App Activation Code</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--green);letter-spacing:6px;">${activationCode}</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-top:6px;">Save this — you will need it when the Studera app launches</div>
+    </div>
+    ${isStudent
+      ? `<a href="${ROUTES.student}" class="route-btn green">Build my Student Profile →</a>`
+      : `<a href="${ROUTES.mentor}" class="route-btn orange">Build my Mentor Profile →</a>`
+    }
+    <a href="index.html" class="route-btn" style="border:1.5px solid var(--border);color:var(--body);border-radius:99px;padding:13px 24px;text-align:center;text-decoration:none;font-weight:600;font-size:.92rem;display:block;">Back to Home</a>
+  `;
+  showStep('stepSuccess');
+}
+
+// ═══════════════════════════════════════════════════════
+// RESEND + COUNTDOWN
+// ═══════════════════════════════════════════════════════
+function startCountdown() {
+  countdownSecs = 60;
+  const resendBtn = document.getElementById('resendBtn');
+  const countdown = document.getElementById('countdown');
+  resendBtn.disabled = true;
+
+  clearInterval(countdownTimer);
+  countdownTimer = setInterval(() => {
+    countdownSecs--;
+    countdown.textContent = `(${countdownSecs}s)`;
+    if (countdownSecs <= 0) {
+      clearInterval(countdownTimer);
+      countdown.textContent = '';
+      resendBtn.disabled = false;
+    }
+  }, 1000);
+}
+
+async function resendCode() {
+  clearStatus('step3Status');
+  const btn = document.getElementById('resendBtn');
+  btn.disabled = true;
+
+  if (SUPABASE_URL === 'YOUR_SUPABASE_URL_HERE') {
+    setStatus('step3Status', 'Code resent (demo mode).', 'info');
+    startCountdown();
+    return;
+  }
+
+  try {
+    await supabaseAuth('otp', { email: userEmail });
+    setStatus('step3Status', 'A new code has been sent to your email.', 'success');
+    startCountdown();
+    setupOTPInputs();
+  } catch(e) {
+    btn.disabled = false;
+    setStatus('step3Status', 'Could not resend. Please try again.', 'error');
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// NAVIGATION HELPERS
+// ═══════════════════════════════════════════════════════
+function showStep(id) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// Auto-detect role from URL param: signup.html?role=mentor
+const urlRole = new URLSearchParams(window.location.search).get('role');
+if (urlRole === 'mentor' || urlRole === 'student') {
+  selectRole(urlRole);
+  goToStep2();
+}
+</script>
+</body>
+</html>
