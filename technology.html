@@ -166,6 +166,14 @@ footer{
   .distinction-table{font-size:.78rem}
   .distinction-table td,.distinction-table th{padding:10px 12px}
 }
+
+/* ── LED TICKER ── */
+.led-ticker{background:#0f1a14;overflow:hidden;height:38px;display:flex;align-items:center;border-bottom:2px solid #147A3E;position:relative;z-index:50}
+.led-track{display:flex;white-space:nowrap;animation:ledScroll 22s linear infinite}
+.led-track:hover{animation-play-state:paused}
+.led-item{font-size:.78rem;font-weight:700;color:#a8e6c1;letter-spacing:1px;padding:0 60px;text-transform:uppercase;flex-shrink:0}
+.led-sep{color:#147A3E;opacity:.6;margin:0 8px}
+@keyframes ledScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 </style>
 </head>
 <body>
@@ -183,6 +191,8 @@ footer{
     <li><a href="opportunities.html">Opportunities</a></li>
     <li><a href="about.html">About</a></li>
     <li><a href="technology.html">Technology</a></li>
+    <li><a href="updates.html">Updates</a></li>
+    <li><a href="login.html" class="nav-cta">Log In →</a></li>
     <li><a href="index.html#newsletter" class="nav-cta">Fill the Survey →</a></li>
   </ul>
   <button class="nav-hamburger" id="hamburger" onclick="toggleNav()">
@@ -190,6 +200,16 @@ footer{
   </button>
 </nav>
 
+
+<!-- LED TICKER -->
+<div class="led-ticker">
+  <div class="led-track">
+    <span class="led-item">🔔<span class="led-sep"> /// </span>STUDERA HAS AN UPDATE — CHECK OUR UPDATES PAGE<span class="led-sep"> /// </span></span>
+    <span class="led-item">🔔<span class="led-sep"> /// </span>STUDERA HAS AN UPDATE — CHECK OUR <a href="updates.html" style="color:#F97316;text-decoration:none;font-weight:700">UPDATES PAGE</a><span class="led-sep"> /// </span></span>
+    <span class="led-item">🔔<span class="led-sep"> /// </span>STUDERA HAS AN UPDATE — CHECK OUR UPDATES PAGE<span class="led-sep"> /// </span></span>
+    <span class="led-item">🔔<span class="led-sep"> /// </span>STUDERA HAS AN UPDATE — CHECK OUR <a href="updates.html" style="color:#F97316;text-decoration:none;font-weight:700">UPDATES PAGE</a><span class="led-sep"> /// </span></span>
+  </div>
+</div>
 <!-- HERO -->
 <section class="tech-hero">
   <div class="hero-inner fade-in">
