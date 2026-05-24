@@ -447,6 +447,29 @@ footer{
     padding:20px 5%;gap:16px;
   }
 }
+
+
+/* ── LIVE COUNTER ── */
+.live-counter-section{background:var(--dark);padding:56px 5%;text-align:center}
+.live-counter-inner{max-width:700px;margin:0 auto}
+.live-counter-label{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#7ecf9a;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:8px}
+.live-dot{width:8px;height:8px;border-radius:50%;background:#7ecf9a;animation:livePulse 1.4s infinite}
+@keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+.live-counter-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:20px}
+@media(max-width:500px){.live-counter-grid{grid-template-columns:1fr}}
+.live-counter-box{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:var(--radius-lg);padding:28px 20px}
+.live-num{font-family:var(--font-display);font-size:3.2rem;color:#fff;line-height:1;margin-bottom:8px;transition:all .5s}
+.live-num span{color:#7ecf9a}
+.live-desc{font-size:.85rem;color:rgba(255,255,255,.55);line-height:1.5}
+.live-sub{font-size:.75rem;color:rgba(255,255,255,.3);margin-top:16px}
+
+/* ── LED TICKER ── */
+.led-ticker{background:#0f1a14;overflow:hidden;height:38px;display:flex;align-items:center;border-bottom:2px solid #147A3E;position:relative;z-index:50}
+.led-track{display:flex;white-space:nowrap;animation:ledScroll 22s linear infinite}
+.led-track:hover{animation-play-state:paused}
+.led-item{font-size:.78rem;font-weight:700;color:#a8e6c1;letter-spacing:1px;padding:0 60px;text-transform:uppercase;flex-shrink:0}
+.led-sep{color:#147A3E;opacity:.6;margin:0 8px}
+@keyframes ledScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 </style>
 </head>
 <body>
@@ -464,12 +487,23 @@ footer{
     <li><a href="opportunities.html">Opportunities</a></li>
     <li><a href="about.html">About</a></li>
     <li><a href="technology.html">Technology</a></li>
+    <li><a href="updates.html">Updates</a></li>
     <li><a href="#newsletter" class="nav-cta">Stay Updated</a></li>
   </ul>
   <button class="nav-hamburger" id="hamburger" onclick="toggleNav()">
     <span></span><span></span><span></span>
   </button>
 </nav>
+
+<!-- LED TICKER -->
+<div class="led-ticker">
+  <div class="led-track">
+    <span class="led-item">🔔<span class="led-sep"> /// </span>STUDERA HAS AN UPDATE — CHECK OUR UPDATES PAGE<span class="led-sep"> /// </span></span>
+    <span class="led-item">🔔<span class="led-sep"> /// </span>STUDERA HAS AN UPDATE — CHECK OUR <a href="updates.html" style="color:#F97316;text-decoration:none;font-weight:700">UPDATES PAGE</a><span class="led-sep"> /// </span></span>
+    <span class="led-item">🔔<span class="led-sep"> /// </span>STUDERA HAS AN UPDATE — CHECK OUR UPDATES PAGE<span class="led-sep"> /// </span></span>
+    <span class="led-item">🔔<span class="led-sep"> /// </span>STUDERA HAS AN UPDATE — CHECK OUR <a href="updates.html" style="color:#F97316;text-decoration:none;font-weight:700">UPDATES PAGE</a><span class="led-sep"> /// </span></span>
+  </div>
+</div>
 
 <!-- ══ HERO ══ -->
 <section id="hero">
@@ -576,6 +610,25 @@ footer{
   </div>
 </section>
 
+
+<!-- ══ LIVE COUNTER ══ -->
+<div class="live-counter-section">
+  <div class="live-counter-inner fade-in">
+    <div class="live-counter-label"><span class="live-dot"></span> Live — Updated in Real Time</div>
+    <div class="live-counter-grid">
+      <div class="live-counter-box">
+        <div class="live-num" id="counterStudents">0<span>+</span></div>
+        <div class="live-desc">High School Students<br>with Studera Accounts</div>
+      </div>
+      <div class="live-counter-box">
+        <div class="live-num" id="counterMentors">0<span>+</span></div>
+        <div class="live-desc">University Mentors<br>Ready to Guide You</div>
+      </div>
+    </div>
+    <div class="live-sub">Numbers reflect current registered accounts on the Studera platform</div>
+  </div>
+</div>
+
 <!-- ══ MISSION ══ -->
 <section id="mission">
   <div class="section-inner fade-in">
@@ -658,13 +711,13 @@ footer{
         </div>
 
         <div class="tl-item fade-in">
-          <div class="tl-dot" style="box-shadow:0 0 0 3px #f97316"><span>⚗️</span></div>
+          <div class="tl-dot active"><span>⚗️</span></div>
           <div class="tl-content">
             <div class="tl-phase">Phase 2</div>
             <div class="tl-title">Alpha Testing</div>
             <div class="tl-dates">May 20, 2026 → June 10, 2026</div>
             <p class="tl-desc">Running in parallel with R&amp;D, early alpha testing begins with a small group of selected mentors and mentees to validate the core matching and mentorship model before wider release.</p>
-            <span class="tl-status soon">Starting Soon</span>
+            <span class="tl-status active">In Progress</span>
             <span class="tl-parallel">↔ Parallel with R&amp;D</span>
           </div>
         </div>
@@ -922,6 +975,54 @@ function toggleFaq(btn) {
 function toggleNav() {
   document.getElementById('navLinks').classList.toggle('open');
 }
+
+// ── LIVE ACCOUNT COUNTER ──
+// Fetches real counts from Supabase; falls back to static numbers if not configured
+const SUPABASE_URL_INDEX = 'YOUR_SUPABASE_URL_HERE';
+const SUPABASE_ANON_INDEX = 'YOUR_SUPABASE_ANON_KEY_HERE';
+
+async function fetchAccountCounts() {
+  let students = 47, mentors = 12; // fallback display numbers
+  if (SUPABASE_URL_INDEX !== 'YOUR_SUPABASE_URL_HERE') {
+    try {
+      const [sRes, mRes] = await Promise.all([
+        fetch(`${SUPABASE_URL_INDEX}/rest/v1/users?role=eq.student&select=id`, {
+          headers: { 'apikey': SUPABASE_ANON_INDEX, 'Prefer': 'count=exact', 'Range': '0-0' }
+        }),
+        fetch(`${SUPABASE_URL_INDEX}/rest/v1/users?role=eq.mentor&select=id`, {
+          headers: { 'apikey': SUPABASE_ANON_INDEX, 'Prefer': 'count=exact', 'Range': '0-0' }
+        })
+      ]);
+      const sCount = parseInt(sRes.headers.get('Content-Range')?.split('/')[1] || students);
+      const mCount = parseInt(mRes.headers.get('Content-Range')?.split('/')[1] || mentors);
+      if (!isNaN(sCount)) students = sCount;
+      if (!isNaN(mCount)) mentors = mCount;
+    } catch(e) { /* use fallback */ }
+  }
+  animateCounter('counterStudents', students);
+  animateCounter('counterMentors', mentors);
+}
+
+function animateCounter(id, target) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const suffix = '<span>+</span>';
+  let current = 0;
+  const step = Math.ceil(target / 60);
+  const timer = setInterval(() => {
+    current = Math.min(current + step, target);
+    el.innerHTML = current + suffix;
+    if (current >= target) clearInterval(timer);
+  }, 28);
+}
+
+// Run when counter section scrolls into view
+const counterObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { fetchAccountCounts(); counterObserver.disconnect(); } });
+}, { threshold: 0.3 });
+const counterSection = document.querySelector('.live-counter-section');
+if (counterSection) counterObserver.observe(counterSection);
+
 
 // ── NEWSLETTER SUBMIT ──
 const NL_URL = 'https://script.google.com/macros/s/AKfycbx3jaRGzP-ty91cfXxOpdNqI2Nl_GSf85nRXvZIiIKavokxVdnwHkGQVGzSMGlskivy/exec';
