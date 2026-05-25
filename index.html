@@ -978,8 +978,8 @@ function toggleNav() {
 
 // ── LIVE ACCOUNT COUNTER ──
 // Fetches real counts from Supabase; falls back to static numbers if not configured
-const SUPABASE_URL_INDEX = 'YOUR_SUPABASE_URL_HERE';
-const SUPABASE_ANON_INDEX = 'YOUR_SUPABASE_ANON_KEY_HERE';
+const SUPABASE_URL_INDEX = 'https://thmcurfueobamkctupez.supabase.co/rest/v1/';
+const SUPABASE_ANON_INDEX = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRobWN1cmZ1ZW9iYW1rY3R1cGV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDE5NDksImV4cCI6MjA5NTIxNzk0OX0.mEsgYakV9Xbo6PMeAX_AQCMa_nhveP7NydfiPFsbfPM';
 
 async function fetchAccountCounts() {
   let students = 47, mentors = 12; // fallback display numbers
