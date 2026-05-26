@@ -125,7 +125,7 @@ footer{background:var(--dark);padding:20px 5%;text-align:center;margin-top:auto}
 <footer><div class="footer-bar"><span class="brand">Studera</span> © 2026. All rights reserved.</div></footer>
 
 <script>
-const SUPABASE_URL = 'https://thmcurfueobamkctupez.supabase.co/rest/v1/';
+const SUPABASE_URL = 'https://thmcurfueobamkctupez.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRobWN1cmZ1ZW9iYW1rY3R1cGV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDE5NDksImV4cCI6MjA5NTIxNzk0OX0.mEsgYakV9Xbo6PMeAX_AQCMa_nhveP7NydfiPFsbfPM';
 
 // DEMO DATA — replace with real Supabase query in production
@@ -159,29 +159,58 @@ async function searchAccount() {
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span>Searching...';
 
-  await delay(1000);
-
-  // Supabase lookup
-  if (SUPABASE_URL !== 'YOUR_SUPABASE_URL_HERE') {
-    try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/users?email=eq.${encodeURIComponent(email)}&select=*`, {
-        headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
-      });
-      const data = await res.json();
-      btn.disabled = false; btn.textContent = 'Search for my Account →';
-      if (data && data.length > 0) {
-        foundAccount = data[0];
-        showFoundAccount();
-      } else { showStep('stepNotFound'); }
-      return;
-    } catch(e) { console.warn(e); }
+  // Always use demo mode if Supabase not configured
+  if (SUPABASE_URL === 'YOUR_SUPABASE_URL_HERE') {
+    await delay(1000);
+    btn.disabled = false; btn.textContent = 'Search for my Account →';
+    const found = DEMO_ACCOUNTS.find(a => a.email === email);
+    if (found) { foundAccount = {...found, email}; showFoundAccount(); }
+    else { showStep('stepNotFound'); }
+    return;
   }
 
-  // Demo mode
-  btn.disabled = false; btn.textContent = 'Search for my Account →';
-  const found = DEMO_ACCOUNTS.find(a => a.email === email);
-  if (found) { foundAccount = found; showFoundAccount(); }
-  else { showStep('stepNotFound'); }
+  try {
+    // Use secure RPC function — does NOT require user to be logged in
+    // Does NOT expose the users table directly
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/find_studera_account`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ search_email: email })
+    });
+
+    btn.disabled = false; btn.textContent = 'Search for my Account →';
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      setStatus('s1status', `Search error: ${err.message || res.status}. Please try again.`, 'error');
+      return;
+    }
+
+    const data = await res.json();
+
+    if (data && data.found) {
+      foundAccount = {
+        full_name: data.full_name,
+        studera_id: data.studera_id,
+        role: data.role,
+        category: data.category,
+        account_status: data.account_status,
+        email: email  // use the email they entered
+      };
+      showFoundAccount();
+    } else {
+      showStep('stepNotFound');
+    }
+
+  } catch(e) {
+    btn.disabled = false; btn.textContent = 'Search for my Account →';
+    setStatus('s1status', 'Connection failed. Please check your internet and try again.', 'error');
+    console.error(e);
+  }
 }
 
 function showFoundAccount() {
@@ -196,11 +225,40 @@ async function sendActivationEmail() {
   const btn = document.querySelector('#step2 .btn-primary');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span>Sending...';
-  await delay(1200);
-  btn.disabled = false; btn.textContent = 'Send Activation Email →';
-  document.getElementById('sentEmail').textContent = foundAccount.email || document.getElementById('searchEmail').value;
-  showStep('step3');
-  // In production: trigger Supabase Edge Function or backend to send activation email
+  const emailToSend = foundAccount.email || document.getElementById('searchEmail').value.trim();
+
+  if (SUPABASE_URL === 'YOUR_SUPABASE_URL_HERE') {
+    await delay(1200);
+    btn.disabled = false; btn.textContent = 'Send Activation Email →';
+    document.getElementById('sentEmail').textContent = emailToSend;
+    showStep('step3');
+    return;
+  }
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/send_activation_email`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email: emailToSend })
+    });
+    const data = await res.json();
+    btn.disabled = false; btn.textContent = 'Send Activation Email →';
+    if (data.success || res.ok) {
+      document.getElementById('sentEmail').textContent = emailToSend;
+      showStep('step3');
+    } else {
+      setStatus('s1status', data.error || 'Something went wrong. Please try again.', 'error');
+      showStep('step1');
+    }
+  } catch(e) {
+    btn.disabled = false; btn.textContent = 'Send Activation Email →';
+    // Show confirmation anyway — email may have sent even if response failed
+    document.getElementById('sentEmail').textContent = emailToSend;
+    showStep('step3');
+  }
 }
 
 function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
