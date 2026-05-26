@@ -61,8 +61,18 @@ footer{background:var(--dark);padding:20px 5%;text-align:center;margin-top:auto}
     <img src="logo.png" alt="Studera" class="nav-logo-img" onerror="this.style.display='none';document.getElementById('loginNL').style.display='block'"/>
     <span id="loginNL" style="display:none" class="nav-logo-text"><span class="brand">Studera</span></span>
   </a>
-  <a href="updates.html" class="nav-back">← Updates</a>
 </nav>
+
+<!-- ══ LED TICKER ══ -->
+<div class="led-ticker" style="background:#0f1a14;overflow:hidden;height:38px;display:flex;align-items:center;border-bottom:2px solid #147A3E;position:sticky;top:64px;z-index:850;">
+  <div style="display:flex;white-space:nowrap;animation:ledScroll 26s linear infinite;">
+    <span style="font-size:.78rem;font-weight:700;color:#147A3E;letter-spacing:1px;padding:0 50px;text-transform:uppercase;flex-shrink:0;">🔔 <span style="opacity:.6;margin:0 8px"> /// </span>STUDERA HAS AN UPDATE — <a href="updates.html" style="color:#147A3E;text-decoration:none;font-weight:800">CHECK UPDATES PAGE</a><span style="opacity:.6;margin:0 8px"> /// </span></span>
+    <span style="font-size:.78rem;font-weight:700;color:#F97316;letter-spacing:1px;padding:0 50px;text-transform:uppercase;flex-shrink:0;">🔔 <span style="opacity:.6;margin:0 8px"> /// </span>ACCOUNTS NOW LIVE — ACTIVATE YOURS TODAY<span style="opacity:.6;margin:0 8px"> /// </span></span>
+    <span style="font-size:.78rem;font-weight:700;color:#147A3E;letter-spacing:1px;padding:0 50px;text-transform:uppercase;flex-shrink:0;">🔔 <span style="opacity:.6;margin:0 8px"> /// </span>STUDERA HAS AN UPDATE — <a href="updates.html" style="color:#147A3E;text-decoration:none;font-weight:800">CHECK UPDATES PAGE</a><span style="opacity:.6;margin:0 8px"> /// </span></span>
+    <span style="font-size:.78rem;font-weight:700;color:#F97316;letter-spacing:1px;padding:0 50px;text-transform:uppercase;flex-shrink:0;">🔔 <span style="opacity:.6;margin:0 8px"> /// </span>ACCOUNTS NOW LIVE — ACTIVATE YOURS TODAY<span style="opacity:.6;margin:0 8px"> /// </span></span>
+  </div>
+</div>
+<style>@keyframes ledScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}</style>
 
 <div class="page">
 <div class="card">
@@ -149,7 +159,11 @@ footer{background:var(--dark);padding:20px 5%;text-align:center;margin-top:auto}
 </div>
 </div>
 
-<footer><div class="footer-bar"><span class="brand">Studera</span> © 2026. All rights reserved.</div></footer>
+<footer style="background:var(--dark);padding:18px 5%;text-align:center;margin-top:auto;">
+  <div style="font-size:.82rem;color:#6b7c72;">
+    © 2026 <span style="color:#7ecf9a;font-weight:600">Studera</span>. All rights reserved. &nbsp;|&nbsp; <a href="mailto:info.studera@gmail.com" style="color:#6b7c72;text-decoration:none;">info.studera@gmail.com</a>
+  </div>
+</footer>
 
 <script>
 const SUPABASE_URL = 'https://thmcurfueobamkctupez.supabase.co/rest/v1/';
