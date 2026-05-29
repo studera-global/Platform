@@ -35,8 +35,8 @@ nav{
 .nav-logo-img{height:56px;width:auto;object-fit:contain;}
 .nav-logo-text{font-family:var(--font-display);font-size:1.6rem;color:var(--green);line-height:1}
 .nav-logo-cap{font-size:1.4rem;transform:rotate(-10deg);display:inline-block;margin-right:2px}
-.nav-links{display:flex;align-items:center;gap:28px;list-style:none}
-.nav-links a{font-size:.9rem;font-weight:500;color:var(--body);text-decoration:none;transition:color .2s}
+.nav-links{display:flex;align-items:center;gap:18px;list-style:none;flex-wrap:nowrap}
+.nav-links a{font-size:.82rem;font-weight:500;color:var(--body);text-decoration:none;transition:color .2s;white-space:nowrap}
 .nav-links a:hover{color:var(--green)}
 .nav-cta{background:var(--orange);color:#fff!important;padding:9px 22px;border-radius:99px;font-weight:600!important;font-size:.88rem!important;transition:background .2s,transform .1s!important}
 .nav-cta:hover{background:var(--orange-dark)!important;transform:translateY(-1px)}
@@ -162,18 +162,19 @@ footer{
 
 @media(max-width:768px){
   .feature-grid,.studoc-split,.rivers-grid{grid-template-columns:1fr}
-  nav .nav-links{display:none}
   .distinction-table{font-size:.78rem}
   .distinction-table td,.distinction-table th{padding:10px 12px}
+  .nav-links{display:none;position:fixed;top:68px;left:0;right:0;background:rgba(255,255,255,.98);flex-direction:column;gap:0;padding:12px 0;border-bottom:1px solid var(--border);z-index:899;}
+  .nav-links.open{display:flex}
+  .nav-links li{width:100%}
+  .nav-links li a{display:block;padding:12px 24px;font-size:.95rem;}
+  .nav-hamburger{display:flex}
+}
+@media(max-width:900px){
+  .nav-links{gap:12px}
+  .nav-links a{font-size:.78rem}
 }
 
-/* ── LED TICKER ── */
-.led-ticker{background:#0f1a14;overflow:hidden;height:38px;display:flex;align-items:center;border-bottom:2px solid #147A3E;position:relative;z-index:50}
-.led-track{display:flex;white-space:nowrap;animation:ledScroll 22s linear infinite}
-.led-track:hover{animation-play-state:paused}
-.led-item{font-size:.78rem;font-weight:700;color:#a8e6c1;letter-spacing:1px;padding:0 60px;text-transform:uppercase;flex-shrink:0}
-.led-sep{color:#147A3E;opacity:.6;margin:0 8px}
-@keyframes ledScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 /* ── LED TICKER ── */
 .led-ticker{background:#0f1a14;overflow:hidden;height:42px;display:flex;align-items:center;border-bottom:2px solid #147A3E;position:sticky;top:68px;z-index:850;}
 .led-track{display:flex;white-space:nowrap;animation:ledScroll 26s linear infinite;}
@@ -221,8 +222,7 @@ footer.studera-footer{background:var(--dark);position:relative;margin-top:0;}
     <li><a href="about.html">About</a></li>
     <li><a href="technology.html">Technology</a></li>
     <li><a href="updates.html">Updates</a></li>
-    <li><a href="login.html" class="nav-cta">Log In →</a></li>
-    <li><a href="index.html#newsletter" class="nav-cta">Fill the Survey →</a></li>
+    <li><a href="login.html" class="nav-cta">Log In / Sign Up →</a></li>
   </ul>
   <button class="nav-hamburger" id="hamburger" onclick="toggleNav()">
     <span></span><span></span><span></span>
@@ -231,23 +231,12 @@ footer.studera-footer{background:var(--dark);position:relative;margin-top:0;}
 <!-- ══ LED TICKER ══ -->
 <div class="led-ticker">
   <div class="led-track">
-    <span class="led-item led-item-green">🔔<span class="led-sep"> </span>STUDERA HAS AN UPDATE — <a href="updates.html" style="color:#147A3E;text-decoration:none;font-weight:800">CHECK UPDATES PAGE</a><span class="led-sep"> </span>
-    <span class="led-item led-item-orange">🔔<span class="led-sep"> </span>ACCOUNTS NOW LIVE — ACTIVATE YOURS TODAY<span class="led-sep"> </span>
-    <span class="led-item led-item-green">🔔<span class="led-sep"> </span>STUDERA HAS AN UPDATE — <a href="updates.html" style="color:#147A3E;text-decoration:none;font-weight:800">CHECK UPDATES PAGE</a><span class="led-sep"> </span>
-    <span class="led-item led-item-orange">🔔<span class="led-sep"> </span>ACCOUNTS NOW LIVE — ACTIVATE YOURS TODAY<span class="led-sep"> </span>
-    <span class="led-item led-item-green">🔔<span class="led-sep"> </span>STUDERA HAS AN UPDATE — <a href="updates.html" style="color:#147A3E;text-decoration:none;font-weight:800">CHECK UPDATES PAGE</a><span class="led-sep"> </span>
-    <span class="led-item led-item-orange">🔔<span class="led-sep"> </span>ACCOUNTS NOW LIVE — ACTIVATE YOURS TODAY<span class="led-sep"> </span>
-  </div>
-</div>
-
-
-<!-- LED TICKER -->
-<div class="led-ticker">
-  <div class="led-track">
-    <span class="led-item">🔔<span class="led-sep"> </span>STUDERA HAS AN UPDATE — CHECK OUR UPDATES PAGE<span class="led-sep"> </span>
-    <span class="led-item">🔔<span class="led-sep"> </span>STUDERA HAS AN UPDATE — CHECK OUR <a href="updates.html" style="color:#F97316;text-decoration:none;font-weight:700">UPDATES PAGE</a><span class="led-sep"> </span>
-    <span class="led-item">🔔<span class="led-sep"> </span>STUDERA HAS AN UPDATE — CHECK OUR UPDATES PAGE<span class="led-sep"> </span>
-    <span class="led-item">🔔<span class="led-sep"> </span>STUDERA HAS AN UPDATE — CHECK OUR <a href="updates.html" style="color:#F97316;text-decoration:none;font-weight:700">UPDATES PAGE</a><span class="led-sep"> </span>
+    <span class="led-item led-item-green">🔔<span class="led-sep"> /// </span>STUDERA HAS AN UPDATE — <a href="updates.html" style="color:#147A3E;text-decoration:none;font-weight:800">CHECK UPDATES PAGE</a><span class="led-sep"> /// </span></span>
+    <span class="led-item led-item-orange">🔔<span class="led-sep"> /// </span>ACCOUNTS NOW LIVE — ACTIVATE YOURS TODAY<span class="led-sep"> /// </span></span>
+    <span class="led-item led-item-green">🔔<span class="led-sep"> /// </span>STUDERA HAS AN UPDATE — <a href="updates.html" style="color:#147A3E;text-decoration:none;font-weight:800">CHECK UPDATES PAGE</a><span class="led-sep"> /// </span></span>
+    <span class="led-item led-item-orange">🔔<span class="led-sep"> /// </span>ACCOUNTS NOW LIVE — ACTIVATE YOURS TODAY<span class="led-sep"> /// </span></span>
+    <span class="led-item led-item-green">🔔<span class="led-sep"> /// </span>STUDERA HAS AN UPDATE — <a href="updates.html" style="color:#147A3E;text-decoration:none;font-weight:800">CHECK UPDATES PAGE</a><span class="led-sep"> /// </span></span>
+    <span class="led-item led-item-orange">🔔<span class="led-sep"> /// </span>ACCOUNTS NOW LIVE — ACTIVATE YOURS TODAY<span class="led-sep"> /// </span></span>
   </div>
 </div>
 <!-- HERO -->
@@ -504,6 +493,17 @@ const observer = new IntersectionObserver(entries => {
   entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.08 });
 fadeEls.forEach(el => observer.observe(el));
+
+function toggleNav(){
+  const nl = document.getElementById('navLinks');
+  nl.classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  const nav = document.querySelector('nav');
+  if (!nav.contains(e.target)) {
+    document.getElementById('navLinks').classList.remove('open');
+  }
+});
 </script>
 </body>
 </html>
