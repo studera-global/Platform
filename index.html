@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head> 
+<head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Studera — Making Students Powerful Everyday</title>
@@ -54,7 +54,7 @@ nav{
 
 /* ── HERO ── */
 #hero{
-  min-height:100vh;padding-top:110px;
+  min-height:120vh;padding-top:110px;
   display:flex;align-items:center;justify-content:center;
   position:relative;overflow:hidden;
   background:#fff;
@@ -419,6 +419,90 @@ footer.studera-footer{background:var(--dark);position:relative;margin-top:0;}
 .footer-bar-new a:hover{color:#b8ccc0;}
 
 
+/* ── STUDENT JOURNEY ANIMATION ── */
+.student-journey-wrap{
+  width:100%;padding:10px 0 0;
+}
+.journey-progress-wrap{
+  display:flex;align-items:center;gap:10px;
+  margin-top:16px;padding:0 4px;
+}
+.journey-progress-label{
+  font-size:.72rem;font-weight:600;color:var(--muted);
+  white-space:nowrap;flex-shrink:0;
+}
+.journey-progress-bar{
+  flex:1;height:8px;background:var(--green-light);
+  border-radius:99px;overflow:hidden;
+  border:1px solid rgba(20,122,62,.2);
+}
+.journey-progress-fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--green),var(--orange));
+  border-radius:99px;
+  transition:width .1s linear;
+}
+
+/* ── HORIZONTAL UNI SCROLL ── */
+#uniScrollSection{
+  height:200vh;
+  position:relative;
+  background:var(--green-faint);
+  border-bottom:2px solid var(--border);
+}
+.uni-scroll-sticky{
+  position:sticky;top:68px;
+  height:calc(100vh - 68px);
+  overflow:hidden;
+  display:flex;align-items:flex-start;justify-content:center;
+  flex-direction:column;gap:40px;
+}
+.uni-scroll-heading-row{
+  width:100%;overflow:hidden;
+  padding:0 5%;flex-shrink:0;
+}
+.uni-scroll-logos-row{
+  overflow:hidden;
+  padding:0 5%;flex-shrink:0;
+}
+.uni-scroll-heading{
+  font-family:var(--font-display);
+  font-size:clamp(2.5rem,6vw,4rem);
+  color:var(--dark);line-height:1.15;
+  white-space:nowrap;
+  display:inline-block;
+  will-change:transform;
+}
+.uni-scroll-logos{
+  display:flex;gap:24px;align-items:flex-start;
+  will-change:transform;
+}
+.uni-scroll-card{
+  background:#fff;border:1.5px solid var(--border);
+  border-radius:var(--radius-lg);padding:24px 20px 18px;
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  flex-shrink:0;width:170px;
+  transition:border-color .25s,box-shadow .25s,transform .25s;
+  cursor:default;
+  position:relative;
+}
+.uni-scroll-card:hover{
+  border-color:var(--green);
+  box-shadow:0 8px 32px rgba(20,122,62,.14);
+  transform:translateY(-6px);
+}
+.uni-scroll-card img{width:130px;height:130px;object-fit:contain;}
+.uni-scroll-abbr{
+  font-family:var(--font-display);font-size:2rem;
+  color:var(--green);opacity:0;
+  position:absolute;top:24px;
+  transition:opacity .2s;
+}
+.uni-scroll-card span{
+  font-size:.75rem;font-weight:600;color:var(--muted);
+  text-align:center;line-height:1.4;max-width:130px;
+}
+
 /* ── ANIMATIONS ── */
 .fade-in{opacity:0;transform:translateY(30px);transition:opacity .7s,transform .7s}
 .fade-in.visible{opacity:1;transform:translateY(0)}
@@ -494,10 +578,12 @@ footer.studera-footer{background:var(--dark);position:relative;margin-top:0;}
 <!-- LED TICKER -->
 <div class="led-ticker">
   <div class="led-track">
-    <span class="led-item">🔔<span class="led-sep"> /// </span>STUDERA HAS AN UPDATE — CHECK OUR UPDATES PAGE<span class="led-sep"> /// </span></span>
-    <span class="led-item">🔔<span class="led-sep"> /// </span>STUDERA HAS AN UPDATE — CHECK OUR <a href="updates.html" style="color:#F97316;text-decoration:none;font-weight:700">UPDATES PAGE</a><span class="led-sep"> /// </span></span>
-    <span class="led-item">🔔<span class="led-sep"> /// </span>STUDERA HAS AN UPDATE — CHECK OUR UPDATES PAGE<span class="led-sep"> /// </span></span>
-    <span class="led-item">🔔<span class="led-sep"> /// </span>STUDERA HAS AN UPDATE — CHECK OUR <a href="updates.html" style="color:#F97316;text-decoration:none;font-weight:700">UPDATES PAGE</a><span class="led-sep"> /// </span></span>
+    <span class="led-item led-item-green">🔔<span class="led-sep"> /// </span>STUDERA HAS AN UPDATE — <a href="updates.html" style="color:#147A3E;text-decoration:none;font-weight:800">CHECK UPDATES PAGE</a><span class="led-sep"> /// </span></span>
+    <span class="led-item led-item-orange">🔔<span class="led-sep"> /// </span>ACCOUNTS NOW LIVE — ACTIVATE YOURS TODAY<span class="led-sep"> /// </span></span>
+    <span class="led-item led-item-green">🔔<span class="led-sep"> /// </span>STUDERA HAS AN UPDATE — <a href="updates.html" style="color:#147A3E;text-decoration:none;font-weight:800">CHECK UPDATES PAGE</a><span class="led-sep"> /// </span></span>
+    <span class="led-item led-item-orange">🔔<span class="led-sep"> /// </span>ACCOUNTS NOW LIVE — ACTIVATE YOURS TODAY<span class="led-sep"> /// </span></span>
+    <span class="led-item led-item-green">🔔<span class="led-sep"> /// </span>STUDERA HAS AN UPDATE — <a href="updates.html" style="color:#147A3E;text-decoration:none;font-weight:800">CHECK UPDATES PAGE</a><span class="led-sep"> /// </span></span>
+    <span class="led-item led-item-orange">🔔<span class="led-sep"> /// </span>ACCOUNTS NOW LIVE — ACTIVATE YOURS TODAY<span class="led-sep"> /// </span></span>
   </div>
 </div>
 
@@ -509,37 +595,186 @@ footer.studera-footer{background:var(--dark);position:relative;margin-top:0;}
       <h1> We create the path to Your <em>Dream</em><br>University</h1>
       <p class="hero-tagline">by transforming your college counseling experience.<br>Make your path to university practical, economical and effecient.</p>
       <p class="hero-reveal" id="heroReveal"></p>
-      <div class="hero-btns">
-        <a href="login.html" class="btn-primary">Log In →</a>
-        <a href="signup.html" class="btn-secondary">Sign Up</a>
-      </div>
     </div>
    <div class="hero-right">
-      <div class="uni-marquee-wrap">
-        <div class="uni-marquee-label">Mentors from top universities worldwide</div>
-        <div class="uni-marquee-row">
-          <div class="uni-marquee-track">
-            <div class="uni-logo-card"><img src="uoft.png" alt="UofT" onerror="this.style.display='none'"/><span>University of Toronto</span></div>
-            <div class="uni-logo-card"><img src="imperial.png" alt="Imperial" onerror="this.style.display='none'"/><span>Imperial College London</span></div>
-            <div class="uni-logo-card"><img src="waterloo.png" alt="Waterloo" onerror="this.style.display='none'"/><span>University of Waterloo</span></div>
-            <div class="uni-logo-card"><img src="MIT.png" alt="MIT" onerror="this.style.display='none'"/><span>MIT</span></div>
-            <div class="uni-logo-card"><img src="emory.png" alt="Emory" onerror="this.style.display='none'"/><span>Emory University</span></div>
-            <div class="uni-logo-card"><img src="virginiatech.png" alt="Virginia Tech" onerror="this.style.display='none'"/><span>Virginia Tech</span></div>
-            <div class="uni-logo-card"><img src="tanm.png" alt="Texas A&M" onerror="this.style.display='none'"/><span>Texas A&amp;M</span></div>
-            <div class="uni-logo-card"><img src="kcl.png" alt="KCL" onerror="this.style.display='none'"/><span>King's College London</span></div>
-            <div class="uni-logo-card"><img src="UCONN.png" alt="UConn" onerror="this.style.display='none'"/><span>University of Connecticut</span></div>
-            <!-- duplicate for seamless loop -->
-            <div class="uni-logo-card"><img src="uoft.png" alt="UofT" onerror="this.style.display='none'"/><span>University of Toronto</span></div>
-            <div class="uni-logo-card"><img src="imperial.png" alt="Imperial" onerror="this.style.display='none'"/><span>Imperial College London</span></div>
-            <div class="uni-logo-card"><img src="waterloo.png" alt="Waterloo" onerror="this.style.display='none'"/><span>University of Waterloo</span></div>
-            <div class="uni-logo-card"><img src="MIT.png" alt="MIT" onerror="this.style.display='none'"/><span>MIT</span></div>
-            <div class="uni-logo-card"><img src="emory.png" alt="Emory" onerror="this.style.display='none'"/><span>Emory University</span></div>
-            <div class="uni-logo-card"><img src="virginiatech.png" alt="Virginia Tech" onerror="this.style.display='none'"/><span>Virginia Tech</span></div>
-            <div class="uni-logo-card"><img src="tanm.png" alt="Texas A&M" onerror="this.style.display='none'"/><span>Texas A&amp;M</span></div>
-            <div class="uni-logo-card"><img src="kcl.png" alt="KCL" onerror="this.style.display='none'"/><span>King's College London</span></div>
-            <div class="uni-logo-card"><img src="UCONN.png" alt="UConn" onerror="this.style.display='none'"/><span>University of Connecticut</span></div>
+      <!-- Student Journey Animation -->
+      <div class="student-journey-wrap">
+        <svg id="journeySvg" viewBox="0 0 500 290" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;overflow:visible;">
+          <defs>
+            <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="rgba(0,0,0,0.15)"/>
+            </filter>
+          </defs>
+
+          <!-- Subtle ground/path line -->
+          <path d="M 30,255 Q 250,220 470,110" fill="none" stroke="#dce8e0" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.5"/>
+
+          <!-- Dotted curved journey path -->
+          <path id="journeyPath"
+            d="M 60,240 C 100,200 160,150 220,140 C 280,130 320,170 370,145 C 400,128 430,115 460,100"
+            fill="none" stroke="#147A3E" stroke-width="3.5" stroke-dasharray="9 7"
+            stroke-linecap="round" opacity="0.6"/>
+
+          <!-- HIGH SCHOOL signboard -->
+          <g id="signStart" transform="translate(14,210)">
+            <rect x="0" y="0" width="82" height="40" rx="7" fill="#147A3E" filter="url(#softShadow)"/>
+            <text x="41" y="15" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" font-weight="700" fill="#fff">HIGH</text>
+            <text x="41" y="28" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" font-weight="700" fill="#fff">SCHOOL</text>
+            <text x="41" y="38" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="5.5" fill="rgba(255,255,255,0.7)">Start here</text>
+            <rect x="39" y="40" width="4" height="16" fill="#0e5a2d"/>
+          </g>
+
+          <!-- DREAM UNIVERSITY signboard -->
+          <g id="signEnd" transform="translate(418,60)">
+            <rect x="0" y="0" width="86" height="44" rx="7" fill="#F97316" filter="url(#softShadow)"/>
+            <text x="43" y="14" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="7" font-weight="700" fill="#fff">YOUR DREAM</text>
+            <text x="43" y="26" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="7" font-weight="700" fill="#fff">UNIVERSITY</text>
+            <text x="43" y="38" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="#fff">🎓</text>
+            <rect x="41" y="44" width="4" height="16" fill="#ea6d0e"/>
+          </g>
+
+          <!-- ── STUDENT CHARACTER (positioned via JS transform) ── -->
+          <g id="studentChar" transform="translate(60,240)">
+
+            <!-- ── SCHOOL OUTFIT (fades out) ── -->
+            <g id="outfitSchool" opacity="1">
+              <!-- Backpack -->
+              <rect x="-26" y="-52" width="11" height="20" rx="3" fill="#1d6b45"/>
+              <rect x="-25" y="-50" width="9" height="4" rx="1.5" fill="#155233"/>
+              <rect x="-25" y="-42" width="9" height="4" rx="1.5" fill="#155233"/>
+              <!-- Blazer body -->
+              <rect x="-15" y="-42" width="30" height="34" rx="7" fill="#1a3a5c"/>
+              <!-- Shirt & tie -->
+              <rect x="-6" y="-42" width="12" height="22" rx="2" fill="#f0f0f0"/>
+              <polygon points="0,-40 -4,-25 0,-22 4,-25" fill="#c0392b"/>
+              <!-- Arms blazer -->
+              <rect x="-22" y="-40" width="9" height="24" rx="4.5" fill="#1a3a5c"/>
+              <rect x="13" y="-40" width="9" height="24" rx="4.5" fill="#1a3a5c"/>
+              <!-- Hands -->
+              <circle cx="-17" cy="-14" r="5" fill="#f5c5a3"/>
+              <circle cx="17" cy="-14" r="5" fill="#f5c5a3"/>
+              <!-- Trousers -->
+              <rect x="-12" y="-8" width="11" height="28" rx="5" fill="#2c3e50"/>
+              <rect x="1" y="-8" width="11" height="28" rx="5" fill="#2c3e50"/>
+              <!-- Shoes -->
+              <ellipse cx="-6" cy="22" rx="8" ry="5" fill="#1a1a2e"/>
+              <ellipse cx="6" cy="22" rx="8" ry="5" fill="#1a1a2e"/>
+            </g>
+
+            <!-- ── GRADUATION OUTFIT (fades in) ── -->
+            <g id="outfitGrad" opacity="0">
+              <!-- Gown body — straight rectangular shape, dark navy -->
+              <rect x="-17" y="-42" width="34" height="64" rx="4" fill="#1a1a2e"/>
+              <!-- V-neck opening showing white shirt beneath -->
+              <polygon points="0,-42 -8,-30 0,-28 8,-30" fill="#f0f0f0"/>
+              <!-- Tie visible in V-neck -->
+              <polygon points="0,-40 -3,-28 0,-25 3,-28" fill="#c0392b"/>
+              <!-- Green academic hood / velvet panel down front -->
+              <rect x="-5" y="-30" width="10" height="50" rx="2" fill="#147A3E" opacity="0.9"/>
+              <!-- Wide bell sleeves — flat bottomed, real gown style -->
+              <path d="M-17,-40 L-30,-40 L-34,-14 L-26,-14 L-17,-18 Z" fill="#1a1a2e"/>
+              <path d="M17,-40 L30,-40 L34,-14 L26,-14 L17,-18 Z" fill="#1a1a2e"/>
+              <!-- Sleeve cuffs (white trim) -->
+              <line x1="-34" y1="-14" x2="-26" y2="-14" stroke="#e0e0e0" stroke-width="2"/>
+              <line x1="26" y1="-14" x2="34" y2="-14" stroke="#e0e0e0" stroke-width="2"/>
+              <!-- Hands -->
+              <circle cx="-22" cy="-12" r="5" fill="#f5c5a3"/>
+              <!-- Diploma scroll in right hand -->
+              <rect x="16" y="-18" width="14" height="9" rx="3" fill="#fef3c7"/>
+              <rect x="16" y="-18" width="3" height="9" rx="1.5" fill="#d4a017"/>
+              <rect x="27" y="-18" width="3" height="9" rx="1.5" fill="#d4a017"/>
+              <line x1="20" y1="-15" x2="26" y2="-15" stroke="#d4a017" stroke-width="1"/>
+              <circle cx="23" cy="-12" r="5" fill="#f5c5a3"/>
+              <!-- Gown hem — straight across, real gown style -->
+              <rect x="-17" y="18" width="34" height="4" rx="2" fill="#147A3E" opacity="0.7"/>
+            </g>
+
+            <!-- ── HEAD (shared) ── -->
+            <!-- Neck -->
+            <rect x="-6" y="-58" width="12" height="18" rx="5" fill="#f5c5a3"/>
+            <!-- Face -->
+            <ellipse cx="0" cy="-74" rx="20" ry="22" fill="#f5c5a3"/>
+            <!-- Ears -->
+            <ellipse cx="-20" cy="-74" rx="5" ry="7" fill="#f5c5a3"/>
+            <ellipse cx="20" cy="-74" rx="5" ry="7" fill="#f5c5a3"/>
+            <!-- Hair school style -->
+            <g id="hairSchool" opacity="1">
+              <ellipse cx="0" cy="-93" rx="20" ry="8" fill="#3d2b1f"/>
+              <rect x="-20" y="-95" width="40" height="14" rx="8" fill="#3d2b1f"/>
+            </g>
+            <!-- Hair grad style (neater) -->
+            <g id="hairGrad" opacity="0">
+              <ellipse cx="0" cy="-92" rx="20" ry="6" fill="#3d2b1f"/>
+              <rect x="-20" y="-94" width="40" height="12" rx="7" fill="#3d2b1f"/>
+            </g>
+            <!-- Eyebrows -->
+            <path d="M-11,-82 Q-7,-85 -3,-82" stroke="#3d2b1f" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path d="M3,-82 Q7,-85 11,-82" stroke="#3d2b1f" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <!-- Eyes -->
+            <circle cx="-8" cy="-76" r="3.5" fill="#3d2b1f"/>
+            <circle cx="8" cy="-76" r="3.5" fill="#3d2b1f"/>
+            <circle cx="-7" cy="-77" r="1.2" fill="#fff"/>
+            <circle cx="9" cy="-77" r="1.2" fill="#fff"/>
+            <!-- Nose -->
+            <path d="M-2,-70 Q0,-66 2,-70" stroke="#c0856a" stroke-width="1.5" fill="none"/>
+            <!-- Smile (morphs to big grin) -->
+            <path id="mouthPath" d="M -7,-62 Q 0,-58 7,-62" stroke="#c0856a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <!-- Grad cap (fades in) -->
+            <g id="gradCap" opacity="0">
+              <!-- Skull cap (rounded base that sits on head) -->
+              <rect x="-18" y="-103" width="36" height="10" rx="5" fill="#0f1a14"/>
+              <!-- Flat square mortarboard top -->
+              <rect x="-26" y="-108" width="52" height="7" rx="2" fill="#0f1a14"/>
+              <!-- Button in centre top -->
+              <circle cx="0" cy="-108" r="2.5" fill="#333"/>
+              <!-- Tassel cord from right edge down -->
+              <line x1="24" y1="-108" x2="30" y2="-90" stroke="#F97316" stroke-width="2"/>
+              <!-- Tassel end (small cluster) -->
+              <line x1="30" y1="-90" x2="28" y2="-80" stroke="#F97316" stroke-width="1.5"/>
+              <line x1="30" y1="-90" x2="30" y2="-80" stroke="#F97316" stroke-width="1.5"/>
+              <line x1="30" y1="-90" x2="32" y2="-80" stroke="#F97316" stroke-width="1.5"/>
+            </g>
+
+          </g><!-- end studentChar -->
+
+          <!-- Stars burst at university end -->
+          <g id="celebrationStars" opacity="0">
+            <text x="390" y="68" font-size="16" opacity="0.9">✨</text>
+            <text x="410" y="52" font-size="12" opacity="0.8">⭐</text>
+            <text x="370" y="56" font-size="14" opacity="0.7">🌟</text>
+          </g>
+        </svg>
+
+        <!-- Progress Bar -->
+        <div class="journey-progress-wrap">
+          <span class="journey-progress-label">🏫 High School</span>
+          <div class="journey-progress-bar">
+            <div class="journey-progress-fill" id="journeyProgressFill"></div>
           </div>
+          <span class="journey-progress-label" style="color:var(--orange);font-weight:700">Dream University 🎓</span>
         </div>
+      </div><!-- end student-journey-wrap -->
+    </div>
+  </div>
+</section>
+
+<!-- ══ HORIZONTAL UNIVERSITY SCROLL ══ -->
+<section id="uniScrollSection">
+  <div class="uni-scroll-sticky">
+    <div class="uni-scroll-heading-row">
+      <h2 class="uni-scroll-heading" id="uniScrollHeading">These are the universities our mentors belong to</h2>
+    </div>
+    <div class="uni-scroll-logos-row">
+      <div class="uni-scroll-logos" id="uniScrollLogos">
+        <div class="uni-scroll-card"><img src="uoft.png" alt="University of Toronto" onerror="this.parentElement.querySelector('.uni-scroll-abbr').style.opacity='1';this.style.display='none'"/><div class="uni-scroll-abbr">UofT</div><span>University of Toronto</span></div>
+        <div class="uni-scroll-card"><img src="imperial.png" alt="Imperial College London" onerror="this.parentElement.querySelector('.uni-scroll-abbr').style.opacity='1';this.style.display='none'"/><div class="uni-scroll-abbr">ICL</div><span>Imperial College London</span></div>
+        <div class="uni-scroll-card"><img src="waterloo.png" alt="University of Waterloo" onerror="this.parentElement.querySelector('.uni-scroll-abbr').style.opacity='1';this.style.display='none'"/><div class="uni-scroll-abbr">UW</div><span>University of Waterloo</span></div>
+        <div class="uni-scroll-card"><img src="MIT.png" alt="MIT" onerror="this.parentElement.querySelector('.uni-scroll-abbr').style.opacity='1';this.style.display='none'"/><div class="uni-scroll-abbr">MIT</div><span>Massachusetts Inst. of Technology</span></div>
+        <div class="uni-scroll-card"><img src="emory.png" alt="Emory University" onerror="this.parentElement.querySelector('.uni-scroll-abbr').style.opacity='1';this.style.display='none'"/><div class="uni-scroll-abbr">EMO</div><span>Emory University</span></div>
+        <div class="uni-scroll-card"><img src="virginiatech.png" alt="Virginia Tech" onerror="this.parentElement.querySelector('.uni-scroll-abbr').style.opacity='1';this.style.display='none'"/><div class="uni-scroll-abbr">VT</div><span>Virginia Tech</span></div>
+        <div class="uni-scroll-card"><img src="tanm.png" alt="Texas A&amp;M" onerror="this.parentElement.querySelector('.uni-scroll-abbr').style.opacity='1';this.style.display='none'"/><div class="uni-scroll-abbr">A&amp;M</div><span>Texas A&amp;M University</span></div>
+        <div class="uni-scroll-card"><img src="kcl.png" alt="King's College London" onerror="this.parentElement.querySelector('.uni-scroll-abbr').style.opacity='1';this.style.display='none'"/><div class="uni-scroll-abbr">KCL</div><span>King's College London</span></div>
+        <div class="uni-scroll-card"><img src="UCONN.png" alt="UConn" onerror="this.parentElement.querySelector('.uni-scroll-abbr').style.opacity='1';this.style.display='none'"/><div class="uni-scroll-abbr">UCN</div><span>University of Connecticut</span></div>
       </div>
     </div>
   </div>
@@ -1002,17 +1237,110 @@ function submitNewsletter() {
   document.getElementById('nlForm').style.pointerEvents = 'none';
 }
 
-// ── SCHOOL SUBMIT ──
-function submitSchool() {
-  const name = document.getElementById('schoolName').value.trim();
-  const email = document.getElementById('schoolEmail').value.trim();
-  if (!name || !email) { alert('Please enter your school name and email.'); return; }
-  fetch(NL_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ type:'school', name, email, timestamp: new Date().toISOString() }) });
-  document.getElementById('schoolMsg').style.display = 'block';
-  document.getElementById('schoolForm').style.opacity = '.4';
-  document.getElementById('schoolForm').style.pointerEvents = 'none';
-}
+// ── STUDENT JOURNEY SCROLL ANIMATION ──
+(function() {
+  const hero = document.getElementById('hero');
+  const studentChar = document.getElementById('studentChar');
+  const outfitSchool = document.getElementById('outfitSchool');
+  const outfitGrad = document.getElementById('outfitGrad');
+  const hairSchool = document.getElementById('hairSchool');
+  const hairGrad = document.getElementById('hairGrad');
+  const gradCap = document.getElementById('gradCap');
+  const progressFill = document.getElementById('journeyProgressFill');
+  const celebStars = document.getElementById('celebrationStars');
+  const mouthPath = document.getElementById('mouthPath');
+  const journeyPath = document.getElementById('journeyPath');
+  if (!hero || !studentChar || !journeyPath) return;
+
+  const totalLength = journeyPath.getTotalLength();
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+  function easeInOut(t) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
+
+  function updateJourney() {
+    const heroRect = hero.getBoundingClientRect();
+    const heroH = hero.offsetHeight;
+    const viewH = window.innerHeight;
+
+    // scrolledIntoHero: how many px the hero top has scrolled above viewport top
+    const scrolledIntoHero = -heroRect.top;
+
+    // The full scrollable range while hero is visible = heroH - viewH
+    // We want the animation to be 100% done at 80% of that range,
+    // so the user still sees the completed graduation while hero is on screen.
+    const animRange = (heroH - viewH) * 0.8;
+    const progress = clamp(scrolledIntoHero / Math.max(animRange, 1), 0, 1);
+    const ep = easeInOut(progress);
+
+    // Move character along path — offset from both ends so char doesn't overlap signs
+    const startOffset = totalLength * 0.05;
+    const endOffset   = totalLength * 0.95;
+    const adjustedLength = startOffset + (ep * (endOffset - startOffset));
+    const pt = journeyPath.getPointAtLength(adjustedLength);
+    studentChar.setAttribute('transform', `translate(${pt.x},${pt.y})`);
+
+    // Outfit fade: school fades out 0.4→0.9, grad fades in (slower, more visible)
+    const outfitT = clamp((progress - 0.4) / 0.5, 0, 1);
+    outfitSchool.setAttribute('opacity', 1 - outfitT);
+    outfitGrad.setAttribute('opacity', outfitT);
+    hairSchool.setAttribute('opacity', 1 - outfitT);
+    hairGrad.setAttribute('opacity', outfitT);
+
+    // Grad cap: appears from 0.75→0.95
+    const capT = clamp((progress - 0.75) / 0.2, 0, 1);
+    gradCap.setAttribute('opacity', capT);
+
+    // Stars: appear from 0.82→1.0
+    const starsT = clamp((progress - 0.82) / 0.18, 0, 1);
+    celebStars.setAttribute('opacity', starsT);
+
+    // Smile gets bigger as student progresses
+    const smileOpen = lerp(-58, -54, clamp(progress * 1.5, 0, 1));
+    mouthPath.setAttribute('d', `M -7,-62 Q 0,${smileOpen} 7,-62`);
+
+    // Progress bar
+    progressFill.style.width = (progress * 100) + '%';
+  }
+
+  window.addEventListener('scroll', updateJourney, { passive: true });
+  updateJourney();
+})();
+
+// ── HORIZONTAL UNIVERSITY SCROLL ──
+(function() {
+  const section = document.getElementById('uniScrollSection');
+  const heading = document.getElementById('uniScrollHeading');
+  const logos   = document.getElementById('uniScrollLogos');
+  if (!section || !heading || !logos) return;
+
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+  function updateUniScroll() {
+    const rect = section.getBoundingClientRect();
+    const sectionH = section.offsetHeight;
+    const viewH = window.innerHeight;
+    const viewW = window.innerWidth;
+
+    const scrolled = -rect.top;
+    const scrollable = sectionH - viewH;
+    if (scrollable <= 0) return;
+    const progress = clamp(scrolled / scrollable, 0, 1);
+
+    // Row has 5% padding on each side; add 220px so the last item
+    // fully clears the right edge before progress reaches 1.
+    const rowInner = viewW * 0.9;
+    const headingMax = Math.max(0, heading.scrollWidth - rowInner + 220);
+    const logosMax   = Math.max(0, logos.scrollWidth   - rowInner + 220);
+
+    heading.style.transform = `translateX(${-progress * headingMax}px)`;
+    logos.style.transform   = `translateX(${-progress * logosMax}px)`;
+  }
+
+  window.addEventListener('scroll', updateUniScroll, { passive: true });
+  window.addEventListener('resize', updateUniScroll, { passive: true });
+  updateUniScroll();
+})();
 </script>
 </body>
 </html>
