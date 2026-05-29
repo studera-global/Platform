@@ -1,6 +1,6 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
-<head> 
+<head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Studera — Join the Waitlist</title>
@@ -111,12 +111,6 @@ nav{background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1p
 .route-btn.orange:hover{background:#ea6d0e}
 
 /* AVATAR UPLOAD */
-.avatar-upload-wrap{display:flex;align-items:center;gap:16px;cursor:pointer;padding:14px;border:1.5px dashed var(--border);border-radius:var(--radius);transition:border-color .2s;background:#fafafa;}
-.avatar-upload-wrap:hover{border-color:var(--green);background:var(--green-faint);}
-.avatar-preview{width:64px;height:64px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;border:2px solid var(--border);}
-.avatar-placeholder{font-size:1.6rem;}
-.avatar-upload-text{font-size:.88rem;font-weight:600;color:var(--body);}
-
 /* PRIVACY CHECKBOX */
 .privacy-check{display:flex;gap:10px;align-items:flex-start;margin-bottom:18px;padding:14px;background:var(--green-faint);border-radius:var(--radius);border:1px solid var(--border);}
 .privacy-check input[type=checkbox]{margin-top:3px;accent-color:var(--green);width:16px;height:16px;flex-shrink:0;cursor:pointer;}
@@ -208,22 +202,7 @@ footer{background:var(--dark);padding:20px 5%;text-align:center}
       <div class="field-error" id="errCountry">Please enter your country</div>
     </div>
 
-    <!-- PROFILE PICTURE -->
-    <div class="field">
-      <label>Profile Picture <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
-      <div class="avatar-upload-wrap" id="avatarWrap" onclick="document.getElementById('avatarInput').click()">
-        <div class="avatar-preview" id="avatarPreview">
-          <span class="avatar-placeholder" id="avatarPlaceholder">📷</span>
-          <img id="avatarImg" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%;"/>
-        </div>
-        <div class="avatar-upload-text">
-          <span id="avatarUploadLabel">Click to upload a photo</span>
-          <span style="font-size:.75rem;color:var(--muted);display:block;margin-top:2px">JPG or PNG, max 5MB</span>
-        </div>
-      </div>
-      <input type="file" id="avatarInput" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="handleAvatarUpload(this)"/>
-      <div class="field-error" id="errAvatar">File too large. Maximum 5MB.</div>
-    </div>
+
 
     <!-- PRIVACY POLICY -->
     <div class="privacy-check">
@@ -280,26 +259,7 @@ footer{background:var(--dark);padding:20px 5%;text-align:center}
 </footer>
 
 <script>
-let avatarBase64 = null;
 
-function handleAvatarUpload(input) {
-  const file = input.files[0];
-  if (!file) return;
-  if (file.size > 5 * 1024 * 1024) {
-    document.getElementById('errAvatar').classList.add('show');
-    return;
-  }
-  document.getElementById('errAvatar').classList.remove('show');
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    avatarBase64 = e.target.result;
-    document.getElementById('avatarImg').src = avatarBase64;
-    document.getElementById('avatarImg').style.display = 'block';
-    document.getElementById('avatarPlaceholder').style.display = 'none';
-    document.getElementById('avatarUploadLabel').textContent = '✓ Photo uploaded';
-  };
-  reader.readAsDataURL(file);
-}
 
 function generateActivationCode() {
   // 8-char alphanumeric code — unique per user
@@ -567,7 +527,7 @@ async function createUserRecord(authId) {
         role: selectedRole,
         is_verified: true,
         activation_code: activationCode,
-        avatar_url: avatarBase64 || null
+
       });
     } catch(e) {
       console.warn('User record creation failed:', e);
@@ -581,7 +541,6 @@ async function createUserRecord(authId) {
       country: userCountry, role: selectedRole,
       auth_id: authId, verified: true,
       activation_code: activationCode,
-      avatar: avatarBase64
     }));
   } catch(e) {}
 
