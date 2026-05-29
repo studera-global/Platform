@@ -124,6 +124,27 @@ footer.studera-footer{background:var(--dark);position:relative;margin-top:0;}
 .footer-bar-new a{color:#6b7c72;text-decoration:none;}
 .footer-bar-new a:hover{color:#b8ccc0;}
 
+
+/* ── COUNTDOWN CARD ── */
+.countdown-card{background:#fff;border:2px solid var(--orange);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:28px;transition:box-shadow .2s;cursor:pointer;}
+.countdown-card:hover{box-shadow:0 8px 32px rgba(249,115,22,.18);}
+.countdown-card-header{padding:24px 28px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+.tag-urgent{background:#fff3e0;color:var(--orange);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;padding:4px 12px;border-radius:99px;}
+.countdown-timer-row{display:flex;gap:12px;margin:16px 0 4px;flex-wrap:wrap;}
+.countdown-unit{display:flex;flex-direction:column;align-items:center;background:var(--dark);border-radius:10px;padding:10px 16px;min-width:64px;}
+.countdown-num{font-family:var(--font-display);font-size:1.8rem;color:#fff;line-height:1;}
+.countdown-label{font-size:.62rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.8px;margin-top:4px;}
+.countdown-expired-banner{background:var(--orange);color:#fff;font-size:.82rem;font-weight:700;padding:8px 20px;border-radius:99px;display:none;margin:10px 0 4px;}
+.form-closed-popup{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:10000;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px);}
+.form-closed-popup.open{display:flex;animation:fadeIn .2s ease;}
+.form-closed-box{background:#fff;border-radius:var(--radius-lg);max-width:480px;width:100%;padding:40px;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.3);}
+.form-closed-icon{font-size:3rem;display:block;margin-bottom:16px;}
+.form-closed-box h2{font-family:var(--font-display);font-size:1.6rem;color:var(--dark);margin-bottom:12px;}
+.form-closed-box p{font-size:.92rem;color:var(--muted);line-height:1.7;margin-bottom:8px;}
+.form-closed-box a{color:var(--green);font-weight:700;}
+.form-closed-close{margin-top:20px;padding:12px 28px;background:var(--dark);color:#fff;border:none;border-radius:99px;font-family:var(--font-body);font-size:.9rem;font-weight:700;cursor:pointer;transition:background .2s;}
+.form-closed-close:hover{background:#1a2e20;}
+
 </style>
 </head>
 <body>
@@ -149,12 +170,12 @@ footer.studera-footer{background:var(--dark);position:relative;margin-top:0;}
 <!-- ══ LED TICKER ══ -->
 <div class="led-ticker">
   <div class="led-track">
-    <span class="led-item led-item-green">🔔<span class="led-sep"> </span>STUDERA HAS AN UPDATE — <a href="updates.html" style="color:#147A3E;text-decoration:none;font-weight:800">CHECK UPDATES PAGE</a><span class="led-sep"> </span>
-    <span class="led-item led-item-orange">🔔<span class="led-sep"> </span>ACCOUNTS NOW LIVE — ACTIVATE YOURS TODAY<span class="led-sep"> </span>
-    <span class="led-item led-item-green">🔔<span class="led-sep"> </span>STUDERA HAS AN UPDATE — <a href="updates.html" style="color:#147A3E;text-decoration:none;font-weight:800">CHECK UPDATES PAGE</a><span class="led-sep"> </span>
-    <span class="led-item led-item-orange">🔔<span class="led-sep"> </span>ACCOUNTS NOW LIVE — ACTIVATE YOURS TODAY<span class="led-sep"> </span>
-    <span class="led-item led-item-green">🔔<span class="led-sep"> </span>STUDERA HAS AN UPDATE — <a href="updates.html" style="color:#147A3E;text-decoration:none;font-weight:800">CHECK UPDATES PAGE</a><span class="led-sep"> </span>
-    <span class="led-item led-item-orange">🔔<span class="led-sep"> </span>ACCOUNTS NOW LIVE — ACTIVATE YOURS TODAY<span class="led-sep"> </span> 
+    <span class="led-item led-item-green">🔔<span class="led-sep"> /// </span>STUDERA HAS AN UPDATE — <a href="updates.html" style="color:#147A3E;text-decoration:none;font-weight:800">CHECK UPDATES PAGE</a><span class="led-sep"> /// </span></span>
+    <span class="led-item led-item-orange">🔔<span class="led-sep"> /// </span>ACCOUNTS NOW LIVE — ACTIVATE YOURS TODAY<span class="led-sep"> /// </span></span>
+    <span class="led-item led-item-green">🔔<span class="led-sep"> /// </span>STUDERA HAS AN UPDATE — <a href="updates.html" style="color:#147A3E;text-decoration:none;font-weight:800">CHECK UPDATES PAGE</a><span class="led-sep"> /// </span></span>
+    <span class="led-item led-item-orange">🔔<span class="led-sep"> /// </span>ACCOUNTS NOW LIVE — ACTIVATE YOURS TODAY<span class="led-sep"> /// </span></span>
+    <span class="led-item led-item-green">🔔<span class="led-sep"> /// </span>STUDERA HAS AN UPDATE — <a href="updates.html" style="color:#147A3E;text-decoration:none;font-weight:800">CHECK UPDATES PAGE</a><span class="led-sep"> /// </span></span>
+    <span class="led-item led-item-orange">🔔<span class="led-sep"> /// </span>ACCOUNTS NOW LIVE — ACTIVATE YOURS TODAY<span class="led-sep"> /// </span></span>
   </div>
 </div>
 
@@ -197,6 +218,77 @@ footer.studera-footer{background:var(--dark);position:relative;margin-top:0;}
         <p>Already have an account? Welcome back.</p>
         <a href="login.html">Log in to my account →</a>
       </div>
+    </div>
+  </div>
+
+
+  <!-- UPDATE: RND FORM CLOSING -->
+  <div class="countdown-card" onclick="handleRndClick()">
+    <div class="countdown-card-header">
+      <div>
+        <span class="tag-urgent">⏳ Closing Soon</span>
+        <h2 class="update-title" style="margin-top:12px">R&amp;D Survey Form — Closing in 1 Week</h2>
+      </div>
+      <span class="update-date">June 4, 2026</span>
+    </div>
+    <div class="update-card-body">
+      <p class="update-desc">The Studera R&amp;D survey form is closing on <strong>June 4, 2026</strong>. After this date, the form will no longer accept new responses. If you haven't filled it out yet, this is your last chance.</p>
+      <div class="countdown-timer-row" id="rndCountdownRow">
+        <div class="countdown-unit"><span class="countdown-num" id="rndDays">--</span><span class="countdown-label">Days</span></div>
+        <div class="countdown-unit"><span class="countdown-num" id="rndHours">--</span><span class="countdown-label">Hours</span></div>
+        <div class="countdown-unit"><span class="countdown-num" id="rndMins">--</span><span class="countdown-label">Minutes</span></div>
+        <div class="countdown-unit"><span class="countdown-num" id="rndSecs">--</span><span class="countdown-label">Seconds</span></div>
+      </div>
+      <div class="countdown-expired-banner" id="rndExpiredBanner">🔒 This form is now closed</div>
+      <span style="font-size:.85rem;color:var(--orange);font-weight:700;margin-top:8px;display:block">Click to read more →</span>
+    </div>
+  </div>
+
+  <!-- RND MODAL -->
+  <div id="rndModal" class="modal-overlay" onclick="if(event.target===this)closeModal('rndModal')">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal('rndModal')">✕</button>
+      <div style="background:linear-gradient(135deg,var(--orange),#fb923c);padding:40px;text-align:center;">
+        <div style="font-size:3rem;margin-bottom:12px;">📋</div>
+        <h2 style="font-family:var(--font-display);color:#fff;font-size:1.8rem;font-weight:400;">R&amp;D Survey — Closing Soon</h2>
+      </div>
+      <div class="modal-body">
+        <span class="tag-urgent" style="margin-bottom:16px;display:inline-block">⏳ Closing June 4, 2026</span>
+        <h2 class="modal-title">Last Chance to Shape Studera</h2>
+        <p>The Studera Research &amp; Development survey has been one of the most valuable tools in helping us build the right product. Your responses have directly shaped the Doctor Algorithm, our mentor matching system, and our financial intelligence features.</p>
+        <p style="margin-top:14px"><strong>The form is closing on June 4, 2026.</strong> After this date, no new responses will be accepted. If you have already filled it out — thank you. If you haven't, this is your final opportunity to contribute your voice to how Studera is built.</p>
+        <div style="background:var(--green-faint);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin:20px 0;" id="rndModalTimerSection">
+          <div style="font-size:.8rem;font-weight:700;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.8px;">Time Remaining</div>
+          <div class="countdown-timer-row" id="rndCountdownRowModal">
+            <div class="countdown-unit" style="background:var(--dark);"><span class="countdown-num" id="rndDaysM">--</span><span class="countdown-label">Days</span></div>
+            <div class="countdown-unit" style="background:var(--dark);"><span class="countdown-num" id="rndHoursM">--</span><span class="countdown-label">Hours</span></div>
+            <div class="countdown-unit" style="background:var(--dark);"><span class="countdown-num" id="rndMinsM">--</span><span class="countdown-label">Minutes</span></div>
+            <div class="countdown-unit" style="background:var(--dark);"><span class="countdown-num" id="rndSecsM">--</span><span class="countdown-label">Seconds</span></div>
+          </div>
+        </div>
+        <div id="rndFormLinkSection">
+          <a href="https://azpeasy.github.io/Studera/" target="_blank" rel="noopener"
+             style="display:block;text-align:center;background:var(--orange);color:#fff;padding:15px 28px;border-radius:99px;font-weight:700;font-size:.95rem;text-decoration:none;margin-top:16px;transition:background .2s;"
+             onmouseover="this.style.background='#ea6d0e'" onmouseout="this.style.background='var(--orange)'">
+            Fill the R&amp;D Survey →
+          </a>
+        </div>
+        <div id="rndClosedSection" style="display:none;background:#fff3e0;border:1px solid #fdd9bc;border-radius:var(--radius);padding:16px 20px;margin-top:16px;text-align:center;">
+          <p style="color:#92400e;font-size:.92rem;line-height:1.6;"><strong>🔒 This form is now closed.</strong><br>If you wish to send feedback, ask a question, or just want to reach out, contact us at <a href="mailto:info.studera@gmail.com" style="color:var(--green);font-weight:700;">info.studera@gmail.com</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORM CLOSED POPUP -->
+  <div class="form-closed-popup" id="formClosedPopup" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="form-closed-box">
+      <span class="form-closed-icon">🔒</span>
+      <h2>The R&amp;D Form is Now Closed</h2>
+      <p>Thank you to everyone who participated. The Studera R&amp;D survey is no longer accepting responses.</p>
+      <p>If you wish to send in your feedback, ask a question, or just want to reach out, contact us at:</p>
+      <p><a href="mailto:info.studera@gmail.com">info.studera@gmail.com</a></p>
+      <button class="form-closed-close" onclick="document.getElementById('formClosedPopup').classList.remove('open')">Got it</button>
     </div>
   </div>
 
@@ -301,6 +393,74 @@ footer.studera-footer{background:var(--dark);position:relative;margin-top:0;}
 function openModal(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden';}
 function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open'));document.body.style.overflow='';}});
-function toggleNav(){document.getElementById('navLinks').classList.toggle('open');}</script>
+function toggleNav(){document.getElementById('navLinks').classList.toggle('open');}
+
+// ── RND COUNTDOWN ──
+const RND_DEADLINE = new Date('2026-06-04T23:59:59');
+
+function isFormClosed(){
+  return new Date() >= RND_DEADLINE;
+}
+
+function formatNum(n){return String(n).padStart(2,'0');}
+
+function updateCountdown(){
+  const now = new Date();
+  const diff = RND_DEADLINE - now;
+  const closed = diff <= 0;
+
+  // Card timer
+  const days = document.getElementById('rndDays');
+  const hours = document.getElementById('rndHours');
+  const mins = document.getElementById('rndMins');
+  const secs = document.getElementById('rndSecs');
+  const expiredBanner = document.getElementById('rndExpiredBanner');
+  const timerRow = document.getElementById('rndCountdownRow');
+
+  // Modal timer
+  const daysM = document.getElementById('rndDaysM');
+  const hoursM = document.getElementById('rndHoursM');
+  const minsM = document.getElementById('rndMinsM');
+  const secsM = document.getElementById('rndSecsM');
+  const formLink = document.getElementById('rndFormLinkSection');
+  const closedSection = document.getElementById('rndClosedSection');
+  const modalTimerSection = document.getElementById('rndModalTimerSection');
+
+  if (closed) {
+    if (timerRow) timerRow.style.display = 'none';
+    if (expiredBanner) expiredBanner.style.display = 'inline-block';
+    if (formLink) formLink.style.display = 'none';
+    if (closedSection) closedSection.style.display = 'block';
+    if (modalTimerSection) modalTimerSection.style.display = 'none';
+    return;
+  }
+
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+
+  if (days) days.textContent = formatNum(d);
+  if (hours) hours.textContent = formatNum(h);
+  if (mins) mins.textContent = formatNum(m);
+  if (secs) secs.textContent = formatNum(s);
+  if (daysM) daysM.textContent = formatNum(d);
+  if (hoursM) hoursM.textContent = formatNum(h);
+  if (minsM) minsM.textContent = formatNum(m);
+  if (secsM) secsM.textContent = formatNum(s);
+}
+
+function handleRndClick(){
+  if (isFormClosed()) {
+    document.getElementById('formClosedPopup').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  } else {
+    openModal('rndModal');
+  }
+}
+
+// Start countdown
+updateCountdown();
+setInterval(updateCountdown, 1000);</script>
 </body>
 </html>
