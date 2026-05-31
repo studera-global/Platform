@@ -472,7 +472,6 @@ async function verifyOTP() {
   btn.innerHTML = '<span class="spinner"></span>Verifying...';
 
   if (SUPABASE_URL === 'YOUR_SUPABASE_URL_HERE') {
-    // DEMO MODE — accept any 6-digit code
     await delay(1000);
     await createUserRecord(null);
     return;
@@ -485,16 +484,22 @@ async function verifyOTP() {
       token: otp
     });
 
+    console.log('VERIFY RESULT:', result);  // ← ADD THIS
+
     if (result.error) {
+      console.log('VERIFY ERROR:', result.error);  // ← ADD THIS
       btn.disabled = false;
       btn.textContent = 'Verify & Continue →';
       setStatus('step3Status', 'Incorrect code. Please check your email and try again.', 'error');
       return;
     }
 
+    console.log('USER ID FROM VERIFY:', result.user?.id);  // ← ADD THIS
+
     await createUserRecord(result.user?.id);
 
   } catch(e) {
+    console.error('VERIFY EXCEPTION:', e);  // ← ADD THIS
     btn.disabled = false;
     btn.textContent = 'Verify & Continue →';
     setStatus('step3Status', 'Verification failed. Please try again.', 'error');
