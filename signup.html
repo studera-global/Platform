@@ -110,13 +110,13 @@ nav{background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1p
 .route-btn.orange{background:var(--orange);color:#fff}
 .route-btn.orange:hover{background:#ea6d0e}
 
-/* AVATAR UPLOAD */
 /* PRIVACY CHECKBOX */
 .privacy-check{display:flex;gap:10px;align-items:flex-start;margin-bottom:18px;padding:14px;background:var(--green-faint);border-radius:var(--radius);border:1px solid var(--border);}
 .privacy-check input[type=checkbox]{margin-top:3px;accent-color:var(--green);width:16px;height:16px;flex-shrink:0;cursor:pointer;}
 .privacy-check label{font-size:.83rem;color:var(--body);line-height:1.5;cursor:pointer;}
 .privacy-check a{color:var(--green);font-weight:600;text-decoration:none;}
-.privacy-check a:hover{text-decoration:underline;}{text-align:center;margin-top:16px;font-size:.85rem;color:var(--muted)}
+.privacy-check a:hover{text-decoration:underline;}
+
 .resend-btn{color:var(--green);cursor:pointer;font-weight:600;background:none;border:none;font-family:var(--font-body);font-size:.85rem}
 .resend-btn:disabled{color:var(--muted);cursor:not-allowed}
 .countdown{color:var(--orange);font-weight:600}
@@ -142,7 +142,6 @@ footer{background:var(--dark);padding:20px 5%;text-align:center}
 
 <nav>
   <a class="nav-brand" href="index.html">🎓 Studera</a>
-  
 </nav>
 
 <div class="page">
@@ -191,8 +190,6 @@ footer{background:var(--dark);padding:20px 5%;text-align:center}
       <input type="text" id="inputCountry" placeholder="e.g. Pakistan" autocomplete="country-name"/>
       <div class="field-error" id="errCountry">Please enter your country</div>
     </div>
-
-
 
     <!-- PRIVACY POLICY -->
     <div class="privacy-check">
@@ -250,25 +247,21 @@ footer{background:var(--dark);padding:20px 5%;text-align:center}
 
 <script>
 
-
 function generateActivationCode() {
-  // 8-char alphanumeric code — unique per user
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   return Array.from({length: 8}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
 }
 
 // ═══════════════════════════════════════════════════════
 // CONFIGURATION
-// Replace these with your actual Supabase project values
-// Found at: Supabase Dashboard → Settings → API
 // ═══════════════════════════════════════════════════════
 const SUPABASE_URL = 'https://thmcurfueobamkctupez.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRobWN1cmZ1ZW9iYW1rY3R1cGV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDE5NDksImV4cCI6MjA5NTIxNzk0OX0.mEsgYakV9Xbo6PMeAX_AQCMa_nhveP7NydfiPFsbfPM';
 
-// Page routes — update if your file names differ
+// Page routes
 const ROUTES = {
-  student: 'profile.html',   // doctor_algorithm_alpha.html deployed as profile.html
-  mentor:  'mentor.html'     // mentor_profile_builder.html deployed as mentor.html
+  student: 'profile.html',
+  mentor: 'mentor.html'
 };
 
 // ═══════════════════════════════════════════════════════
@@ -280,35 +273,6 @@ let userName = '';
 let userCountry = '';
 let countdownTimer = null;
 let countdownSecs = 60;
-
-// ═══════════════════════════════════════════════════════
-// SUPABASE HELPERS
-// ═══════════════════════════════════════════════════════
-async function supabaseRequest(path, method, body) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
-    method: method || 'GET',
-    headers: {
-      'apikey': SUPABASE_ANON_KEY,
-      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-      'Content-Type': 'application/json',
-      'Prefer': 'return=minimal'
-    },
-    body: body ? JSON.stringify(body) : undefined
-  });
-  return res;
-}
-
-async function supabaseAuth(endpoint, body) {
-  const res = await fetch(`${SUPABASE_URL}/auth/v1/${endpoint}`, {
-    method: 'POST',
-    headers: {
-      'apikey': SUPABASE_ANON_KEY,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(body)
-  });
-  return res.json();
-}
 
 // ═══════════════════════════════════════════════════════
 // STEP 1 — ROLE SELECTION
@@ -337,7 +301,7 @@ function goToStep2() {
 }
 
 // ═══════════════════════════════════════════════════════
-// STEP 2 — DETAILS SUBMISSION
+// STEP 2 — DETAILS SUBMISSION (uses Edge Function)
 // ═══════════════════════════════════════════════════════
 function validateEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -380,39 +344,37 @@ async function submitDetails() {
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span>Sending code...';
 
-  // Check if Supabase is configured
-  if (SUPABASE_URL === 'YOUR_SUPABASE_URL_HERE') {
-    // DEMO MODE — simulate OTP send
-    await delay(1200);
-    btn.disabled = false;
-    btn.textContent = 'Send Verification Code →';
-    proceedToOTP();
-    return;
-  }
-
   try {
-    // Sign up / send OTP via Supabase Auth
-    const result = await supabaseAuth('otp', {
-      email: email,
-      options: {
-        data: { full_name: name, country: country, role: selectedRole }
-      }
+    // Call Edge Function to send OTP via Gmail (500/day limit)
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/send_otp`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: email,
+        full_name: name,
+        country: country,
+        role: selectedRole
+      })
     });
 
     btn.disabled = false;
     btn.textContent = 'Send Verification Code →';
 
-    if (result.error) {
-      setStatus('step2Status', result.error.message || 'Something went wrong. Please try again.', 'error');
-      return;
+    if (res.ok) {
+      proceedToOTP();
+    } else {
+      const error = await res.json().catch(() => ({}));
+      setStatus('step2Status', error.error || 'Failed to send code. Please try again.', 'error');
     }
-
-    proceedToOTP();
 
   } catch(e) {
     btn.disabled = false;
     btn.textContent = 'Send Verification Code →';
     setStatus('step2Status', 'Could not connect. Please check your internet and try again.', 'error');
+    console.error(e);
   }
 }
 
@@ -424,7 +386,7 @@ function proceedToOTP() {
 }
 
 // ═══════════════════════════════════════════════════════
-// STEP 3 — OTP INPUTS + VERIFICATION
+// STEP 3 — OTP INPUTS + VERIFICATION (checks your users table)
 // ═══════════════════════════════════════════════════════
 function setupOTPInputs() {
   const inputs = document.querySelectorAll('.otp-input');
@@ -471,196 +433,27 @@ async function verifyOTP() {
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span>Verifying...';
 
-  if (SUPABASE_URL === 'YOUR_SUPABASE_URL_HERE') {
-    await delay(1000);
-    await createUserRecord(null);
-    return;
-  }
-
   try {
-    const result = await supabaseAuth('verify', {
-      type: 'email',
-      email: userEmail,
-      token: otp
-    });
-
-    console.log('VERIFY RESULT:', result);  // ← ADD THIS
-
-    if (result.error) {
-      console.log('VERIFY ERROR:', result.error);  // ← ADD THIS
+    // Check OTP in users table
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/users?email=eq.${encodeURIComponent(userEmail)}&otp_code=eq.${otp}&otp_expires_at=gt.${new Date().toISOString()}&select=id,full_name,email`,
+      {
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+        }
+      }
+    );
+    
+    const users = await res.json();
+    
+    if (!users || users.length === 0) {
+      setStatus('step3Status', 'Invalid or expired code. Please request a new one.', 'error');
       btn.disabled = false;
       btn.textContent = 'Verify & Continue →';
-      setStatus('step3Status', 'Incorrect code. Please check your email and try again.', 'error');
       return;
     }
-
-    console.log('USER ID FROM VERIFY:', result.user?.id);  // ← ADD THIS
-
-    await createUserRecord(result.user?.id);
-
-  } catch(e) {
-    console.error('VERIFY EXCEPTION:', e);  // ← ADD THIS
-    btn.disabled = false;
-    btn.textContent = 'Verify & Continue →';
-    setStatus('step3Status', 'Verification failed. Please try again.', 'error');
-  }
-}
-
-// ═══════════════════════════════════════════════════════
-// CREATE USER RECORD IN DATABASE
-// ═══════════════════════════════════════════════════════
-async function createUserRecord(authId) {
-  const activationCode = generateActivationCode();
-
-  // Collect all form fields
-  const dob      = document.getElementById('userDOB')?.value || '';
-  const school   = document.getElementById('schoolingSystem')?.value || document.getElementById('userSchooling')?.value || '';
-  const grade    = document.getElementById('userGrade')?.value || '';
-  const targetUni = document.getElementById('targetUniversity')?.value || document.getElementById('userTargetUni')?.value || '';
-  const targetProg = document.getElementById('targetProgramme')?.value || document.getElementById('userTargetProg')?.value || '';
-
-  if (authId) {
-    try {
-      const insertRes = await supabaseRequest('users', 'POST', {
-        id: authId,                          // same as Auth user id
-        email: userEmail,
-        full_name: userName,
-        date_of_birth: dob || null,
-        country: userCountry,
-        schooling_system: school || null,
-        grade: grade || null,
-        target_university: targetUni || '',
-        target_programme: targetProg || '',
-        role: selectedRole,
-        account_status: 'pending_activation',
-        activation_code: activationCode,
-        created_at: new Date().toISOString()
-      });
-
-      if (insertRes.error) {
-        console.warn('User record insert warning:', insertRes.error);
-      }
-
-      // Send activation email via Edge Function
-      try {
-        await fetch(`${SUPABASE_URL}/functions/v1/send_activation_email`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            email: userEmail,
-            activation_code: activationCode,
-            full_name: userName
-          })
-        });
-      } catch(emailErr) {
-        console.warn('Activation email send failed (Edge Function may not be deployed yet):', emailErr);
-      }
-
-    } catch(e) {
-      console.warn('User record creation failed:', e);
-    }
-  }
-
-  // Store in session
-  try {
-    sessionStorage.setItem('studera_user', JSON.stringify({
-      name: userName, email: userEmail,
-      country: userCountry, role: selectedRole,
-      id: authId, verified: true,
-      activation_code: activationCode,
-    }));
-  } catch(e) {}
-
-  showSuccess(activationCode);
-}
-
-// ═══════════════════════════════════════════════════════
-// SUCCESS STATE
-// ═══════════════════════════════════════════════════════
-function showSuccess(activationCode) {
-  const isStudent = selectedRole === 'student';
-  document.getElementById('successBody').innerHTML = isStudent
-    ? `Welcome to Studera, <strong>${userName}</strong>. Your account is ready and permanent. When the app launches, use the code below to activate your account — no new signup needed.`
-    : `Welcome to Studera, <strong>${userName}</strong>. Your mentor account is ready. Our team will verify your credentials within 48 hours. When the app launches, use the code below to activate your account.`;
-
-  const routeBtns = document.getElementById('routeBtns');
-  routeBtns.innerHTML = `
-    <div style="background:var(--green-faint);border:2px solid var(--green);border-radius:var(--radius);padding:18px;text-align:center;margin-bottom:12px;">
-      <div style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Your App Activation Code</div>
-      <div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--green);letter-spacing:6px;">${activationCode}</div>
-      <div style="font-size:.75rem;color:var(--muted);margin-top:6px;">Save this — you will need it when the Studera app launches</div>
-    </div>
-    ${isStudent
-      ? `<a href="${ROUTES.student}" class="route-btn green">Build my Student Profile →</a>`
-      : `<a href="${ROUTES.mentor}" class="route-btn orange">Build my Mentor Profile →</a>`
-    }
-    <a href="index.html" class="route-btn" style="border:1.5px solid var(--border);color:var(--body);border-radius:99px;padding:13px 24px;text-align:center;text-decoration:none;font-weight:600;font-size:.92rem;display:block;">Back to Home</a>
-  `;
-  showStep('stepSuccess');
-}
-
-// ═══════════════════════════════════════════════════════
-// RESEND + COUNTDOWN
-// ═══════════════════════════════════════════════════════
-function startCountdown() {
-  countdownSecs = 60;
-  const resendBtn = document.getElementById('resendBtn');
-  const countdown = document.getElementById('countdown');
-  resendBtn.disabled = true;
-
-  clearInterval(countdownTimer);
-  countdownTimer = setInterval(() => {
-    countdownSecs--;
-    countdown.textContent = `(${countdownSecs}s)`;
-    if (countdownSecs <= 0) {
-      clearInterval(countdownTimer);
-      countdown.textContent = '';
-      resendBtn.disabled = false;
-    }
-  }, 1000);
-}
-
-async function resendCode() {
-  clearStatus('step3Status');
-  const btn = document.getElementById('resendBtn');
-  btn.disabled = true;
-
-  if (SUPABASE_URL === 'YOUR_SUPABASE_URL_HERE') {
-    setStatus('step3Status', 'Code resent (demo mode).', 'info');
-    startCountdown();
-    return;
-  }
-
-  try {
-    await supabaseAuth('otp', { email: userEmail });
-    setStatus('step3Status', 'A new code has been sent to your email.', 'success');
-    startCountdown();
-    setupOTPInputs();
-  } catch(e) {
-    btn.disabled = false;
-    setStatus('step3Status', 'Could not resend. Please try again.', 'error');
-  }
-}
-
-// ═══════════════════════════════════════════════════════
-// NAVIGATION HELPERS
-// ═══════════════════════════════════════════════════════
-function showStep(id) {
-  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-
-function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-// Auto-detect role from URL param: signup.html?role=mentor
-const urlRole = new URLSearchParams(window.location.search).get('role');
-if (urlRole === 'mentor' || urlRole === 'student') {
-  selectRole(urlRole);
-  goToStep2();
-}
-</script>
-</body>
-</html>
+    
+    const user = users[0];
+    
+    // Mark user as verified
