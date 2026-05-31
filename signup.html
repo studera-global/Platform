@@ -144,16 +144,6 @@ footer{background:var(--dark);padding:20px 5%;text-align:center}
   <a class="nav-brand" href="index.html">🎓 Studera</a>
   
 </nav>
-<!-- ══ LED TICKER ══ -->
-<div class="led-ticker" style="background:#0f1a14;overflow:hidden;height:38px;display:flex;align-items:center;border-bottom:2px solid #147A3E;position:sticky;top:64px;z-index:850;">
-  <div style="display:flex;white-space:nowrap;animation:ledScroll 26s linear infinite;">
-    <span style="font-size:.78rem;font-weight:700;color:#147A3E;letter-spacing:1px;padding:0 50px;text-transform:uppercase;flex-shrink:0;">🔔 <span style="opacity:.6;margin:0 8px"> /// </span>STUDERA HAS AN UPDATE — <a href="updates.html" style="color:#147A3E;text-decoration:none;font-weight:800">CHECK UPDATES PAGE</a><span style="opacity:.6;margin:0 8px"> /// </span></span>
-    <span style="font-size:.78rem;font-weight:700;color:#F97316;letter-spacing:1px;padding:0 50px;text-transform:uppercase;flex-shrink:0;">🔔 <span style="opacity:.6;margin:0 8px"> /// </span>ACCOUNTS NOW LIVE — ACTIVATE YOURS TODAY<span style="opacity:.6;margin:0 8px"> /// </span></span>
-    <span style="font-size:.78rem;font-weight:700;color:#147A3E;letter-spacing:1px;padding:0 50px;text-transform:uppercase;flex-shrink:0;">🔔 <span style="opacity:.6;margin:0 8px"> /// </span>STUDERA HAS AN UPDATE — <a href="updates.html" style="color:#147A3E;text-decoration:none;font-weight:800">CHECK UPDATES PAGE</a><span style="opacity:.6;margin:0 8px"> /// </span></span>
-    <span style="font-size:.78rem;font-weight:700;color:#F97316;letter-spacing:1px;padding:0 50px;text-transform:uppercase;flex-shrink:0;">🔔 <span style="opacity:.6;margin:0 8px"> /// </span>ACCOUNTS NOW LIVE — ACTIVATE YOURS TODAY<span style="opacity:.6;margin:0 8px"> /// </span></span>
-  </div>
-</div>
-<style>@keyframes ledScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}</style>
 
 <div class="page">
 <div class="card">
@@ -254,7 +244,7 @@ footer{background:var(--dark);padding:20px 5%;text-align:center}
 
 <footer style="background:var(--dark);padding:18px 5%;text-align:center;margin-top:auto;">
   <div style="font-size:.82rem;color:#6b7c72;">
-    © 2026 <span style="color:#7ecf9a;font-weight:600">Studera</span>. All rights reserved. &nbsp;|&nbsp; <a href="mailto:info.studera@gmail.com" style="color:#6b7c72;text-decoration:none;">info.studera@gmail.com</a>
+    © 2026 <span style="color:#7ecf9a;font-weight:600">Studera</span>. All rights reserved. &nbsp;|&nbsp; <a href="mailto:info.studera@gmail.com" style="color:#6b7c72;text-decoration:none;">info.studera@gmail.com</a> &nbsp;|&nbsp; <a href="https://www.instagram.com/studeraglobal/" target="_blank" rel="noopener" style="color:#6b7c72;text-decoration:none;" title="Instagram">📸 Instagram</a>
   </div>
 </footer>
 
@@ -272,7 +262,7 @@ function generateActivationCode() {
 // Replace these with your actual Supabase project values
 // Found at: Supabase Dashboard → Settings → API
 // ═══════════════════════════════════════════════════════
-const SUPABASE_URL = 'https://thmcurfueobamkctupez.supabase.co/rest/v1/';
+const SUPABASE_URL = 'https://thmcurfueobamkctupez.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRobWN1cmZ1ZW9iYW1rY3R1cGV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDE5NDksImV4cCI6MjA5NTIxNzk0OX0.mEsgYakV9Xbo6PMeAX_AQCMa_nhveP7NydfiPFsbfPM';
 
 // Page routes — update if your file names differ
@@ -517,29 +507,64 @@ async function verifyOTP() {
 async function createUserRecord(authId) {
   const activationCode = generateActivationCode();
 
-  if (SUPABASE_URL !== 'YOUR_SUPABASE_URL_HERE' && authId) {
+  // Collect all form fields
+  const dob      = document.getElementById('userDOB')?.value || '';
+  const school   = document.getElementById('schoolingSystem')?.value || document.getElementById('userSchooling')?.value || '';
+  const grade    = document.getElementById('userGrade')?.value || '';
+  const targetUni = document.getElementById('targetUniversity')?.value || document.getElementById('userTargetUni')?.value || '';
+  const targetProg = document.getElementById('targetProgramme')?.value || document.getElementById('userTargetProg')?.value || '';
+
+  if (authId) {
     try {
-      await supabaseRequest('users', 'POST', {
-        auth_id: authId,
+      const insertRes = await supabaseRequest('users', 'POST', {
+        id: authId,                          // same as Auth user id
         email: userEmail,
         full_name: userName,
+        date_of_birth: dob || null,
         country: userCountry,
+        schooling_system: school || null,
+        grade: grade || null,
+        target_university: targetUni || '',
+        target_programme: targetProg || '',
         role: selectedRole,
-        is_verified: true,
+        account_status: 'pending_activation',
         activation_code: activationCode,
-
+        created_at: new Date().toISOString()
       });
+
+      if (insertRes.error) {
+        console.warn('User record insert warning:', insertRes.error);
+      }
+
+      // Send activation email via Edge Function
+      try {
+        await fetch(`${SUPABASE_URL}/functions/v1/send_activation_email`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: userEmail,
+            activation_code: activationCode,
+            full_name: userName
+          })
+        });
+      } catch(emailErr) {
+        console.warn('Activation email send failed (Edge Function may not be deployed yet):', emailErr);
+      }
+
     } catch(e) {
       console.warn('User record creation failed:', e);
     }
   }
 
-  // Store in session for profile builders to pick up
+  // Store in session
   try {
     sessionStorage.setItem('studera_user', JSON.stringify({
       name: userName, email: userEmail,
       country: userCountry, role: selectedRole,
-      auth_id: authId, verified: true,
+      id: authId, verified: true,
       activation_code: activationCode,
     }));
   } catch(e) {}
