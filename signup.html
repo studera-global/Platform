@@ -209,14 +209,18 @@ footer{background:var(--dark);padding:20px 5%;text-align:center}
     <h1 class="step-title">Check your email</h1>
     <p class="step-sub">We sent a 6-digit code to <strong id="emailDisplay"></strong>. Enter it below to verify your account.</p>
     <div class="status-msg" id="step3Status"></div>
-    <div class="otp-wrap" id="otpWrap">
-      <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
-      <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
-      <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
-      <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
-      <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
-      <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
-    </div>
+
+<div class="otp-wrap" id="otpWrap">
+  <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+  <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+  <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+  <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+  <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+  <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+  <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+  <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]"/>
+</div>
+    
     <button class="btn-primary" id="btnVerify" onclick="verifyOTP()" disabled>Verify & Continue →</button>
     <div class="resend-wrap">
       Did not receive it?
