@@ -14,7 +14,6 @@ nav{background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1p
 .nav-logo{display:flex;align-items:center;text-decoration:none}
 .nav-logo-img{height:52px;width:auto;object-fit:contain}
 .nav-logo-text{font-family:var(--font-display);font-size:1.4rem;color:var(--green)}
-.nav-back{font-size:.88rem;color:var(--green);text-decoration:none;font-weight:600}
 .page{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 16px}
 .card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);width:100%;max-width:460px;overflow:hidden}
 .step{display:none;padding:40px}
@@ -30,7 +29,6 @@ nav{background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1p
 .field input:focus{border-color:var(--green)}
 .field input.error{border-color:#e53e3e}
 .toggle-pw{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:.85rem;color:var(--muted);font-family:var(--font-body)}
-.field-hint{font-size:.78rem;color:var(--muted);margin-top:5px}
 .btn-primary{width:100%;padding:15px;border-radius:99px;background:var(--green);color:#fff;border:none;font-family:var(--font-body);font-size:.95rem;font-weight:700;cursor:pointer;transition:background .2s;margin-top:4px}
 .btn-primary:hover{background:var(--green-dark)}
 .btn-primary:disabled{background:var(--border);color:var(--muted);cursor:not-allowed}
@@ -47,10 +45,6 @@ nav{background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1p
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
 .spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:8px}
 @keyframes spin{to{transform:rotate(360deg)}}
-.otp-wrap{display:flex;gap:10px;justify-content:center;margin:24px 0}
-.otp-input{width:52px;height:60px;border:2px solid var(--border);border-radius:var(--radius);font-family:var(--font-display);font-size:1.6rem;text-align:center;color:var(--dark);outline:none;transition:border-color .2s}
-.otp-input:focus{border-color:var(--green)}
-.otp-input.filled{border-color:var(--green);background:var(--green-faint)}
 footer{background:var(--dark);padding:20px 5%;text-align:center;margin-top:auto}
 .footer-bar{font-size:.82rem;color:#6b7c72}
 </style>
@@ -62,17 +56,6 @@ footer{background:var(--dark);padding:20px 5%;text-align:center;margin-top:auto}
     <span id="loginNL" style="display:none" class="nav-logo-text"><span class="brand">Studera</span></span>
   </a>
 </nav>
-
-<!-- ══ LED TICKER ══ -->
-<div class="led-ticker" style="background:#0f1a14;overflow:hidden;height:38px;display:flex;align-items:center;border-bottom:2px solid #147A3E;position:sticky;top:64px;z-index:850;">
-  <div style="display:flex;white-space:nowrap;animation:ledScroll 26s linear infinite;">
-    <span style="font-size:.78rem;font-weight:700;color:#147A3E;letter-spacing:1px;padding:0 50px;text-transform:uppercase;flex-shrink:0;">🔔 <span style="opacity:.6;margin:0 8px"> /// </span>STUDERA HAS AN UPDATE — <a href="updates.html" style="color:#147A3E;text-decoration:none;font-weight:800">CHECK UPDATES PAGE</a><span style="opacity:.6;margin:0 8px"> /// </span></span>
-    <span style="font-size:.78rem;font-weight:700;color:#F97316;letter-spacing:1px;padding:0 50px;text-transform:uppercase;flex-shrink:0;">🔔 <span style="opacity:.6;margin:0 8px"> /// </span>ACCOUNTS NOW LIVE — ACTIVATE YOURS TODAY<span style="opacity:.6;margin:0 8px"> /// </span></span>
-    <span style="font-size:.78rem;font-weight:700;color:#147A3E;letter-spacing:1px;padding:0 50px;text-transform:uppercase;flex-shrink:0;">🔔 <span style="opacity:.6;margin:0 8px"> /// </span>STUDERA HAS AN UPDATE — <a href="updates.html" style="color:#147A3E;text-decoration:none;font-weight:800">CHECK UPDATES PAGE</a><span style="opacity:.6;margin:0 8px"> /// </span></span>
-    <span style="font-size:.78rem;font-weight:700;color:#F97316;letter-spacing:1px;padding:0 50px;text-transform:uppercase;flex-shrink:0;">🔔 <span style="opacity:.6;margin:0 8px"> /// </span>ACCOUNTS NOW LIVE — ACTIVATE YOURS TODAY<span style="opacity:.6;margin:0 8px"> /// </span></span>
-  </div>
-</div>
-<style>@keyframes ledScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}</style>
 
 <div class="page">
 <div class="card">
@@ -105,13 +88,13 @@ footer{background:var(--dark);padding:20px 5%;text-align:center;margin-top:auto}
   <div class="step" id="stepForgot">
     <span class="step-icon">🔑</span>
     <h1 class="step-title">Reset Password</h1>
-    <p class="step-sub">Enter the email linked to your Studera account. We will send you a password reset link and code.</p>
+    <p class="step-sub">Enter the email linked to your Studera account. We will send you a password reset link.</p>
     <div class="status-msg" id="forgotStatus"></div>
     <div class="field">
       <label>Email Address</label>
       <input type="email" id="forgotEmail" placeholder="e.g. you@email.com" autocomplete="email"/>
     </div>
-    <button class="btn-primary" onclick="sendReset()">Send Reset Email →</button>
+    <button class="btn-primary" onclick="sendResetEmail()">Send Reset Email →</button>
     <button class="btn-secondary" onclick="showStep('stepLogin')">← Back to Login</button>
   </div>
 
@@ -121,39 +104,10 @@ footer{background:var(--dark);padding:20px 5%;text-align:center;margin-top:auto}
     <h1 class="step-title">Check Your Email</h1>
     <p class="step-sub">We have sent a password reset email to <strong id="resetEmailDisplay">—</strong>. Open it and click the reset link to set a new password.</p>
     <div style="background:var(--green-faint);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin:20px 0">
-      <p style="font-size:.82rem;font-weight:700;color:var(--dark);margin-bottom:8px">Your email contains:</p>
-      <p style="font-size:.82rem;color:var(--muted);line-height:1.8">✅ Password reset link<br>✅ 6-digit reset code<br>✅ Instructions to verify your date of birth</p>
+      <p style="font-size:.82rem;font-weight:700;color:var(--dark);margin-bottom:8px">The email contains:</p>
+      <p style="font-size:.82rem;color:var(--muted);line-height:1.8">✅ Password reset link<br>✅ Instructions to set a new password</p>
     </div>
-    <button class="btn-primary" onclick="showStep('stepResetForm')">I have the code — Reset now →</button>
-    <button class="btn-secondary" onclick="showStep('stepLogin')">← Back to Login</button>
-  </div>
-
-  <!-- RESET FORM -->
-  <div class="step" id="stepResetForm">
-    <span class="step-icon">🔒</span>
-    <h1 class="step-title">Set New Password</h1>
-    <p class="step-sub">Enter your reset code, date of birth, and new password.</p>
-    <div class="status-msg" id="resetStatus"></div>
-    <div class="field">
-      <label>6-Digit Reset Code</label>
-      <input type="text" id="resetCode" placeholder="e.g. 482910" maxlength="6" inputmode="numeric"/>
-    </div>
-    <div class="field">
-      <label>Date of Birth</label>
-      <input type="date" id="resetDOB"/>
-    </div>
-    <div class="field">
-      <label>New Password</label>
-      <div class="field-row">
-        <input type="password" id="resetPw1" placeholder="At least 8 characters"/>
-        <button class="toggle-pw" onclick="togglePw('resetPw1',this)" type="button">Show</button>
-      </div>
-    </div>
-    <div class="field">
-      <label>Confirm New Password</label>
-      <input type="password" id="resetPw2" placeholder="Repeat your new password"/>
-    </div>
-    <button class="btn-primary" onclick="doReset()">Reset Password →</button>
+    <button class="btn-primary" onclick="showStep('stepLogin')">Return to Login →</button>
   </div>
 
 </div>
@@ -161,87 +115,169 @@ footer{background:var(--dark);padding:20px 5%;text-align:center;margin-top:auto}
 
 <footer style="background:var(--dark);padding:18px 5%;text-align:center;margin-top:auto;">
   <div style="font-size:.82rem;color:#6b7c72;">
-    © 2026 <span style="color:#7ecf9a;font-weight:600">Studera</span>. All rights reserved. &nbsp;|&nbsp; <a href="mailto:info.studera@gmail.com" style="color:#6b7c72;text-decoration:none;">info.studera@gmail.com</a>
+    © 2026 <span style="color:#7ecf9a;font-weight:600">Studera</span>. All rights reserved. &nbsp;|&nbsp; <a href="mailto:info.studera@gmail.com" style="color:#6b7c72;text-decoration:none;">info.studera@gmail.com</a> &nbsp;|&nbsp; <a href="https://www.instagram.com/studeraglobal/" target="_blank" rel="noopener" style="color:#6b7c72;text-decoration:none;" title="Instagram">📸 Instagram</a>
   </div>
 </footer>
 
 <script>
-const SUPABASE_URL = 'https://thmcurfueobamkctupez.supabase.co/rest/v1/';
+const SUPABASE_URL = 'https://thmcurfueobamkctupez.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRobWN1cmZ1ZW9iYW1rY3R1cGV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDE5NDksImV4cCI6MjA5NTIxNzk0OX0.mEsgYakV9Xbo6PMeAX_AQCMa_nhveP7NydfiPFsbfPM';
 
-function showStep(id){document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
-function setStatus(id,msg,type){const el=document.getElementById(id);el.textContent=msg;el.className=`status-msg show ${type}`;}
-function togglePw(id,btn){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password';btn.textContent=i.type==='password'?'Show':'Hide';}
-function delay(ms){return new Promise(r=>setTimeout(r,ms));}
+function showStep(id) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
 
-async function doLogin(){
-  const id=document.getElementById('loginIdentifier').value.trim();
-  const pw=document.getElementById('loginPassword').value;
-  if(!id||!pw){setStatus('loginStatus','Please enter your email/Studera ID and password.','error');return;}
-  const btn=document.querySelector('#stepLogin .btn-primary');
-  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Logging in...';
-  await delay(1000);
-  // Demo mode — any input works
-  if(SUPABASE_URL==='YOUR_SUPABASE_URL_HERE'){
-    sessionStorage.setItem('studera_user',JSON.stringify({name:'Studera User',email:id,role:'student',logged_in:true}));
-    window.location.href='dashboard.html';return;
+function setStatus(id, msg, type) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = `status-msg show ${type}`;
+}
+
+function togglePw(id, btn) {
+  const i = document.getElementById(id);
+  i.type = i.type === 'password' ? 'text' : 'password';
+  btn.textContent = i.type === 'password' ? 'Show' : 'Hide';
+}
+
+async function resolveStuderaID(sid) {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/users?studera_id=eq.${encodeURIComponent(sid)}&select=email`,
+      { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` } }
+    );
+    const data = await res.json();
+    return (Array.isArray(data) && data.length > 0) ? data[0].email : '';
+  } catch(e) { return ''; }
+}
+
+async function doLogin() {
+  const identifier = document.getElementById('loginIdentifier').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  
+  if (!identifier || !password) {
+    setStatus('loginStatus', 'Please enter your email/Studera ID and password.', 'error');
+    return;
   }
-  // Supabase auth
-  try{
-    const isEmail=id.includes('@');
-    const loginEmail=isEmail?id:await resolveStuderaID(id);
-    const res=await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`,{
-      method:'POST',headers:{'apikey':SUPABASE_ANON_KEY,'Content-Type':'application/json'},
-      body:JSON.stringify({email:loginEmail,password:pw})
+  
+  const btn = document.querySelector('#stepLogin .btn-primary');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Logging in...';
+  
+  try {
+    let email = identifier;
+    const isStuderaID = /^ST[SM]\d+$/i.test(identifier);
+    
+    if (isStuderaID) {
+      email = await resolveStuderaID(identifier);
+      if (!email) {
+        setStatus('loginStatus', 'No account found with that Studera ID.', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Log In →';
+        return;
+      }
+    }
+    
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, password: password })
     });
-    const data=await res.json();
-    btn.disabled=false;btn.textContent='Log In →';
-    if(data.error){setStatus('loginStatus','Incorrect credentials. Please try again.','error');return;}
-    sessionStorage.setItem('studera_token',data.access_token);
-    sessionStorage.setItem('studera_user',JSON.stringify({email:loginEmail,logged_in:true}));
-    window.location.href='dashboard.html';
-  }catch(e){btn.disabled=false;btn.textContent='Log In →';setStatus('loginStatus','Login failed. Please try again.','error');}
+    
+    const data = await res.json();
+    btn.disabled = false;
+    btn.textContent = 'Log In →';
+    
+    if (data.error) {
+      setStatus('loginStatus', 'Incorrect email/ID or password. Please try again.', 'error');
+      return;
+    }
+    
+    // Get user profile
+    const userRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/users?email=eq.${encodeURIComponent(email)}&select=full_name,studera_id,role,account_status`,
+      { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${data.access_token}` } }
+    );
+    const userData = await userRes.json();
+    const user = (userData && userData[0]) || {};
+    
+    sessionStorage.setItem('studera_token', data.access_token);
+    sessionStorage.setItem('studera_user', JSON.stringify({
+      email: email,
+      name: user.full_name || email.split('@')[0],
+      studera_id: user.studera_id || '',
+      role: user.role || 'student',
+      logged_in: true
+    }));
+    
+    window.location.href = 'dashboard.html';
+    
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = 'Log In →';
+    setStatus('loginStatus', 'Login failed. Please check your internet and try again.', 'error');
+    console.error(e);
+  }
 }
 
-async function resolveStuderaID(sid){
-  // Look up email by Studera ID
-  const res=await fetch(`${SUPABASE_URL}/rest/v1/users?studera_id=eq.${sid}&select=email`,{
-    headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':`Bearer ${SUPABASE_ANON_KEY}`}
-  });
-  const data=await res.json();
-  return data&&data[0]?data[0].email:'';
+async function sendResetEmail() {
+  const email = document.getElementById('forgotEmail').value.trim();
+  
+  if (!email || !email.includes('@')) {
+    setStatus('forgotStatus', 'Please enter a valid email address.', 'error');
+    return;
+  }
+  
+  const btn = document.querySelector('#stepForgot .btn-primary');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Sending...';
+  
+  try {
+    // Check if user exists
+    const checkRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/users?email=eq.${encodeURIComponent(email)}&select=id`,
+      { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` } }
+    );
+    const users = await checkRes.json();
+    
+    if (!users || users.length === 0) {
+      setStatus('forgotStatus', 'No account found with that email address.', 'error');
+      btn.disabled = false;
+      btn.textContent = 'Send Reset Email →';
+      return;
+    }
+    
+    // Send password reset via Supabase Auth
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/recover`, {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email })
+    });
+    
+    btn.disabled = false;
+    btn.textContent = 'Send Reset Email →';
+    
+    if (res.ok) {
+      document.getElementById('resetEmailDisplay').textContent = email;
+      showStep('stepResetSent');
+    } else {
+      setStatus('forgotStatus', 'Failed to send reset email. Please try again.', 'error');
+    }
+    
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = 'Send Reset Email →';
+    setStatus('forgotStatus', 'Connection failed. Please try again.', 'error');
+    console.error(e);
+  }
 }
 
-async function sendReset(){
-  const email=document.getElementById('forgotEmail').value.trim();
-  if(!email||!email.includes('@')){setStatus('forgotStatus','Please enter a valid email address.','error');return;}
-  const btn=document.querySelector('#stepForgot .btn-primary');
-  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Sending...';
-  await delay(1000);
-  btn.disabled=false;btn.textContent='Send Reset Email →';
-  document.getElementById('resetEmailDisplay').textContent=email;
-  showStep('stepResetSent');
-}
-
-async function doReset(){
-  const code=document.getElementById('resetCode').value.trim();
-  const dob=document.getElementById('resetDOB').value;
-  const pw1=document.getElementById('resetPw1').value;
-  const pw2=document.getElementById('resetPw2').value;
-  if(!code||!dob||!pw1||!pw2){setStatus('resetStatus','Please fill in all fields.','error');return;}
-  if(pw1!==pw2){setStatus('resetStatus','Passwords do not match.','error');return;}
-  if(pw1.length<8){setStatus('resetStatus','Password must be at least 8 characters.','error');return;}
-  const btn=document.querySelector('#stepResetForm .btn-primary');
-  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Resetting...';
-  await delay(1000);
-  btn.disabled=false;btn.textContent='Reset Password →';
-  // In production: verify code + DOB against Supabase, then call updateUser
-  showStep('stepLogin');
-  setStatus('loginStatus','Password reset successfully. Please log in with your new password.','success');
-}
-
-// Enter key support
-document.getElementById('loginPassword').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+document.getElementById('loginPassword').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+document.getElementById('forgotEmail').addEventListener('keydown', e => {
+  if (e.key === 'Enter') sendResetEmail();
+});
 </script>
 </body>
 </html>
