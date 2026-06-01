@@ -69,16 +69,13 @@ footer{background:var(--dark);padding:20px 5%;text-align:center;margin-top:auto}
     <div class="progress-steps"><div class="prog-step active" id="ps1"></div><div class="prog-step" id="ps2"></div><div class="prog-step" id="ps3"></div></div>
     <span class="step-icon">🔐</span>
     <h1 class="step-title">Activate Your Account</h1>
-    <p class="step-sub">Enter the activation code from your email, along with your date of birth to verify your identity.</p>
+    <p class="step-sub">Enter the activation code from your email to verify your identity.</p>
     <div class="status-msg" id="s1status"></div>
     <div class="field">
       <label>Activation Code</label>
       <input type="text" id="actCode" placeholder="e.g. A3K9PQ2R" maxlength="8" style="text-transform:uppercase;letter-spacing:3px;font-family:var(--font-display);font-size:1.2rem"/>
     </div>
-    <div class="field">
-      <label>Date of Birth</label>
-      <input type="date" id="actDOB"/>
-    </div>
+
     <button class="btn-primary" onclick="verifyCode()">Verify →</button>
   </div>
 
@@ -122,14 +119,9 @@ function setStatus(id, msg, type) {
 
 async function verifyCode() {
   const code = document.getElementById('actCode').value.trim().toUpperCase();
-  const dob = document.getElementById('actDOB').value;
   
   if (!code || code.length < 6) {
     setStatus('s1status', 'Please enter your activation code.', 'error');
-    return;
-  }
-  if (!dob) {
-    setStatus('s1status', 'Please enter your date of birth.', 'error');
     return;
   }
   
@@ -139,8 +131,8 @@ async function verifyCode() {
   
   try {
     // Find user by activation code AND date of birth
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/users?activation_code=eq.${encodeURIComponent(code)}&date_of_birth=eq.${dob}&select=id,email,studera_id,account_status,full_name`,
+const res = await fetch(
+  `${SUPABASE_URL}/rest/v1/users?activation_code=eq.${encodeURIComponent(code)}&select=id,email,studera_id,account_status,full_name`,
       { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` } }
     );
     
