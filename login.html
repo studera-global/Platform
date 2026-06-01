@@ -247,12 +247,17 @@ async function sendResetEmail() {
       return;
     }
     
-    // Send password reset via Supabase Auth
-    const res = await fetch(`${SUPABASE_URL}/auth/v1/recover`, {
+    // Call your Edge Function (bypasses Supabase's 30/hour limit)
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/send_password_reset`, {
       method: 'POST',
-      headers: { 'apikey': SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+      headers: {
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({ email: email })
     });
+    
+    const data = await res.json();
     
     btn.disabled = false;
     btn.textContent = 'Send Reset Email →';
@@ -261,7 +266,7 @@ async function sendResetEmail() {
       document.getElementById('resetEmailDisplay').textContent = email;
       showStep('stepResetSent');
     } else {
-      setStatus('forgotStatus', 'Failed to send reset email. Please try again.', 'error');
+      setStatus('forgotStatus', data.error || 'Failed to send reset email. Please try again.', 'error');
     }
     
   } catch(e) {
