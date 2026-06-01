@@ -270,7 +270,7 @@ const ROUTES = {
 
 // ═══════════════════════════════════════════════════════
 // STATE
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 let selectedRole = null;
 let userEmail = '';
 let userName = '';
@@ -390,7 +390,7 @@ function proceedToOTP() {
 }
 
 // ═══════════════════════════════════════════════════════
-// STEP 3 — OTP INPUTS + VERIFICATION (checks your users table)
+// STEP 3 — OTP INPUTS + VERIFICATION
 // ═══════════════════════════════════════════════════════
 function setupOTPInputs() {
   const inputs = document.querySelectorAll('.otp-input');
@@ -400,7 +400,7 @@ function setupOTPInputs() {
     input.oninput = () => {
       const val = input.value.replace(/[^0-9]/g, '');
       input.value = val;
-      if (val) { input.classList.add('filled'); if (i < 5) inputs[i+1].focus(); }
+      if (val) { input.classList.add('filled'); if (i < 7) inputs[i+1].focus(); }
       else input.classList.remove('filled');
       checkOTPComplete();
     };
@@ -409,12 +409,12 @@ function setupOTPInputs() {
     };
     input.onpaste = (e) => {
       e.preventDefault();
-      const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g,'').slice(0,6);
+      const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g,'').slice(0,8);
       pasted.split('').forEach((char, j) => {
         if (inputs[j]) { inputs[j].value = char; inputs[j].classList.add('filled'); }
       });
       checkOTPComplete();
-      if (pasted.length === 6) inputs[5].focus();
+      if (pasted.length === 8) inputs[7].focus();
     };
   });
   inputs[0].focus();
@@ -459,5 +459,146 @@ async function verifyOTP() {
     }
     
     const user = users[0];
+    const activationCode = generateActivationCode();
     
-    // Mark user as verified
+    // Mark user as verified and store activation code
+    await fetch(`${SUPABASE_URL}/rest/v1/users?id=eq.${user.id}`, {
+      method: 'PATCH',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ 
+        otp_verified: true,
+        otp_code: null,
+        account_status: 'pending',
+        activation_code: activationCode
+      })
+    });
+    
+    // Store user data in session
+    try {
+      sessionStorage.setItem('studera_user', JSON.stringify({
+        name: userName,
+        email: userEmail,
+        country: userCountry,
+        role: selectedRole,
+        id: user.id,
+        verified: true,
+        activation_code: activationCode,
+      }));
+    } catch(e) {}
+    
+    btn.disabled = false;
+    btn.textContent = 'Verify & Continue →';
+    showSuccess(activationCode);
+    
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = 'Verify & Continue →';
+    setStatus('step3Status', 'Verification failed. Please try again.', 'error');
+    console.error(e);
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// SUCCESS STATE
+// ═══════════════════════════════════════════════════════
+function showSuccess(activationCode) {
+  const isStudent = selectedRole === 'student';
+  document.getElementById('successBody').innerHTML = isStudent
+    ? `Welcome to Studera, <strong>${userName}</strong>. Your account is ready and permanent. When the app launches, use the code below to activate your account — no new signup needed.`
+    : `Welcome to Studera, <strong>${userName}</strong>. Your mentor account is ready. Our team will verify your credentials within 48 hours. When the app launches, use the code below to activate your account.`;
+
+  const routeBtns = document.getElementById('routeBtns');
+  routeBtns.innerHTML = `
+    <div style="background:var(--green-faint);border:2px solid var(--green);border-radius:var(--radius);padding:18px;text-align:center;margin-bottom:12px;">
+      <div style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Your App Activation Code</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--green);letter-spacing:6px;">${activationCode}</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-top:6px;">Save this — you will need it when the Studera app launches</div>
+    </div>
+    ${isStudent
+      ? `<a href="${ROUTES.student}" class="route-btn green">Build my Student Profile →</a>`
+      : `<a href="${ROUTES.mentor}" class="route-btn orange">Build my Mentor Profile →</a>`
+    }
+    <a href="index.html" class="route-btn" style="border:1.5px solid var(--border);color:var(--body);border-radius:99px;padding:13px 24px;text-align:center;text-decoration:none;font-weight:600;font-size:.92rem;display:block;">Back to Home</a>
+  `;
+  showStep('stepSuccess');
+}
+
+// ═══════════════════════════════════════════════════════
+// RESEND + COUNTDOWN
+// ═══════════════════════════════════════════════════
+function startCountdown() {
+  countdownSecs = 60;
+  const resendBtn = document.getElementById('resendBtn');
+  const countdown = document.getElementById('countdown');
+  resendBtn.disabled = true;
+
+  clearInterval(countdownTimer);
+  countdownTimer = setInterval(() => {
+    countdownSecs--;
+    countdown.textContent = `(${countdownSecs}s)`;
+    if (countdownSecs <= 0) {
+      clearInterval(countdownTimer);
+      countdown.textContent = '';
+      resendBtn.disabled = false;
+    }
+  }, 1000);
+}
+
+async function resendCode() {
+  clearStatus('step3Status');
+  const btn = document.getElementById('resendBtn');
+  btn.disabled = true;
+
+  try {
+    // Call Edge Function to resend OTP
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/send_otp`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: userEmail,
+        full_name: userName,
+        country: userCountry,
+        role: selectedRole
+      })
+    });
+
+    if (res.ok) {
+      setStatus('step3Status', 'A new code has been sent to your email.', 'success');
+      startCountdown();
+      setupOTPInputs();
+    } else {
+      setStatus('step3Status', 'Failed to resend code. Please try again.', 'error');
+      btn.disabled = false;
+    }
+  } catch(e) {
+    btn.disabled = false;
+    setStatus('step3Status', 'Could not resend. Please try again.', 'error');
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// NAVIGATION HELPERS
+// ═══════════════════════════════════════════════════
+function showStep(id) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// Auto-detect role from URL param: signup.html?role=mentor
+const urlRole = new URLSearchParams(window.location.search).get('role');
+if (urlRole === 'mentor' || urlRole === 'student') {
+  selectRole(urlRole);
+  goToStep2();
+}
+</script>
+</body>
+</html>
