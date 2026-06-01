@@ -141,7 +141,10 @@ footer{background:var(--dark);padding:20px 5%;text-align:center}
 <body>
 
 <nav>
-  <a class="nav-brand" href="index.html">🎓 Studera</a>
+  <a href="index.html" class="nav-logo" style="display:flex;align-items:center;text-decoration:none;">
+    <img src="logo.png" alt="Studera" style="height:52px;width:auto;object-fit:contain;" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+    <span style="display:none;font-family:'DM Serif Display',serif;font-size:1.4rem;color:#147A3E;">Studera</span>
+  </a>
 </nav>
 
 <div class="page">
@@ -173,7 +176,7 @@ footer{background:var(--dark);padding:20px 5%;text-align:center}
     <span class="step-icon" id="step2Icon">🎒</span>
     <div class="dots"><div class="dot done" id="d1b"></div><div class="dot active" id="d2b"></div><div class="dot" id="d3b"></div></div>
     <h1 class="step-title" id="step2Title">Create your account</h1>
-    <p class="step-sub" id="step2Sub">Enter your details below. We will send a 6-digit verification code to your email.</p>
+    <p class="step-sub" id="step2Sub">Enter your details below. We will send a 8-digit verification code to your email.</p>
     <div class="status-msg" id="step2Status"></div>
     <div class="field">
       <label>Full Name</label>
@@ -182,7 +185,7 @@ footer{background:var(--dark);padding:20px 5%;text-align:center}
     </div>
     <div class="field">
       <label>Email Address</label>
-      <input type="email" id="inputEmail" placeholder="e.g. ali@email.com" autocomplete="email"/>
+      <input type="email" id="inputEmail" placeholder="e.g. az@email.com" autocomplete="email"/>
       <div class="field-error" id="errEmail">Please enter a valid email address</div>
     </div>
     <div class="field">
@@ -207,7 +210,7 @@ footer{background:var(--dark);padding:20px 5%;text-align:center}
     <span class="step-icon">📬</span>
     <div class="dots"><div class="dot done"></div><div class="dot done"></div><div class="dot active"></div></div>
     <h1 class="step-title">Check your email</h1>
-    <p class="step-sub">We sent a 6-digit code to <strong id="emailDisplay"></strong>. Enter it below to verify your account.</p>
+    <p class="step-sub">We sent a 8-digit code to <strong id="emailDisplay"></strong>. Enter it below to verify your account.</p>
     <div class="status-msg" id="step3Status"></div>
 
 <div class="otp-wrap" id="otpWrap">
