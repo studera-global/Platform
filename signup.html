@@ -510,22 +510,26 @@ async function verifyOTP() {
 // ═══════════════════════════════════════════════════════
 function showSuccess(activationCode) {
   const isStudent = selectedRole === 'student';
-  document.getElementById('successBody').innerHTML = isStudent
-    ? `Welcome to Studera, <strong>${userName}</strong>. Your account is ready and permanent. When the app launches, use the code below to activate your account — no new signup needed.`
-    : `Welcome to Studera, <strong>${userName}</strong>. Your mentor account is ready. Our team will verify your credentials within 48 hours. When the app launches, use the code below to activate your account.`;
+  
+  // Store email in session storage so find-account can pre-fill it
+  try {
+    sessionStorage.setItem('studera_signup_email', userEmail);
+  } catch(e) {}
+  
+  document.getElementById('successBody').innerHTML = `
+    <strong>${userName}</strong>, your account has been registered successfully.<br><br>
+    Click the button below to activate your account now. You will need to enter the same email address you just used.
+  `;
 
   const routeBtns = document.getElementById('routeBtns');
   routeBtns.innerHTML = `
     <div style="background:var(--green-faint);border:2px solid var(--green);border-radius:var(--radius);padding:18px;text-align:center;margin-bottom:12px;">
-      <div style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Your App Activation Code</div>
+      <div style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Your Activation Code</div>
       <div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--green);letter-spacing:6px;">${activationCode}</div>
-      <div style="font-size:.75rem;color:var(--muted);margin-top:6px;">Save this — you will need it when the Studera app launches</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-top:6px;">You will need this code during activation</div>
     </div>
-    ${isStudent
-      ? `<a href="${ROUTES.student}" class="route-btn green">Build my Student Profile →</a>`
-      : `<a href="${ROUTES.mentor}" class="route-btn orange">Build my Mentor Profile →</a>`
-    }
-    <a href="index.html" class="route-btn" style="border:1.5px solid var(--border);color:var(--body);border-radius:99px;padding:13px 24px;text-align:center;text-decoration:none;font-weight:600;font-size:.92rem;display:block;">Back to Home</a>
+    <a href="find-account.html?email=${encodeURIComponent(userEmail)}" class="route-btn green">Activate My Account Now →</a>
+    <a href="index.html" class="route-btn" style="border:1.5px solid var(--border);color:var(--body);border-radius:99px;padding:13px 24px;text-align:center;text-decoration:none;font-weight:600;font-size:.92rem;display:block;">Back to Home (Activate Later)</a>
   `;
   showStep('stepSuccess');
 }
