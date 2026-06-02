@@ -19,13 +19,7 @@ nav{position:sticky;top:0;z-index:900;background:rgba(255,255,255,.96);backdrop-
 .nav-user{font-size:.85rem;font-weight:600;color:var(--body)}
 .nav-signout{font-size:.82rem;color:var(--muted);cursor:pointer;background:none;border:none;font-family:var(--font-body);padding:7px 16px;border:1px solid var(--border);border-radius:99px;transition:all .2s}
 .nav-signout:hover{border-color:var(--green);color:var(--green)}
-/* LED TICKER */
-.led-ticker{background:#0f1a14;overflow:hidden;height:38px;display:flex;align-items:center;border-bottom:2px solid var(--green)}
-.led-track{display:flex;white-space:nowrap;animation:ledScroll 22s linear infinite}
-.led-track:hover{animation-play-state:paused}
-.led-item{font-size:.78rem;font-weight:700;color:#a8e6c1;letter-spacing:1px;padding:0 60px;text-transform:uppercase;flex-shrink:0}
-.led-sep{color:#147A3E;opacity:.6;margin:0 8px}
-@keyframes ledScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+/* LED ticker removed */
 /* INCOMPLETE ALERT */
 .incomplete-alert{background:#fef2f2;border-bottom:2px solid #ef4444;padding:12px 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;cursor:pointer;transition:background .2s}
 .incomplete-alert:hover{background:#fee2e2}
@@ -117,6 +111,9 @@ nav{position:sticky;top:0;z-index:900;background:rgba(255,255,255,.96);backdrop-
 .sneak-bar{height:3px;background:rgba(255,255,255,.08);border-radius:99px;margin-top:14px;overflow:hidden}
 .sneak-fill{height:100%;background:var(--orange);border-radius:99px;animation:snkFill 2.5s ease-in-out infinite alternate}
 @keyframes snkFill{from{width:30%;opacity:.7}to{width:45%;opacity:1}}
+/* ALGO CARD HIGHLIGHT */
+.algo-card.pulse-highlight{animation:cardPulse .6s ease 2;border-color:var(--orange)!important;box-shadow:0 0 0 3px rgba(249,115,22,.2)!important}
+@keyframes cardPulse{0%,100%{border-color:var(--border);box-shadow:var(--shadow)}50%{border-color:var(--orange);box-shadow:0 0 0 4px rgba(249,115,22,.25)}}
 /* FOOTER */
 footer{background:var(--dark);padding:24px 5%;text-align:center;margin-top:0}
 .footer-bar{font-size:.82rem;color:#6b7c72}
@@ -136,15 +133,7 @@ footer{background:var(--dark);padding:24px 5%;text-align:center;margin-top:0}
   </div>
 </nav>
 
-<!-- LED TICKER -->
-<div class="led-ticker">
-  <div class="led-track">
-    <span class="led-item">🔔<span class="led-sep"> /// </span>STUDERA HAS AN UPDATE — CHECK OUR <a href="updates.html" style="color:#F97316;text-decoration:none;font-weight:700">UPDATES PAGE</a><span class="led-sep"> /// </span></span>
-    <span class="led-item">🔔<span class="led-sep"> /// </span>STUDERA HAS AN UPDATE — CHECK OUR <a href="updates.html" style="color:#F97316;text-decoration:none;font-weight:700">UPDATES PAGE</a><span class="led-sep"> /// </span></span>
-    <span class="led-item">🔔<span class="led-sep"> /// </span>STUDERA HAS AN UPDATE — CHECK OUR <a href="updates.html" style="color:#F97316;text-decoration:none;font-weight:700">UPDATES PAGE</a><span class="led-sep"> /// </span></span>
-    <span class="led-item">🔔<span class="led-sep"> /// </span>STUDERA HAS AN UPDATE — CHECK OUR <a href="updates.html" style="color:#F97316;text-decoration:none;font-weight:700">UPDATES PAGE</a><span class="led-sep"> /// </span></span>
-  </div>
-</div>
+
 
 <!-- INCOMPLETE PROFILE ALERT -->
 <div class="incomplete-alert hidden" id="incompleteAlert" onclick="resumeProfile()">
@@ -171,7 +160,7 @@ footer{background:var(--dark);padding:24px 5%;text-align:center;margin-top:0}
       <div class="algo-header-icon">🩺</div>
       <div class="algo-header-text">
         <h3>Studera's Doctor Algorithm</h3>
-        <p>Preliminary Data Collection — Building your understanding</p>
+        <p>Your profile is being built — answer the questions below</p>
       </div>
     </div>
     <div class="algo-chat" id="algoChat"></div>
@@ -239,6 +228,13 @@ footer{background:var(--dark);padding:24px 5%;text-align:center;margin-top:0}
   <div class="sneak-section">
     <h2>Coming Next from Studera</h2>
     <p>Two features currently in development. Click to learn more.</p>
+    <div class="sneak-card" onclick="window.open('https://www.instagram.com/studeraglobal/','_blank')" style="background:linear-gradient(135deg,#1a0a00,#2d1a00);border:1px solid rgba(225,48,108,.25);">
+      <span class="sneak-emoji">📸</span>
+      <span class="sneak-tag" style="color:#e1306c;">Now Live</span>
+      <h3 class="sneak-title">Studera is now on Instagram</h3>
+      <p class="sneak-desc">Follow <strong style="color:#e1306c;">@studeraglobal</strong> for daily updates, opportunities, tips, and behind-the-scenes from the Studera team. Be part of the journey from day one.</p>
+      <div class="sneak-bar"><div class="sneak-fill" style="background:#e1306c;width:100%;animation:none;opacity:.8"></div></div>
+    </div>
     <div class="sneak-card" onclick="window.location.href='updates.html'">
       <span class="sneak-emoji">🏆</span>
       <span class="sneak-tag">Coming Aug 2026</span>
@@ -293,9 +289,30 @@ if (!profileComplete) {
 function resumeProfile() {
   const lastState = user.last_conversation_state || prelimData.last_state || null;
   if (lastState) conversationState = lastState;
-  document.getElementById('algoChat').scrollIntoView({behavior:'smooth'});
-  // Re-ask the last question
-  if (lastState) resumeFromState(lastState);
+
+  // Scroll to the algo card and highlight it
+  const card = document.querySelector('.algo-card');
+  card.scrollIntoView({behavior:'smooth', block:'start'});
+
+  // Pulse border to draw attention
+  card.classList.remove('pulse-highlight');
+  void card.offsetWidth; // reflow to restart animation
+  card.classList.add('pulse-highlight');
+  setTimeout(() => card.classList.remove('pulse-highlight'), 1400);
+
+  // If chat is empty (fresh page load), start the chat
+  const chatEl = document.getElementById('algoChat');
+  if (chatEl.children.length === 0) {
+    startChat();
+    return;
+  }
+
+  // If chat has content and we have a last state, prompt them to continue
+  if (lastState && lastState !== 'COMPLETE') {
+    setTimeout(() => {
+      addMsg('Welcome back! Let us continue where we left off. Please respond to the last question above, or use the buttons below.', 'algo');
+    }, 500);
+  }
 }
 
 function signOut() { sessionStorage.clear(); window.location.href = 'index.html'; }
@@ -553,4 +570,3 @@ startChat();
 </script>
 </body>
 </html>
- 
