@@ -292,53 +292,32 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
 
 // ═══════════════════════════════════════════
-// USER LOAD
+// USER LOAD — Use stored session data directly (no API fetch)
 // ═══════════════════════════════════════════
 let user = {};
-try { user = JSON.parse(sessionStorage.getItem('studera_user') || '{}'); } catch(e){}
-if (!user.logged_in && !user.name) window.location.href = 'login.html';
+try { 
+  user = JSON.parse(sessionStorage.getItem('studera_user') || '{}'); 
+} catch(e){}
 
+if (!user.logged_in && !user.name) {
+  window.location.href = 'login.html';
+}
+
+// Populate UI from stored session data
 document.getElementById('heroName').textContent = user.name || 'there';
 document.getElementById('navUserName').textContent = user.name || 'User';
-// Set ID from session — also fetch from Supabase if missing
-const cachedId = user.studera_id || '';
-document.getElementById('heroStuderaID').textContent = cachedId || '—';
-if (!cachedId && user.email) {
-  // Fetch studera_id from users table using the stored token
-  const token = sessionStorage.getItem('studera_token') || SUPABASE_ANON_KEY;
-  fetch(`${SUPABASE_URL}/rest/v1/users?email=eq.${encodeURIComponent(user.email)}&select=studera_id,role,full_name`, {
-    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${token}` }
-  })
-  .then(r => r.json())
-  .then(data => {
-    if (Array.isArray(data) && data.length > 0) {
-      const fetched = data[0];
-      if (fetched.studera_id) {
-        document.getElementById('heroStuderaID').textContent = fetched.studera_id;
-        // Update session so we don't re-fetch on next load
-        user.studera_id = fetched.studera_id;
-        if (fetched.role) user.role = fetched.role;
-        if (fetched.full_name && !user.name) {
-          user.name = fetched.full_name;
-          document.getElementById('heroName').textContent = fetched.full_name;
-          document.getElementById('navUserName').textContent = fetched.full_name;
-        }
-        sessionStorage.setItem('studera_user', JSON.stringify(user));
-        // Re-run mentor check with fresh role data
-        if ((fetched.role || '').toLowerCase() === 'mentor') {
-          const mentorMsg = document.getElementById('mentorMsg');
-          if (mentorMsg) mentorMsg.style.display = 'block';
-          const sub = document.getElementById('algoHeaderSub');
-          if (sub) sub.textContent = 'Account activated — mentor verification portal coming soon';
-          const lbl = document.getElementById('profileTypeLabel');
-          if (lbl) lbl.textContent = 'Mentor Profile';
-        }
-      }
-    }
-  })
-  .catch(() => {}); // silent fail — ID stays as '—'
+document.getElementById('heroStuderaID').textContent = user.studera_id || '—';
+document.getElementById('heroSub').textContent = `Your account is activated. Full profile development begins Early July | Stay Tuned.`;
+
+// Show mentor message if role is mentor (from stored data)
+if ((user.role || '').toLowerCase() === 'mentor') {
+  const mentorMsg = document.getElementById('mentorMsg');
+  if (mentorMsg) mentorMsg.style.display = 'block';
+  const algoHeaderSub = document.getElementById('algoHeaderSub');
+  if (algoHeaderSub) algoHeaderSub.textContent = 'Account activated — mentor verification portal coming soon';
+  const profileTypeLabel = document.getElementById('profileTypeLabel');
+  if (profileTypeLabel) profileTypeLabel.textContent = 'Mentor Profile';
 }
-document.getElementById('heroSub').textContent = `Your account is activated. Full profile development begins Early July — stay tuned.`;
 
 // Check profile completeness
 let prelimData = {};
@@ -348,16 +327,6 @@ if (!profileComplete) {
   document.getElementById('incompleteAlert').classList.remove('hidden');
   document.getElementById('oppCardSub').textContent = 'Complete your profile to unlock filtered opportunities';
   document.getElementById('oppExpand').textContent = 'Your profile is incomplete — complete it so the Doctor Algorithm can filter opportunities for you →';
-}
-
-// Show mentor-only message if applicable
-if ((user.role || '').toLowerCase() === 'mentor') {
-  const mentorMsg = document.getElementById('mentorMsg');
-  if (mentorMsg) mentorMsg.style.display = 'block';
-  const algoHeaderSub = document.getElementById('algoHeaderSub');
-  if (algoHeaderSub) algoHeaderSub.textContent = 'Account activated — mentor verification portal coming soon';
-  const profileTypeLabel = document.getElementById('profileTypeLabel');
-  if (profileTypeLabel) profileTypeLabel.textContent = 'Mentor Profile';
 }
 
 function scrollToStatusCard() {
