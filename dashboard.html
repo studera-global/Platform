@@ -111,9 +111,13 @@ nav{position:sticky;top:0;z-index:900;background:rgba(255,255,255,.96);backdrop-
 .sneak-bar{height:3px;background:rgba(255,255,255,.08);border-radius:99px;margin-top:14px;overflow:hidden}
 .sneak-fill{height:100%;background:var(--orange);border-radius:99px;animation:snkFill 2.5s ease-in-out infinite alternate}
 @keyframes snkFill{from{width:30%;opacity:.7}to{width:45%;opacity:1}}
-/* ALGO CARD HIGHLIGHT */
+/* ALGO CARD HIGHLIGHT + PULSE RING */
 .algo-card.pulse-highlight{animation:cardPulse .6s ease 2;border-color:var(--orange)!important;box-shadow:0 0 0 3px rgba(249,115,22,.2)!important}
 @keyframes cardPulse{0%,100%{border-color:var(--border);box-shadow:var(--shadow)}50%{border-color:var(--orange);box-shadow:0 0 0 4px rgba(249,115,22,.25)}}
+/* Rotating border ring around account status card */
+.algo-pulse-ring{position:absolute;inset:-2px;border-radius:calc(var(--radius-lg) + 2px);background:conic-gradient(from 0deg,transparent 0%,var(--green) 15%,transparent 30%,transparent 100%);animation:rotatePulse 3.5s linear infinite;z-index:0;pointer-events:none}
+.algo-pulse-ring::before{content:"";position:absolute;inset:2px;background:#fff;border-radius:var(--radius-lg)}
+@keyframes rotatePulse{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
 /* FOOTER */
 footer{background:var(--dark);padding:24px 5%;text-align:center;margin-top:0}
 .footer-bar{font-size:.82rem;color:#6b7c72}
@@ -136,9 +140,9 @@ footer{background:var(--dark);padding:24px 5%;text-align:center;margin-top:0}
 
 
 <!-- INCOMPLETE PROFILE ALERT -->
-<div class="incomplete-alert hidden" id="incompleteAlert" onclick="resumeProfile()">
-  <p>⚠️ Profile development is incomplete — the Doctor Algorithm cannot filter opportunities for you yet.</p>
-  <span>Click here to continue where you left off →</span>
+<div class="incomplete-alert hidden" id="incompleteAlert" onclick="scrollToStatusCard()">
+  <p>⚠️ Your profile is incomplete — coming Early July 2026. The Doctor Algorithm will build your full profile once it is ready.</p>
+  <span>Click to see your account status →</span>
 </div>
 
 <div class="dashboard">
@@ -154,25 +158,49 @@ footer{background:var(--dark);padding:24px 5%;text-align:center;margin-top:0}
     </div>
   </div>
 
-  <!-- DOCTOR ALGORITHM CHAT -->
-  <div class="algo-card">
+  <!-- ACCOUNT STATUS CARD -->
+  <div class="algo-card" id="accountStatusCard">
     <div class="algo-header">
       <div class="algo-header-icon">🩺</div>
       <div class="algo-header-text">
         <h3>Studera's Doctor Algorithm</h3>
-        <p>Your profile is being built — answer the questions below</p>
+        <p id="algoHeaderSub">Account activated — profile building coming Early July</p>
       </div>
     </div>
-    <div class="algo-chat" id="algoChat"></div>
-    <div class="chat-choices" id="chatChoices"></div>
-    <div class="algo-input-area">
-      <textarea class="algo-textarea" id="algoInput" placeholder="Type your answer..." rows="1"
-        onkeydown="handleKey(event)" oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px'"></textarea>
-      <button class="algo-send" id="algoSendBtn" onclick="sendMsg()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-      </button>
+    <!-- Animated border pulse ring -->
+    <div style="position:relative;overflow:hidden;">
+      <div class="algo-pulse-ring" id="algoPulseRing"></div>
+      <div style="padding:32px 28px 28px;">
+
+        <!-- Main message -->
+        <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:24px;">
+          <div style="font-size:2.2rem;flex-shrink:0;animation:boltPulse 2.2s ease-in-out infinite;">🩺</div>
+          <div>
+            <p style="font-size:1rem;font-weight:700;color:var(--dark);margin-bottom:8px;font-family:var(--font-display);">Your account is fully activated but incomplete.</p>
+            <p style="font-size:.88rem;color:var(--body);line-height:1.7;">Once Studera's Algorithm is ready, we will continue to build your account, gather all necessary details and finalise your full Student Profile by <strong>Early July 2026</strong>. Till then, keep checking your Dashboard and <a href="https://www.instagram.com/studeraglobal/" target="_blank" rel="noopener" style="color:var(--green);font-weight:700;">Studera's Instagram</a> for updates.</p>
+          </div>
+        </div>
+
+        <!-- Opportunities nudge -->
+        <div style="background:var(--green-faint);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:20px;display:flex;gap:12px;align-items:flex-start;">
+          <span style="font-size:1.4rem;flex-shrink:0;">🌍</span>
+          <p style="font-size:.86rem;color:var(--body);line-height:1.65;"><strong>Keep an eye on the Opportunities Page.</strong> Our team regularly adds new scholarships, programmes, and competitions. Don't miss out — check for new opportunities that can boost your extracurriculars.</p>
+        </div>
+
+        <!-- Mentor-only message — shown/hidden via JS -->
+        <div id="mentorMsg" style="display:none;background:#fff7f0;border:1px solid #fdd9bc;border-radius:var(--radius);padding:16px 20px;">
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <span style="font-size:1.4rem;flex-shrink:0;">🎓</span>
+            <div>
+              <p style="font-size:.88rem;font-weight:700;color:var(--orange-dark);margin-bottom:6px;">Important for Mentors</p>
+              <p style="font-size:.85rem;color:var(--body);line-height:1.65;">Mentors will be required to pass our authentication process by submitting verification documents — including Admission Letter(s), Scholarship Verification Document(s), and more. We will soon open a dedicated portal for document submission. More guidance will follow — keep a lookout for updates.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
-    <div class="algo-disclaimer">🩺 <strong>Doctor Algorithm:</strong> This is preliminary data collection — not your full Student or Mentor Profile. I am still under development. Once ready, I will build your complete profile and find your perfect match.</div>
+    <div class="algo-disclaimer">🩺 <strong>Doctor Algorithm:</strong> This is NOT your full Student or Mentor Profile. I am still under development. Once ready, I will build your complete profile and find your perfect match.</div>
   </div>
 
   <!-- ALGORITHM STATUS — CHARGING ANIMATION -->
@@ -189,7 +217,7 @@ footer{background:var(--dark);padding:24px 5%;text-align:center;margin-top:0}
       <div class="charge-bolt">⚡</div>
     </div>
     <h2 class="status-title">Algorithm Development in Progress</h2>
-    <p class="status-sub">By <strong>1st June 2026</strong>, Studera's Doctor Algorithm will be ready to complete full Student and Mentor profiles and make its first ever match.</p>
+    <p class="status-sub">By <strong>Early July 2026</strong>, Studera's Doctor Algorithm will complete full Student and Mentor profiles and make its first ever match.</p>
     <span class="status-ahead">🚀 We Are Ahead of Schedule</span>
   </div>
 
@@ -274,7 +302,7 @@ if (!user.logged_in && !user.name) window.location.href = 'login.html';
 document.getElementById('heroName').textContent = user.name || 'there';
 document.getElementById('navUserName').textContent = user.name || 'User';
 document.getElementById('heroStuderaID').textContent = user.studera_id || '—';
-document.getElementById('heroSub').textContent = `Welcome back. The Doctor Algorithm has your survey data on file. Let us continue building your profile.`;
+document.getElementById('heroSub').textContent = `Your account is activated. Full profile development begins Early July — stay tuned.`;
 
 // Check profile completeness
 let prelimData = {};
@@ -284,6 +312,19 @@ if (!profileComplete) {
   document.getElementById('incompleteAlert').classList.remove('hidden');
   document.getElementById('oppCardSub').textContent = 'Complete your profile to unlock filtered opportunities';
   document.getElementById('oppExpand').textContent = 'Your profile is incomplete — complete it so the Doctor Algorithm can filter opportunities for you →';
+}
+
+// Show mentor-only message if applicable
+if ((user.role || '').toLowerCase() === 'mentor') {
+  const mentorMsg = document.getElementById('mentorMsg');
+  if (mentorMsg) mentorMsg.style.display = 'block';
+  const algoHeaderSub = document.getElementById('algoHeaderSub');
+  if (algoHeaderSub) algoHeaderSub.textContent = 'Account activated — mentor verification portal coming soon';
+}
+
+function scrollToStatusCard() {
+  const card = document.getElementById('accountStatusCard');
+  if (card) card.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 function resumeProfile() {
@@ -303,7 +344,7 @@ function resumeProfile() {
   // If chat is empty (fresh page load), start the chat
   const chatEl = document.getElementById('algoChat');
   if (chatEl.children.length === 0) {
-    startChat();
+    // startChat() deferred until July — algo card replaced with status message
     return;
   }
 
@@ -566,7 +607,7 @@ async function startChat() {
   if(r.choices)renderChoices(r.choices);
   if(r.state)conversationState=r.state;
 }
-startChat();
+// startChat() deferred until July — algo card replaced with status message
 </script>
 </body>
 </html>
