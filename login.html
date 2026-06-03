@@ -200,6 +200,7 @@ async function doLogin() {
     );
     const userData = await userRes.json();
     const user = (userData && userData[0]) || {};
+    console.log('Fetched from database:', user);
     
     sessionStorage.setItem('studera_token', data.access_token);
     sessionStorage.setItem('studera_user', JSON.stringify({
