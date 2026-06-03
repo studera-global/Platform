@@ -194,10 +194,10 @@ async function doLogin() {
     }
     
     // Get user profile
-    const userRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/users?email=eq.${encodeURIComponent(email)}&select=full_name,studera_id,role,account_status`,
-      { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${data.access_token}` } }
-    );
+   const userRes = await fetch(
+  `${SUPABASE_URL}/rest/v1/users?email=eq.${encodeURIComponent(email)}&select=full_name,studera_id,role,account_status`,
+  { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` } }
+);
     const userData = await userRes.json();
     const user = (userData && userData[0]) || {};
     console.log('Fetched from database:', user);
