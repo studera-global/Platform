@@ -115,9 +115,12 @@ nav{position:sticky;top:0;z-index:900;background:rgba(255,255,255,.96);backdrop-
 .algo-card.pulse-highlight{animation:cardPulse .6s ease 2;border-color:var(--orange)!important;box-shadow:0 0 0 3px rgba(249,115,22,.2)!important}
 @keyframes cardPulse{0%,100%{border-color:var(--border);box-shadow:var(--shadow)}50%{border-color:var(--orange);box-shadow:0 0 0 4px rgba(249,115,22,.25)}}
 /* Rotating border ring around account status card */
-.algo-pulse-ring{position:absolute;inset:-2px;border-radius:calc(var(--radius-lg) + 2px);background:conic-gradient(from 0deg,transparent 0%,var(--green) 15%,transparent 30%,transparent 100%);animation:rotatePulse 3.5s linear infinite;z-index:0;pointer-events:none}
-.algo-pulse-ring::before{content:"";position:absolute;inset:2px;background:#fff;border-radius:var(--radius-lg)}
-@keyframes rotatePulse{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+/* Glowing border on account status card */
+@keyframes borderGlow{
+  0%,100%{box-shadow:0 0 0 2px #147A3E, 0 0 14px 2px rgba(20,122,62,.25), 0 0 0 0 rgba(249,115,22,0)}
+  50%{box-shadow:0 0 0 2px #F97316, 0 0 18px 4px rgba(249,115,22,.22), 0 0 0 0 rgba(20,122,62,0)}
+}
+#accountStatusCard{animation:borderGlow 3s ease-in-out infinite;border:2px solid var(--green)!important;}
 /* FOOTER */
 footer{background:var(--dark);padding:24px 5%;text-align:center;margin-top:0}
 .footer-bar{font-size:.82rem;color:#6b7c72}
@@ -167,17 +170,14 @@ footer{background:var(--dark);padding:24px 5%;text-align:center;margin-top:0}
         <p id="algoHeaderSub">Account activated — profile building coming Early July</p>
       </div>
     </div>
-    <!-- Animated border pulse ring -->
-    <div style="position:relative;overflow:hidden;">
-      <div class="algo-pulse-ring" id="algoPulseRing"></div>
-      <div style="padding:32px 28px 28px;">
+    <div style="padding:32px 28px 28px;">
 
         <!-- Main message -->
         <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:24px;">
           <div style="font-size:2.2rem;flex-shrink:0;animation:boltPulse 2.2s ease-in-out infinite;">🩺</div>
           <div>
             <p style="font-size:1rem;font-weight:700;color:var(--dark);margin-bottom:8px;font-family:var(--font-display);">Your account is fully activated but incomplete.</p>
-            <p style="font-size:.88rem;color:var(--body);line-height:1.7;">Once Studera's Algorithm is ready, we will continue to build your account, gather all necessary details and finalise your full Student Profile by <strong>Early July 2026</strong>. Till then, keep checking your Dashboard and <a href="https://www.instagram.com/studeraglobal/" target="_blank" rel="noopener" style="color:var(--green);font-weight:700;">Studera's Instagram</a> for updates.</p>
+            <p style="font-size:.88rem;color:var(--body);line-height:1.7;">Once Studera's Algorithm is ready, we will continue to build your account, gather all necessary details and finalise your full <span id="profileTypeLabel">Student Profile</span> by <strong>Early July 2026</strong>. Till then, keep checking your Dashboard and <a href="https://www.instagram.com/studeraglobal/" target="_blank" rel="noopener" style="color:var(--green);font-weight:700;">Studera's Instagram</a> for updates.</p>
           </div>
         </div>
 
@@ -188,7 +188,7 @@ footer{background:var(--dark);padding:24px 5%;text-align:center;margin-top:0}
         </div>
 
         <!-- Mentor-only message — shown/hidden via JS -->
-        <div id="mentorMsg" style="display:none;background:#fff7f0;border:1px solid #fdd9bc;border-radius:var(--radius);padding:16px 20px;">
+        <div id="mentorMsg" style="display:none;background:#fff7f0;border:2px solid #F97316;border-radius:var(--radius);padding:16px 20px;box-shadow:0 0 12px 2px rgba(249,115,22,.18);">
           <div style="display:flex;gap:12px;align-items:flex-start;">
             <span style="font-size:1.4rem;flex-shrink:0;">🎓</span>
             <div>
@@ -198,7 +198,6 @@ footer{background:var(--dark);padding:24px 5%;text-align:center;margin-top:0}
           </div>
         </div>
 
-      </div>
     </div>
     <div class="algo-disclaimer">🩺 <strong>Doctor Algorithm:</strong> This is NOT your full Student or Mentor Profile. I am still under development. Once ready, I will build your complete profile and find your perfect match.</div>
   </div>
@@ -301,7 +300,44 @@ if (!user.logged_in && !user.name) window.location.href = 'login.html';
 
 document.getElementById('heroName').textContent = user.name || 'there';
 document.getElementById('navUserName').textContent = user.name || 'User';
-document.getElementById('heroStuderaID').textContent = user.studera_id || '—';
+// Set ID from session — also fetch from Supabase if missing
+const cachedId = user.studera_id || '';
+document.getElementById('heroStuderaID').textContent = cachedId || '—';
+if (!cachedId && user.email) {
+  // Fetch studera_id from users table using the stored token
+  const token = sessionStorage.getItem('studera_token') || SUPABASE_ANON_KEY;
+  fetch(`${SUPABASE_URL}/rest/v1/users?email=eq.${encodeURIComponent(user.email)}&select=studera_id,role,full_name`, {
+    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${token}` }
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (Array.isArray(data) && data.length > 0) {
+      const fetched = data[0];
+      if (fetched.studera_id) {
+        document.getElementById('heroStuderaID').textContent = fetched.studera_id;
+        // Update session so we don't re-fetch on next load
+        user.studera_id = fetched.studera_id;
+        if (fetched.role) user.role = fetched.role;
+        if (fetched.full_name && !user.name) {
+          user.name = fetched.full_name;
+          document.getElementById('heroName').textContent = fetched.full_name;
+          document.getElementById('navUserName').textContent = fetched.full_name;
+        }
+        sessionStorage.setItem('studera_user', JSON.stringify(user));
+        // Re-run mentor check with fresh role data
+        if ((fetched.role || '').toLowerCase() === 'mentor') {
+          const mentorMsg = document.getElementById('mentorMsg');
+          if (mentorMsg) mentorMsg.style.display = 'block';
+          const sub = document.getElementById('algoHeaderSub');
+          if (sub) sub.textContent = 'Account activated — mentor verification portal coming soon';
+          const lbl = document.getElementById('profileTypeLabel');
+          if (lbl) lbl.textContent = 'Mentor Profile';
+        }
+      }
+    }
+  })
+  .catch(() => {}); // silent fail — ID stays as '—'
+}
 document.getElementById('heroSub').textContent = `Your account is activated. Full profile development begins Early July — stay tuned.`;
 
 // Check profile completeness
@@ -320,6 +356,8 @@ if ((user.role || '').toLowerCase() === 'mentor') {
   if (mentorMsg) mentorMsg.style.display = 'block';
   const algoHeaderSub = document.getElementById('algoHeaderSub');
   if (algoHeaderSub) algoHeaderSub.textContent = 'Account activated — mentor verification portal coming soon';
+  const profileTypeLabel = document.getElementById('profileTypeLabel');
+  if (profileTypeLabel) profileTypeLabel.textContent = 'Mentor Profile';
 }
 
 function scrollToStatusCard() {
