@@ -567,6 +567,115 @@ footer.studera-footer{background:var(--dark);position:relative;margin-top:0;}
 .led-item-orange{color:#F97316;}
 .led-sep{color:#2a4a35;opacity:.7;margin:0 10px}
 @keyframes ledScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+  /* ── AUTO-SLIDING UPDATES CAROUSEL ── */
+.updates-carousel {
+  position: relative;
+  max-width: 900px;
+  margin: 30px auto 20px;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+.carousel-container {
+  position: relative;
+  width: 100%;
+  min-height: 200px;
+  background: #fff;
+}
+.carousel-slide {
+  display: none;
+  padding: 32px 48px;
+  animation: fadeIn 0.5s ease;
+}
+.carousel-slide.active {
+  display: block;
+}
+.carousel-card {
+  text-align: center;
+}
+.carousel-tag {
+  display: inline-block;
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  padding: 4px 12px;
+  border-radius: 99px;
+  margin-bottom: 12px;
+}
+.tag-live { background: var(--green-light); color: var(--green); }
+.tag-new { background: #fff0f5; color: #e1306c; }
+.tag-coming { background: #fff7f0; color: var(--orange); }
+.carousel-title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--dark);
+  margin-bottom: 12px;
+}
+.carousel-desc {
+  font-size: .92rem;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.carousel-btn {
+  display: inline-block;
+  background: var(--green);
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: 99px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: .88rem;
+  transition: background .2s;
+}
+.carousel-btn:hover {
+  background: var(--green-dark);
+}
+.carousel-prev, .carousel-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.5);
+  color: white;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background .2s;
+  z-index: 10;
+}
+.carousel-prev:hover, .carousel-next:hover {
+  background: rgba(0,0,0,0.8);
+}
+.carousel-prev { left: 10px; }
+.carousel-next { right: 10px; }
+.carousel-dots {
+  text-align: center;
+  padding: 12px 0;
+  background: #fff;
+  border-top: 1px solid var(--border);
+}
+.carousel-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin: 0 6px;
+  background: var(--border);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background .2s;
+}
+.carousel-dot.active {
+  background: var(--green);
+}
+@media (max-width: 600px) {
+  .carousel-slide { padding: 24px 20px; }
+  .carousel-title { font-size: 1.1rem; }
+}
 </style>
 </head>
 <body>
@@ -602,6 +711,39 @@ footer.studera-footer{background:var(--dark);position:relative;margin-top:0;}
     <span class="led-item led-item-green">🔔<span class="led-sep"> &nbsp; </span>STUDERA HAS AN UPDATE — <a href="updates.html" style="color:#147A3E;text-decoration:none;font-weight:800">CHECK UPDATES PAGE</a><span class="led-sep"> &nbsp; </span></span>
     <span class="led-item led-item-orange">🔔<span class="led-sep"> &nbsp; </span>ACCOUNTS NOW LIVE — ACTIVATE YOURS TODAY<span class="led-sep"> &nbsp; </span></span>
   </div>
+</div>
+
+<!-- ══ AUTO-SLIDING UPDATES CAROUSEL ══ -->
+<div class="updates-carousel">
+  <div class="carousel-container">
+    <div class="carousel-slide active">
+      <div class="carousel-card">
+        <span class="carousel-tag tag-live">🟢 Live Now</span>
+        <h3 class="carousel-title">Studera Accounts Are Live</h3>
+        <p class="carousel-desc">If you filled out our survey, your Studera account has already been created. Activate it today.</p>
+        <a href="find-account.html" class="carousel-btn">Find My Account →</a>
+      </div>
+    </div>
+    <div class="carousel-slide">
+      <div class="carousel-card">
+        <span class="carousel-tag tag-new">📸 New</span>
+        <h3 class="carousel-title">Studera is now on Instagram</h3>
+        <p class="carousel-desc">Follow us for daily updates, opportunities, and behind-the-scenes content.</p>
+        <a href="https://www.instagram.com/studeraglobal/" target="_blank" class="carousel-btn">Follow →</a>
+      </div>
+    </div>
+    <div class="carousel-slide">
+      <div class="carousel-card">
+        <span class="carousel-tag tag-coming">🔜 Coming Soon</span>
+        <h3 class="carousel-title">SAT, ACT & MDCAT Mentorship</h3>
+        <p class="carousel-desc">Real mentorship from people who scored 1480+. Coming August 2026.</p>
+        <a href="updates.html" class="carousel-btn">Learn More →</a>
+      </div>
+    </div>
+  </div>
+  <button class="carousel-prev" id="carouselPrev">❮</button>
+  <button class="carousel-next" id="carouselNext">❯</button>
+  <div class="carousel-dots" id="carouselDots"></div>
 </div>
 
 <!-- ══ HERO ══ -->
@@ -1364,6 +1506,49 @@ function submitNewsletter() {
   window.addEventListener('scroll', updateUniScroll, { passive: true });
   window.addEventListener('resize', updateUniScroll, { passive: true });
   updateUniScroll();
+})();
+  // ── AUTO-SLIDING UPDATES CAROUSEL ──
+(function() {
+  const slides = document.querySelectorAll('.carousel-slide');
+  const dotsContainer = document.getElementById('carouselDots');
+  const prevBtn = document.getElementById('carouselPrev');
+  const nextBtn = document.getElementById('carouselNext');
+  let currentIndex = 0;
+  let autoSlideInterval;
+
+  // Create dots
+  slides.forEach((_, i) => {
+    const dot = document.createElement('span');
+    dot.classList.add('carousel-dot');
+    if (i === 0) dot.classList.add('active');
+    dot.addEventListener('click', () => goToSlide(i));
+    dotsContainer.appendChild(dot);
+  });
+
+  const dots = document.querySelectorAll('.carousel-dot');
+
+  function goToSlide(index) {
+    slides[currentIndex].classList.remove('active');
+    dots[currentIndex].classList.remove('active');
+    currentIndex = (index + slides.length) % slides.length;
+    slides[currentIndex].classList.add('active');
+    dots[currentIndex].classList.add('active');
+    resetAutoSlide();
+  }
+
+  function nextSlide() { goToSlide(currentIndex + 1); }
+  function prevSlide() { goToSlide(currentIndex - 1); }
+
+  function resetAutoSlide() {
+    clearInterval(autoSlideInterval);
+    autoSlideInterval = setInterval(() => nextSlide(), 5000);
+  }
+
+  prevBtn.addEventListener('click', prevSlide);
+  nextBtn.addEventListener('click', nextSlide);
+
+  // Start auto-sliding
+  autoSlideInterval = setInterval(() => nextSlide(), 5000);
 })();
 </script>
 </body>
