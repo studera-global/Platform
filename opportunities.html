@@ -89,21 +89,34 @@ nav{
 .empty-state p{color:var(--muted);font-size:1rem}
 
 /* ── WAVE FOOTER ── */
-footer.studera-footer{background:var(--dark);position:relative;margin-top:0;}
-.footer-wave-wrap{overflow:hidden;line-height:0;}
+footer.studera-footer{background:var(--dark);position:relative;margin-top:0;overflow:hidden;}
+footer.studera-footer::before{
+  content:"";
+  position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='104' viewBox='0 0 90 104'%3E%3Cg fill='none' stroke='%23F97316' stroke-width='1' stroke-opacity='0.06'%3E%3Cpolygon points='71,26 58,48 32,48 19,26 32,4 58,4'/%3E%3Cpolygon points='26,78 13,100 -13,100 -26,78 -13,56 13,56'/%3E%3Cpolygon points='116,78 103,100 77,100 64,78 77,56 103,56'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat:repeat;background-size:90px 104px;
+  pointer-events:none;z-index:0;
+}
+footer.studera-footer::after{
+  content:"";
+  position:absolute;top:0;left:0;right:0;height:220px;
+  background:radial-gradient(ellipse 80% 100% at 50% 0%, rgba(249,115,22,0.18) 0%, rgba(249,115,22,0.06) 40%, transparent 70%);
+  pointer-events:none;z-index:0;
+}
+.footer-wave-wrap{overflow:hidden;line-height:0;position:relative;z-index:1;}
 .footer-wave-wrap svg{display:block;width:100%;}
-.footer-content{max-width:1100px;margin:0 auto;padding:56px 5% 32px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:48px;}
+.footer-content{max-width:1100px;margin:0 auto;padding:56px 5% 32px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:48px;position:relative;z-index:1;}
 @media(max-width:900px){.footer-content{grid-template-columns:1fr 1fr;gap:32px;}}
 @media(max-width:600px){.footer-content{grid-template-columns:1fr;gap:28px;padding:40px 5% 24px;}}
 .footer-col-title{font-size:.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#7ecf9a;margin-bottom:18px;}
-.footer-col a{display:block;font-size:.88rem;color:#b8ccc0;text-decoration:none;margin-bottom:10px;transition:color .2s;}
+.footer-col a{display:block;font-size:.88rem;color:#b8ccc0;text-decoration:none;margin-bottom:10px;transition:color .2s;position:relative;z-index:1;}
 .footer-col a:hover{color:#fff;}
 .footer-contact-email{font-size:1.05rem;font-weight:700;color:#fff;text-decoration:none;display:block;margin-bottom:16px;transition:color .2s;}
 .footer-contact-email:hover{color:#7ecf9a;}
 .footer-social{display:flex;gap:12px;margin-top:4px;}
 .footer-social a{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#b8ccc0;text-decoration:none;transition:all .2s;}
 .footer-social a:hover{background:var(--green);border-color:var(--green);color:#fff;}
-.footer-bar-new{background:rgba(0,0,0,.25);text-align:center;padding:16px 5%;font-size:.82rem;color:#6b7c72;border-top:1px solid rgba(255,255,255,.05);}
+.footer-bar-new{background:rgba(0,0,0,.25);text-align:center;padding:16px 5%;font-size:.82rem;color:#6b7c72;border-top:1px solid rgba(255,255,255,.05);position:relative;z-index:1;}
 .footer-bar-new a{color:#6b7c72;text-decoration:none;}
 .footer-bar-new a:hover{color:#b8ccc0;}
 
@@ -202,7 +215,9 @@ footer.studera-footer{background:var(--dark);position:relative;margin-top:0;}
 
     <!-- ELIGIBILITY -->
     <span class="filter-label">Eligibility:</span>
-    <button class="filter-btn" id="btnInternational" onclick="toggleElig2(this)">🌍 International</button>
+    <button class="filter-btn" id="btnInternational" onclick="toggleElig('international',this)">🌍 International</button>
+    <button class="filter-btn" id="btnPakistan" onclick="toggleElig('pakistan',this)">Pakistan</button>
+    <button class="filter-btn" id="btnUSA" onclick="toggleElig('usa',this)">USA</button>
     <div class="filter-divider"></div>
 
     <!-- FORMAT MULTI-SELECT -->
@@ -758,6 +773,248 @@ const opportunities = [
     eligibilityFull:"Open internationally to young researchers and innovators. Full eligibility details available in the programme PDF.",
     cost:"Registration fee details available on the official application form.",
     link:"https://docs.google.com/forms/d/e/1FAIpQLSdqWJuDHuKdq1txtoB-ByQthX1cZPeavxtfrwoZF3Amvd3DqQ/viewform"
+  },
+
+  /* ── NEW PAKISTAN / GLOBAL OPPORTUNITIES (June 2026) ── */
+  {
+    id:30,
+    title:"Army Museum Lahore Summer Internship Programme",
+    emoji:"🏛️",
+    deadline:"2026-06-10",
+    education:"both",
+    location:"Lahore, Pakistan (In-Person)",
+    locationType:"inperson",
+    nationality:"pakistan",
+    ageMin:16,ageMax:23,
+    eligibility:"A-Level / Intermediate and University Undergraduates — Pakistani nationals",
+    desc:"A highly sought-after on-site summer programme focusing on corporate operations, historical research, public relations, museum preservation, and teamwork development. Offers unparalleled institutional certification valued by top universities.",
+    fullDesc:"The Army Museum Lahore Summer Internship Programme is one of Pakistan's most sought-after institutional internships. It provides selected students with a structured on-site experience covering corporate operations, historical research, public relations, museum preservation, and team development.\n\nInterns work directly in a prestigious institutional environment and receive an official certification that is highly valued by international universities and employers. The programme is ideal for students looking to combine academic learning with real professional exposure in a uniquely historic setting.",
+    eligibilityFull:"Open to Pakistani nationals currently enrolled in A-Level, Intermediate, or undergraduate studies. Ages 16–23.",
+    cost:"Free to participate. Provides official institutional certification.",
+    link:"https://teachwink.com/internships-in-pakistan/"
+  },
+  {
+    id:31,
+    title:"TCF Baghbaan Summer Internship 2026",
+    emoji:"📚",
+    deadline:"2026-06-15",
+    education:"both",
+    location:"Hybrid — Karachi, Lahore, Faisalabad, Islamabad & Remote",
+    locationType:"inperson",
+    nationality:"pakistan",
+    ageMin:15,ageMax:25,
+    eligibility:"O/A Level, Intermediate, and Undergraduate students — Pakistani nationals",
+    desc:"A structured volunteer-leadership and ambassador programme by The Citizens Foundation. Interns serve as ambassadors of education — raising awareness about Pakistan's literacy crisis, learning core communication skills, and supporting fundraising initiatives. Yields official social community hours highly valued by international universities.",
+    fullDesc:"The TCF Baghbaan Summer Internship is a structured, volunteer-driven leadership and ambassador programme run by The Citizens Foundation (TCF) — Pakistan's largest non-profit school network. Interns serve as ambassadors of education, raising awareness about the literacy crisis in Pakistan, developing core communication skills, and supporting fundraising initiatives.\n\nThe programme runs in a hybrid format: on-field placements available in Karachi, Lahore, Faisalabad, and Islamabad, with remote options for students in other cities. Interns receive official documentation confirming social community service hours — a credential highly valued by international universities including those using the Common App and UCAS.",
+    eligibilityFull:"Pakistani nationals aged 15–25, currently enrolled in O/A Levels, Intermediate, or undergraduate studies.",
+    cost:"Free to participate. Earns official social community hours.",
+    link:"https://www.tcf.org.pk/volunteer-programmes/"
+  },
+  {
+    id:32,
+    title:"Motive (fmr. KeepTruckin) PK Engineering Internship 2026",
+    emoji:"💻",
+    deadline:"2026-06-15",
+    education:"undergrad",
+    location:"Hybrid — Karachi, Lahore, or Islamabad",
+    locationType:"inperson",
+    nationality:"pakistan",
+    ageMin:19,ageMax:23,
+    eligibility:"CS / Software Engineering undergraduates — Pakistani nationals",
+    desc:"A highly competitive 12-week software engineering internship at Motive. Interns write real production code across Frontend, Backend, AI, Mobile, and QA tracks. Comes with a competitive monthly tech stipend and potential for full-time conversion based on performance.",
+    fullDesc:"The Motive Pakistan Engineering Internship is a highly competitive 12-week programme designed for the most talented CS and Software Engineering undergraduates in Pakistan. Interns do not merely shadow — they write real code and contribute to active architecture across Frontend, Backend, AI, Mobile, and QA engineering tracks.\n\nMotive (formerly KeepTruckin) is a leading fleet management and AI company with offices in Karachi, Lahore, and Islamabad. The programme includes a competitive monthly tech stipend and offers high-performing interns the potential for a full-time return offer.",
+    eligibilityFull:"Pakistani nationals currently enrolled in a Computer Science, Software Engineering, or related undergraduate programme. Ages 19–23.",
+    cost:"Fully Paid — competitive monthly tech stipend provided.",
+    link:"https://gomotive.com/company/careers/pk/internship-2026/"
+  },
+  {
+    id:33,
+    title:"NextGen Med Virtual Internship Programme 2026",
+    emoji:"🩺",
+    deadline:"2026-06-25",
+    education:"highschool",
+    location:"100% Online / Remote",
+    locationType:"online",
+    nationality:"pakistan",
+    ageMin:14,ageMax:18,
+    eligibility:"High School students (O/A Levels) — Pakistani and Global",
+    desc:"A specialised virtual medical and healthcare administration internship for pre-med students. Explores healthcare marketing, public health projects, and career planning. Perfect for building a strong portfolio remotely before university applications.",
+    fullDesc:"The NextGen Med Virtual Internship Programme is a specialised remote experience designed for pre-med high school students. It covers healthcare marketing, public healthcare project design, administrative practices, and career exploration within the medical and health sector.\n\nThe programme is completely online and accessible from anywhere, making it ideal for Pakistani and international students who want to strengthen their university applications with real medical-sector experience. Participants receive a certificate of completion and guidance on career pathways in medicine and health.",
+    eligibilityFull:"High School students aged 14–18 currently enrolled in O/A Levels or equivalent. Pakistani nationals and global applicants welcome.",
+    cost:"Free to participate.",
+    link:"https://teachwink.com/internships-in-pakistan/"
+  },
+  {
+    id:34,
+    title:"Scalemill Sales & Business Development Internship 2026",
+    emoji:"📈",
+    deadline:"2026-06-30",
+    education:"both",
+    location:"Clifton, Karachi (On-site)",
+    locationType:"inperson",
+    nationality:"pakistan",
+    ageMin:16,ageMax:21,
+    eligibility:"O/A Level students or early undergraduates — Pakistani nationals",
+    desc:"A fast-paced corporate internship introducing students to international business operations, client prospecting, and market development. Excellent for practising soft skills and professional communication. Stipend provided with performance-based potential for permanent or part-time roles.",
+    fullDesc:"The Scalemill Sales and Business Development Internship is a corporate experience in Clifton, Karachi, designed for students on summer break or early in their undergraduate journey. Interns are exposed to real international business operations, client prospecting strategies, and market development techniques.\n\nThe programme is designed for students who want to build professional soft skills, sharpen their communication, and explore business and sales careers. A stipend is provided, and high-performing interns may be offered transition into permanent or part-time roles.",
+    eligibilityFull:"Pakistani nationals aged 16–21, currently on summer break from O/A Levels or early in an undergraduate programme.",
+    cost:"Paid — stipend provided.",
+    link:"https://pk.indeed.com/q-internship-o-levels-jobs.html"
+  },
+
+  /* ── GLOBALLY SOURCED NEW OPPORTUNITIES ── */
+  {
+    id:35,
+    title:"The Junior Academy — New York Academy of Sciences",
+    emoji:"🔭",
+    deadline:"2026-07-05",
+    education:"highschool",
+    location:"100% Online / Remote",
+    locationType:"online",
+    nationality:"international",
+    ageMin:13,ageMax:18,
+    eligibility:"High school students aged 13–18 from 100+ countries — completely free",
+    desc:"A global network where students team up to solve real-world sustainability and STEM challenges with 1-on-1 guidance from professional scientists and industry mentors. Completely free for all participants worldwide. Applications open April 1st annually.",
+    fullDesc:"The Junior Academy, run by the New York Academy of Sciences, is a global online platform connecting high school students aged 13–18 with professional scientists and industry mentors. Student teams collaborate to solve real-world sustainability and STEM challenges through structured problem-solving cycles.\n\nEach team is guided 1-on-1 by an expert mentor throughout the challenge. The programme is completely free and open to students from over 100 countries. It offers an internationally recognised credential that strengthens university applications and builds genuine scientific thinking skills.",
+    eligibilityFull:"Open to high school students aged 13–18 from anywhere in the world. No cost to participate.",
+    cost:"Completely free.",
+    link:"https://www.nyas.org/learning/high-school-research-programs/the-junior-academy/"
+  },
+  {
+    id:36,
+    title:"FutureMinds Summit Thailand 2026 — GYN (Deadline Extended)",
+    emoji:"🇹🇭",
+    deadline:"2026-07-10",
+    education:"both",
+    location:"Bangkok, Thailand",
+    locationType:"inperson",
+    nationality:"international",
+    ageMin:16,ageMax:30,
+    eligibility:"Young leaders aged 16–30, open internationally — scholarships covering airfare, visa, accommodation & meals",
+    desc:"A four-day global gathering of young leaders in Bangkok advancing the UN Sustainable Development Goals. SDGs 4, 5, 9, and 13 explored through sessions, workshops, and cross-sector dialogue. ~80 participants with scientists, NGOs, and AI experts. Scholarships covering full travel available.",
+    fullDesc:"FutureMinds Summit Thailand 2026 is a four-day global gathering of young leaders in Bangkok, Thailand, focused on advancing the United Nations Sustainable Development Goals (SDGs 4, 5, 9, and 13). Approximately 80 participants from around the world come together to transform ideas into impactful initiatives through sessions, workshops, and cross-sector dialogue.\n\nThe summit features collaboration with scientists, NGOs, and AI experts. It is organised by the Global Youth Network (GYN) and offers a unique opportunity for young leaders to develop practical solutions to global challenges while building an international network. Scholarships are available covering airfare, visa, accommodation, and meals for selected participants.",
+    eligibilityFull:"Young leaders aged 16–30 from any country. Scholarships available covering airfare, visa, accommodation, and meals.",
+    cost:"Scholarships available covering all major expenses. Self-funded options also available.",
+    link:"https://thegyn.org/fms-thailand/"
+  },
+  {
+    id:37,
+    title:"Conrad Challenge 2026 — Innovation & Entrepreneurship",
+    emoji:"🚀",
+    deadline:"2026-07-15",
+    education:"highschool",
+    location:"Online rounds + NASA Space Center Houston (In-person Summit)",
+    locationType:"online",
+    nationality:"international",
+    ageMin:13,ageMax:18,
+    eligibility:"High school teams of 2–5 students, aged 13–18 — global",
+    desc:"An annual entrepreneurship and innovation competition where teams design commercially viable solutions to global problems in aerospace, cyber-technology, and sustainability. Finalists win university scholarships and commercial incubation funding. In-person Innovation Summit at NASA Space Center Houston.",
+    fullDesc:"The Conrad Challenge is an annual global competition challenging high school student teams of 2–5 to design commercially viable solutions to real-world problems across four innovation categories: aerospace and aviation, cyber-technology and security, energy and environment, and health and nutrition.\n\nEarly rounds are conducted online. Semi-finalists advance to a judging round (nominal fee applies). Finalists compete at the Innovation Summit at NASA Space Center Houston, where winners receive university scholarships, commercial incubation funding, and recognition from NASA and leading industry partners. Registration closes in late November each year.",
+    eligibilityFull:"Open globally to high school students aged 13–18. Teams of 2–5 students. Nominal fee for semi-finalist judging round.",
+    cost:"Free for early rounds. Nominal fee for semi-finalist judging. Finalists win scholarships and incubation funding.",
+    link:"https://www.conradchallenge.org/conrad-challenge-registration"
+  },
+  {
+    id:38,
+    title:"Horizon Academic Research Program",
+    emoji:"📖",
+    deadline:"2026-08-01",
+    education:"highschool",
+    location:"100% Online / Remote",
+    locationType:"online",
+    nationality:"international",
+    ageMin:14,ageMax:18,
+    eligibility:"High school sophomores, juniors, and seniors aged 14–18 — global",
+    desc:"An online research programme allowing students to write a university-level research paper under direct guidance from professors at Harvard, Princeton, and MIT. Multiple cohort deadlines per year. Partial and full need-based financial aid available.",
+    fullDesc:"The Horizon Academic Research Program connects high school students in grades 10–12 with professors and researchers from top institutions including Harvard, Princeton, and MIT. Under 1-on-1 supervision, students develop and complete a university-level research paper in a field of their choosing.\n\nThe programme runs on a trimester model with Fall, Spring, and Summer cohorts, offering multiple deadlines throughout the year. It is a rigorous, credential-building experience designed to prepare students for the academic demands of top universities. Partial and full need-based financial aid is available for qualifying students.",
+    eligibilityFull:"High school sophomores, juniors, and seniors (Grades 10–12) aged 14–18. Open globally. Need-based financial aid available.",
+    cost:"Tuition-based (~$3,500–$5,500). Partial and full need-based financial aid available.",
+    link:"https://www.horizonacademic.org/apply"
+  },
+  {
+    id:39,
+    title:"New York Times Summer Academy 2026",
+    emoji:"📰",
+    deadline:"2026-08-01",
+    education:"highschool",
+    location:"New York City (In-Person) or Online",
+    locationType:"inperson",
+    nationality:"international",
+    ageMin:15,ageMax:18,
+    eligibility:"High school students and gap-year students aged 15–18 — global",
+    desc:"A premier programme covering journalism, politics, technology, and culture, taught by New York Times journalists and leading industry experts. Available as a residential or day camp in NYC, or fully online. Full and partial need-based financial aid available.",
+    fullDesc:"The New York Times Summer Academy is a premier intensive programme that immerses high school and gap-year students in the world of journalism, media, politics, technology, and culture. Sessions are led by active New York Times journalists, editors, and other leading industry experts.\n\nThe academy is available in three formats: a residential programme in New York City (~$11,000), a day camp option (~$6,000), and an online track. Full and partial need-based financial aid awards are available. Early Decision deadline is late January; Regular Decision deadline is late March.",
+    eligibilityFull:"High school students and gap-year students aged 15–18 from any country. Online and in-person tracks available. Financial aid available.",
+    cost:"Tuition-based (~$6,000 day camp, ~$11,000 residential). Full and partial need-based financial aid available.",
+    link:"https://www.nytedu.com/courses/summer-academy/apply/"
+  },
+  {
+    id:40,
+    title:"Lumiere Research Scholar Program",
+    emoji:"🧬",
+    deadline:"2026-08-15",
+    education:"highschool",
+    location:"100% Online / Remote",
+    locationType:"online",
+    nationality:"international",
+    ageMin:14,ageMax:18,
+    eligibility:"High school students Grades 9–12, aged 14–18 — global",
+    desc:"Founded by Harvard and Oxford researchers, this 1-on-1 PhD-mentored online programme produces publication-quality independent research papers. Multiple cohorts in Spring, Summer, Fall, and Winter. Full and partial need-based financial aid available for qualifying low-income students.",
+    fullDesc:"The Lumiere Research Scholar Program pairs high school students 1-on-1 with PhD mentors to produce independent, publication-quality research papers across any academic discipline. Founded by researchers from Harvard and Oxford, the programme is designed to introduce students to genuine academic research at the highest standards.\n\nCohorts run in Spring, Summer, Fall, and Winter — offering rolling admissions throughout the year. The programme runs online, making it accessible globally. Full and partial need-based financial aid is available for qualifying low-income students.",
+    eligibilityFull:"High school students in Grades 9–12 (ages 14–18) from any country. Full and partial financial aid available.",
+    cost:"Tuition-based (~$2,800–$8,000). Full and partial need-based financial aid available.",
+    link:"https://www.lumiere-education.com/application-form"
+  },
+  {
+    id:41,
+    title:"Stanford SIMR — Summer Research Program 2026",
+    emoji:"🧫",
+    deadline:"2026-08-20",
+    education:"highschool",
+    location:"Stanford University (Stanford, CA, USA)",
+    locationType:"inperson",
+    nationality:"usa",
+    ageMin:16,ageMax:18,
+    eligibility:"US citizens and Permanent Residents — high school juniors and seniors, must be 16+ by programme start",
+    desc:"An intense 8-week hands-on research programme at Stanford's design labs, focused on immunology, stem cell biology, cancer biology, and bioengineering. Participants receive a stipend (~$500–$2,500). Free to attend. US citizens and Permanent Residents only.",
+    fullDesc:"The Stanford Institutes of Medicine Summer Research Program (SIMR) is an intensive 8-week programme that places high school juniors and seniors in real Stanford research labs. Students work directly with Stanford researchers on active projects in immunology, stem cell biology, cancer biology, and bioengineering.\n\nThe programme is free to attend, and participants receive a stipend of approximately $500–$2,500. It is open exclusively to US citizens and Permanent Residents who are at least 16 years old by the programme start date. SIMR is one of the most competitive and prestigious high school science research opportunities in the United States.",
+    eligibilityFull:"US citizens and Permanent Residents only. Must be a high school junior or senior and at least 16 years old by the programme start date.",
+    cost:"Free. Participants receive a stipend of ~$500–$2,500.",
+    link:"https://simr.stanford.edu/apply.html"
+  },
+  {
+    id:42,
+    title:"Immerse Education Pre-University Summer School 2026",
+    emoji:"🎓",
+    deadline:"2026-08-30",
+    education:"both",
+    location:"Cambridge, Oxford, London, Singapore, Toronto, Sydney",
+    locationType:"inperson",
+    nationality:"international",
+    ageMin:13,ageMax:18,
+    eligibility:"Middle and High School students aged 13–18 — global",
+    desc:"Academic enrichment programmes introducing students to university-level topics in law, engineering, medicine, international relations, and more — hosted at elite campuses across the globe. Essay competition scholarships for 100% tuition coverage available annually.",
+    fullDesc:"Immerse Education's Pre-University Summer Schools offer academic enrichment programmes hosted at some of the world's most prestigious campuses including Cambridge, Oxford, London, Singapore, Toronto, and Sydney. Students aged 13–18 explore university-level topics across subjects including law, engineering, medicine, international relations, business, and the humanities.\n\nProgrammes are designed to simulate the tutorial and seminar style of university education. Multiple summer cycles are available, with rolling admissions. Annual essay competitions are held offering 100% scholarship coverage, making it accessible to students who cannot afford the full tuition.",
+    eligibilityFull:"Open globally to middle and high school students aged 13–18. Essay competition scholarships available for 100% tuition.",
+    cost:"Tuition-based (varies by location and programme). 100% scholarship essay competition held annually.",
+    link:"https://www.immerse.education/enrol/"
+  },
+  {
+    id:43,
+    title:"Bank of America Student Leaders Program 2027",
+    emoji:"🏦",
+    deadline:"2027-01-15",
+    education:"highschool",
+    location:"Local non-profits (In-Person) + Washington D.C. Summit",
+    locationType:"inperson",
+    nationality:"usa",
+    ageMin:16,ageMax:18,
+    eligibility:"US Citizens or Permanent Residents in select Bank of America markets — high school juniors and seniors",
+    desc:"A highly selective 8-week paid community service internship where students work for a local non-profit and attend a national leadership summit in Washington, D.C. Fully funded with a paid salary. One of the most prestigious high school leadership programmes in the United States.",
+    fullDesc:"The Bank of America Student Leaders Program is one of the most prestigious high school leadership initiatives in the United States. Selected students complete an 8-week paid summer internship with a local non-profit organisation in their community, gaining hands-on experience in social impact work.\n\nAll interns then attend a national leadership summit in Washington, D.C., where they connect with peers, policymakers, and Bank of America senior leaders. The programme is fully funded — participants receive a paid salary throughout the internship. It is open to US citizens or Permanent Residents in good academic standing who live in select Bank of America market areas.",
+    eligibilityFull:"US Citizens or Permanent Residents living in select Bank of America markets. High school juniors and seniors in good academic standing. Ages 16–18.",
+    cost:"Fully funded + paid salary throughout the 8-week internship.",
+    link:"https://about.bankofamerica.com/en-us/what-guides-us/student-leaders.html#how-to-apply"
   }
 ];
 
@@ -782,17 +1039,19 @@ function toggleLevel(val, btn) {
   renderOpps();
 }
 
-function toggleElig2(btn) {
-  if (eligSelected.has('international')) {
-    eligSelected.delete('international');
+function toggleElig(val, btn) {
+  if (eligSelected.has(val)) {
+    eligSelected.delete(val);
     btn.classList.remove('active');
   } else {
-    eligSelected.add('international');
+    eligSelected.add(val);
     btn.classList.add('active');
   }
   updateAllBtn();
   renderOpps();
 }
+// Legacy alias kept for safety
+function toggleElig2(btn) { toggleElig('international', btn); }
 function toggleFormat(val, btn) {
   if (formatSelected.has(val)) {
     formatSelected.delete(val);
@@ -836,6 +1095,8 @@ function resetAll() {
   document.getElementById('btnUndergrad').classList.remove('active');
   document.getElementById('btnBoth').classList.remove('active');
   document.getElementById('btnInternational').classList.remove('active');
+  document.getElementById('btnPakistan').classList.remove('active');
+  document.getElementById('btnUSA').classList.remove('active');
   document.getElementById('btnOnline').classList.remove('active');
   document.getElementById('btnInperson').classList.remove('active');
   document.getElementById('btnAll').classList.add('active');
@@ -884,6 +1145,7 @@ function passesBaseFilters(o) {
     || (levelSelected.has('highschool') && (o.education === 'highschool' || o.education === 'both'))
     || (levelSelected.has('undergrad')  && (o.education === 'undergrad'  || o.education === 'both'))
     || (levelSelected.has('both')       && o.education === 'both');
+  // Nationality filter: if any nationality is selected, opp must match at least one selected
   const natOk = eligSelected.size === 0 || eligSelected.has(o.nationality);
   const fmtOk = formatSelected.size === 0 || formatSelected.has(o.locationType);
   return levelOk && natOk && fmtOk;
