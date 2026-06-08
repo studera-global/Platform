@@ -21,7 +21,7 @@
 body{
   font-family:var(--font-body);color:var(--body);
   background-color:var(--green-faint);
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='104' viewBox='0 0 90 104'%3E%3Cg fill='none' stroke='%23147A3E' stroke-width='1.1' stroke-opacity='0.08'%3E%3Cpolygon points='71,26 58,48 32,48 19,26 32,4 58,4'/%3E%3Cpolygon points='26,78 13,100 -13,100 -26,78 -13,56 13,56'/%3E%3Cpolygon points='116,78 103,100 77,100 64,78 77,56 103,56'/%3E%3C/g%3E%3C/svg%3E");
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='104' viewBox='0 0 90 104'%3E%3Cg fill='none' stroke='%23147A3E' stroke-width='1.1' stroke-opacity='0'%3E%3Cpolygon points='71,26 58,48 32,48 19,26 32,4 58,4'/%3E%3Cpolygon points='26,78 13,100 -13,100 -26,78 -13,56 13,56'/%3E%3Cpolygon points='116,78 103,100 77,100 64,78 77,56 103,56'/%3E%3C/g%3E%3C/svg%3E");
   background-repeat:repeat;background-size:90px 104px;
 }
 .brand{color:var(--green);font-weight:600}
@@ -135,7 +135,8 @@ nav{
 .founder-img-panel{
   background:var(--green);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:36px 28px;position:relative;overflow:hidden;min-height:320px;
+  padding:36px 28px;position:relative;overflow:hidden;
+   min-height: auto;
 }
 .founder-band.reverse .founder-img-panel{
   background:linear-gradient(135deg,#0e5a2d,#147A3E);order:2;
@@ -157,7 +158,7 @@ nav{
   border:4px solid rgba(255,255,255,.35);
   background:var(--green-dark);
   overflow:hidden;position:relative;z-index:1;
-  margin-bottom:20px;
+  margin: auto 0;
 }
 .founder-avatar-wrap img{width:100%;height:100%;object-fit:cover;}
 .founder-avatar-initials{
