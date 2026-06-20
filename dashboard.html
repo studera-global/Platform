@@ -20,12 +20,15 @@
 <style>
 :root{--green:#147A3E;--green-dark:#0e5a2d;--green-light:#e8f5ee;--green-faint:#f0f7f3;--orange:#F97316;--orange-dark:#ea6d0e;--dark:#0f1a14;--body:#2d3a33;--muted:#6b7c72;--border:#dce8e0;--radius:14px;--radius-lg:20px;--shadow:0 4px 24px rgba(20,122,62,.08);--font-display:'DM Serif Display',serif;--font-body:'DM Sans',sans-serif;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font-body);background:#f7faf8;color:var(--body);line-height:1.55;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font-body);background:#f7faf8;color:var(--body);line-height:1.55;-webkit-font-smoothing:antialiased;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='104' viewBox='0 0 90 104'%3E%3Cg fill='none' stroke='%23147A3E' stroke-width='1.1' stroke-opacity='0.05'%3E%3Cpolygon points='71,26 58,48 32,48 19,26 32,4 58,4'/%3E%3C/g%3E%3C/svg%3E");background-size:90px 104px;}
 a{text-decoration:none}
 img{max-width:100%}
+.nav-logo-link{display:flex;align-items:center;text-decoration:none;gap:8px}
+.nav-logo-img{height:46px;width:auto;object-fit:contain;display:block}
+.nav-logo-link:hover{opacity:.85}
 
 /* ── NAVBAR ── */
-.navbar{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:12px 22px;box-shadow:0 1px 10px rgba(20,122,62,.05)}
+.navbar{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:12px 22px;box-shadow:0 1px 10px rgba(20,122,62,.05);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='104' viewBox='0 0 90 104'%3E%3Cg fill='none' stroke='%23F97316' stroke-width='1.4' stroke-opacity='0.09'%3E%3Cpolygon points='71,26 58,48 32,48 19,26 32,4 58,4'/%3E%3Cpolygon points='26,78 13,100 -13,100 -26,78 -13,56 13,56'/%3E%3C/g%3E%3C/svg%3E");background-size:90px 104px}
 .nav-logo-text{font-family:var(--font-display);font-size:1.3rem;color:var(--dark)}
 .brand{color:var(--green)}
 .nav-right{display:flex;align-items:center;gap:14px}
@@ -37,7 +40,9 @@ img{max-width:100%}
 
 /* ── DASHBOARD LAYOUT ── */
 .dashboard{max-width:920px;margin:0 auto;padding:24px 18px 80px}
-.welcome-hero{background:linear-gradient(135deg,var(--green),var(--green-dark));border-radius:var(--radius-lg);padding:28px 30px;color:#fff;margin-bottom:20px;box-shadow:var(--shadow)}
+.welcome-hero{position:relative;background:linear-gradient(135deg,var(--green),var(--green-dark));border-radius:var(--radius-lg);padding:28px 30px;color:#fff;margin-bottom:20px;box-shadow:var(--shadow);overflow:hidden}
+.welcome-hero::before{content:"";position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='104' viewBox='0 0 90 104'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1.2' stroke-opacity='0.10'%3E%3Cpolygon points='71,26 58,48 32,48 19,26 32,4 58,4'/%3E%3C/g%3E%3C/svg%3E");background-size:78px 90px;pointer-events:none}
+.welcome-hero>*{position:relative;z-index:1}
 .welcome-inner{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
 .welcome-hero h1{font-family:var(--font-display);font-size:1.7rem;font-weight:400}
 .welcome-hero p{font-size:.9rem;opacity:.9;margin-top:5px;max-width:560px}
@@ -243,7 +248,10 @@ img{max-width:100%}
 
 <!-- ══════════ NAVBAR (unchanged structure) ══════════ -->
 <nav class="navbar">
-  <span class="nav-logo-text"><span class="brand">Studera</span></span>
+  <a href="index.html" class="nav-logo-link" title="Back to Studera home">
+    <img src="logo.png" alt="Studera" class="nav-logo-img" onerror="this.style.display='none';document.getElementById('dashNL').style.display='inline'"/>
+    <span id="dashNL" class="nav-logo-text" style="display:none"><span class="brand">Studera</span></span>
+  </a>
   <div class="nav-right">
     <span class="nav-user" id="navUserName">Dashboard</span>
     <button class="nav-profile-btn" id="navProfileBtn" onclick="openProfileModal()" title="View / edit your profile">
@@ -286,6 +294,7 @@ img{max-width:100%}
       <div class="field"><label>Studera ID</label><input type="text" id="pf-sid" readonly/></div>
       <div class="field"><label>Role</label><input type="text" id="pf-role" readonly/></div>
       <div class="field"><label>Mobile Number <span class="required-star">*</span></label><input type="tel" id="pf-phone" placeholder="e.g. +92 300 1234567"/></div>
+      <div class="field"><label>LinkedIn Profile <span style="font-weight:400;text-transform:none;color:var(--muted)">(optional)</span></label><input type="url" id="pf-linkedin" placeholder="https://linkedin.com/in/yourname"/></div>
 
       <hr class="section-divider"/>
       <div class="section-divider-label">Personal Details</div>
@@ -383,6 +392,15 @@ img{max-width:100%}
         <button class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
       </div>
       <div class="save-status" id="saveStatus"></div>
+
+      <div style="margin-top:22px;padding:16px 18px;background:#fff5f0;border:1px solid #fbd9c2;border-radius:12px;">
+        <div style="font-size:.78rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#c2410c;margin-bottom:6px;">Terminate your profile</div>
+        <p style="font-size:.86rem;color:#7c4a2d;line-height:1.6;margin:0;">
+          If you wish to terminate your profile, email
+          <a href="mailto:info.studera@gmail.com" style="color:#c2410c;font-weight:700;text-decoration:none;">info.studera@gmail.com</a>
+          and your profile will be terminated within 72 hours.
+        </p>
+      </div>
     </div>
   </div>
 </div>
@@ -689,7 +707,10 @@ const DIR = window.STUDERA_UNI_DIRECTORY || {d:{},n:[]};
 /* ═══════════════════════ USER ═══════════════════════ */
 let user = {};
 try { user = JSON.parse(sessionStorage.getItem('studera_user') || '{}'); } catch(e){}
-if (!user.logged_in && !user.name) { window.location.href = 'login.html'; }
+// Require BOTH the logged_in flag and a real auth token issued at login.
+// (Prevents accessing the dashboard with a stale/forged sessionStorage blob.)
+const authToken = sessionStorage.getItem('studera_token');
+if (!user.logged_in || !authToken) { window.location.href = 'login.html'; }
 const isMentor = (user.role || '').toLowerCase() === 'mentor';
 let profileData = {};          // row from users table
 let mentorOfferings = [];      // live mentor uni additions (merged into HS picker)
@@ -758,6 +779,7 @@ function openProfileModal(){
   $('pf-sid').value = user.studera_id || profileData.studera_id || '';
   $('pf-role').value = (user.role || profileData.role || '');
   $('pf-phone').value = profileData.phone_number || profileData.phone || profileData.mobile || '';
+  $('pf-linkedin').value = profileData.linkedin_url || '';
   $('pf-dob').value = profileData.date_of_birth || '';
   if(profileData.age) $('pf-age').value = profileData.age + ' years';
 
@@ -831,6 +853,7 @@ async function saveProfile(){
   const satYes = $('pf-sat-status').value==='Yes';
   const payload = {
     phone_number:phone, mobile:phone, phone:phone,
+    linkedin_url: $('pf-linkedin').value.trim(),
     date_of_birth:$('pf-dob').value, age:ageNum,
     grade_year:$('pf-year').value,
     sat_taken:satYes, sat_count: satYes ? parseInt($('pf-sat-count').value)||0 : 0
