@@ -188,7 +188,20 @@ async function doLogin() {
     btn.disabled = false;
     btn.textContent = 'Log In →';
     
-    if (data.error) {
+    // SECURITY FIX: a successful login MUST return HTTP 200 AND a real access_token.
+    // Supabase/GoTrue reports a wrong password in several shapes depending on version:
+    //   { error: "invalid_grant", ... }  OR  { error_description: ... }
+    //   { code: 400, msg: "Invalid login credentials" }  OR  { error_code: ... }
+    // The old code only checked `data.error`, so the `msg`/`code` shape slipped through
+    // and ANY password was accepted. We now require a valid token explicitly.
+    const loginFailed =
+      !res.ok ||
+      !data.access_token ||
+      data.error || data.error_description || data.error_code ||
+      (data.code && data.code >= 400) ||
+      data.msg;
+    
+    if (loginFailed) {
       setStatus('loginStatus', 'Incorrect email/ID or password. Please try again.', 'error');
       return;
     }
