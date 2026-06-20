@@ -1,620 +1,1458 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
-<head> 
+<head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Dashboard — Studera</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Supabase JS (for storage signed uploads convenience; REST is also used directly) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- pdf.js — renders student PDFs to canvas so they can be watermarked & non-downloadable -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+<!-- ░░ STUDERA DATA FILES — upload these next to dashboard.html ░░ -->
+<!-- 1) Major category -> university/degree map (curated base list) -->
+<script src="studera-majors.js"></script>
+<!-- 2) Full world university directory (10k+ unis) for email-domain + name autofill -->
+<script src="uni-directory.js"></script>
+
 <style>
 :root{--green:#147A3E;--green-dark:#0e5a2d;--green-light:#e8f5ee;--green-faint:#f0f7f3;--orange:#F97316;--orange-dark:#ea6d0e;--dark:#0f1a14;--body:#2d3a33;--muted:#6b7c72;--border:#dce8e0;--radius:14px;--radius-lg:20px;--shadow:0 4px 24px rgba(20,122,62,.08);--font-display:'DM Serif Display',serif;--font-body:'DM Sans',sans-serif;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font-body);background:var(--green-faint);color:var(--body);min-height:100vh;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='104' viewBox='0 0 90 104'%3E%3Cg fill='none' stroke='%23147A3E' stroke-width='1.1' stroke-opacity='0.06'%3E%3Cpolygon points='71,26 58,48 32,48 19,26 32,4 58,4'/%3E%3C/g%3E%3C/svg%3E");background-size:90px 104px;}
-.brand{color:var(--green);font-weight:600}
-/* NAV */
-nav{position:sticky;top:0;z-index:900;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 5%;height:68px;display:flex;align-items:center;justify-content:space-between;}
-.nav-logo{display:flex;align-items:center;text-decoration:none}
-.nav-logo-img{height:52px;width:auto;object-fit:contain}
-.nav-logo-text{font-family:var(--font-display);font-size:1.4rem;color:var(--green)}
-.nav-right{display:flex;align-items:center;gap:16px}
-.nav-user{font-size:.85rem;font-weight:600;color:var(--body)}
-.nav-signout{font-size:.82rem;color:var(--muted);cursor:pointer;background:none;border:none;font-family:var(--font-body);padding:7px 16px;border:1px solid var(--border);border-radius:99px;transition:all .2s}
+body{font-family:var(--font-body);background:#f7faf8;color:var(--body);line-height:1.55;-webkit-font-smoothing:antialiased}
+a{text-decoration:none}
+img{max-width:100%}
+
+/* ── NAVBAR ── */
+.navbar{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:12px 22px;box-shadow:0 1px 10px rgba(20,122,62,.05)}
+.nav-logo-text{font-family:var(--font-display);font-size:1.3rem;color:var(--dark)}
+.brand{color:var(--green)}
+.nav-right{display:flex;align-items:center;gap:14px}
+.nav-user{font-size:.86rem;color:var(--muted);font-weight:500}
+.nav-profile-btn{width:40px;height:40px;border-radius:50%;border:2px solid var(--green-light);background:var(--green-faint);cursor:pointer;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:0}
+.nav-profile-initials{font-weight:700;color:var(--green);font-size:.9rem}
+.nav-signout{background:none;border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-family:var(--font-body);font-size:.8rem;font-weight:600;color:var(--muted);cursor:pointer}
 .nav-signout:hover{border-color:var(--green);color:var(--green)}
-/* LED ticker removed */
-/* INCOMPLETE ALERT */
-.incomplete-alert{background:#fef2f2;border-bottom:2px solid #ef4444;padding:12px 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;cursor:pointer;transition:background .2s}
-.incomplete-alert:hover{background:#fee2e2}
-.incomplete-alert p{font-size:.85rem;color:#b91c1c;font-weight:600}
-.incomplete-alert span{font-size:.82rem;color:#ef4444;font-weight:700;white-space:nowrap;text-decoration:underline}
-.incomplete-alert.hidden{display:none}
-/* SHELL */
-.dashboard{max-width:900px;margin:0 auto;padding:36px 5% 80px}
-/* WELCOME */
-.welcome-hero{background:var(--dark);border-radius:var(--radius-lg);padding:36px 40px;margin-bottom:24px;position:relative;overflow:hidden}
-.welcome-hero::before{content:"";position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='104' viewBox='0 0 90 104'%3E%3Cg fill='none' stroke='%23fff' stroke-width='1' stroke-opacity='0.04'%3E%3Cpolygon points='71,26 58,48 32,48 19,26 32,4 58,4'/%3E%3C/g%3E%3C/svg%3E");background-size:90px 104px}
-.welcome-inner{position:relative;z-index:1;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px}
-.welcome-left h1{font-family:var(--font-display);font-size:clamp(1.6rem,3vw,2.2rem);color:#fff;margin-bottom:6px}
-.welcome-left h1 span{color:#a8e6c1}
-.welcome-left p{color:rgba(255,255,255,.6);font-size:.88rem;line-height:1.6;max-width:480px}
-.studera-id-pill{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:99px;padding:8px 18px;font-size:.82rem;color:rgba(255,255,255,.7);white-space:nowrap;flex-shrink:0}
-.studera-id-pill strong{color:#a8e6c1}
-/* DOCTOR ALGORITHM CHAT */
-.algo-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:24px;box-shadow:var(--shadow)}
-.algo-header{background:var(--green);padding:16px 24px;display:flex;align-items:center;gap:12px}
-.algo-header-icon{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
-.algo-header-text h3{font-family:var(--font-display);font-size:1rem;color:#fff;margin-bottom:2px}
-.algo-header-text p{font-size:.75rem;color:rgba(255,255,255,.7)}
-.algo-chat{padding:20px 24px;max-height:460px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
-.msg{display:flex;gap:10px;align-items:flex-start;animation:fadeUp .3s ease}
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.msg.algo{flex-direction:row}
-.msg.user{flex-direction:row-reverse}
-.msg-av{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.9rem}
-.msg.algo .msg-av{background:var(--green);color:#fff}
-.msg.user .msg-av{background:var(--orange);color:#fff}
-.msg-bubble{max-width:85%;padding:12px 16px;border-radius:var(--radius);font-size:.88rem;line-height:1.65}
-.msg.algo .msg-bubble{background:var(--green-faint);border:1px solid var(--border);border-top-left-radius:4px;color:var(--body)}
-.msg.user .msg-bubble{background:var(--green);color:#fff;border-top-right-radius:4px}
-.typing-indicator{display:flex;gap:4px;align-items:center;padding:12px 16px;background:var(--green-faint);border:1px solid var(--border);border-radius:var(--radius);border-top-left-radius:4px;width:fit-content}
-.typing-dot{width:6px;height:6px;background:var(--muted);border-radius:50%;animation:typingBounce 1.2s infinite}
-.typing-dot:nth-child(2){animation-delay:.2s}.typing-dot:nth-child(3){animation-delay:.4s}
-@keyframes typingBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
-.chat-choices{padding:0 24px 16px;display:flex;flex-wrap:wrap;gap:8px}
-.chat-choice{padding:9px 18px;border-radius:99px;border:1.5px solid var(--border);background:#fff;font-family:var(--font-body);font-size:.83rem;color:var(--body);cursor:pointer;transition:all .18s;line-height:1.3}
-.chat-choice:hover{border-color:var(--green);background:var(--green-faint);color:var(--green)}
-.algo-input-area{border-top:1px solid var(--border);padding:16px 24px;display:flex;gap:10px;align-items:flex-end}
-.algo-textarea{flex:1;border:none;outline:none;font-family:var(--font-body);font-size:.9rem;color:var(--body);background:transparent;resize:none;min-height:24px;max-height:100px;line-height:1.5}
-.algo-textarea::placeholder{color:var(--muted)}
-.algo-send{width:38px;height:38px;border-radius:50%;background:var(--green);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;transition:background .2s}
-.algo-send:hover{background:var(--green-dark)}
-.algo-send:disabled{background:var(--border);cursor:not-allowed}
-.algo-send svg{width:16px;height:16px}
-.algo-disclaimer{padding:10px 24px 14px;font-size:.75rem;color:var(--muted);line-height:1.5;border-top:1px solid var(--border);background:var(--green-faint)}
-/* CHARGING ANIMATION */
-.status-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;margin-bottom:24px;text-align:center;box-shadow:var(--shadow)}
-.battery-wrap{display:inline-flex;flex-direction:column;align-items:center;margin-bottom:20px}
-.battery-outer{width:72px;height:130px;border:3px solid var(--green);border-radius:12px;position:relative;display:flex;align-items:flex-end;justify-content:center;padding:4px}
-.battery-tip{width:24px;height:8px;background:var(--green);border-radius:4px 4px 0 0;position:absolute;top:-10px;left:50%;transform:translateX(-50%)}
-.battery-fill{width:100%;border-radius:7px;background:linear-gradient(180deg,#22c55e,var(--green));transition:height .3s;position:relative;overflow:hidden}
-.battery-fill::after{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);animation:shine 2.2s infinite}
-@keyframes shine{0%{left:-100%}100%{left:100%}}
-.battery-pct{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--font-display);font-size:1.3rem;color:var(--green);font-weight:700;z-index:1;white-space:nowrap}
-.charge-bolt{font-size:1.8rem;margin-top:8px;animation:boltPulse 1.5s ease-in-out infinite}
-@keyframes boltPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
-.status-title{font-family:var(--font-display);font-size:1.5rem;color:var(--dark);margin-bottom:8px}
-.status-sub{font-size:.88rem;color:var(--muted);line-height:1.6;max-width:480px;margin:0 auto 16px}
-.status-ahead{display:inline-block;background:var(--green);color:#fff;font-size:.78rem;font-weight:700;padding:6px 18px;border-radius:99px;text-transform:uppercase;letter-spacing:.8px}
-/* EXPLORE CARDS */
-.explore-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
-@media(max-width:700px){.explore-grid{grid-template-columns:1fr}}
-.explore-card{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:22px;cursor:pointer;transition:all .25s;text-decoration:none;display:block;position:relative;overflow:hidden}
-.explore-card:hover{border-color:var(--green);box-shadow:var(--shadow);transform:translateY(-3px)}
-.explore-card:hover .explore-expand{max-height:80px;opacity:1;margin-top:10px}
-.explore-card-icon{font-size:1.8rem;display:block;margin-bottom:10px}
-.explore-card-title{font-weight:700;font-size:.93rem;color:var(--dark);margin-bottom:3px}
-.explore-card-sub{font-size:.78rem;color:var(--muted);line-height:1.4}
-.explore-expand{max-height:0;opacity:0;overflow:hidden;transition:all .3s ease;font-size:.78rem;color:var(--green);font-weight:600;line-height:1.4}
-/* BETA STRIP */
-.beta-strip{background:linear-gradient(135deg,var(--orange),#fb923c);border-radius:var(--radius-lg);padding:24px 28px;margin-bottom:24px;display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap}
-.beta-strip-icon{font-size:2rem;flex-shrink:0}
-.beta-strip h3{font-family:var(--font-display);font-size:1.1rem;color:#fff;margin-bottom:5px}
-.beta-strip p{font-size:.83rem;color:rgba(255,255,255,.85);line-height:1.6}
-/* SNEAK PEEKS */
-.sneak-section h2{font-family:var(--font-display);font-size:1.5rem;color:var(--dark);margin-bottom:5px}
-.sneak-section>p{font-size:.85rem;color:var(--muted);margin-bottom:18px}
-.sneak-card{background:var(--dark);border-radius:var(--radius-lg);padding:24px;margin-bottom:16px;cursor:pointer;transition:transform .2s;position:relative;overflow:hidden}
-.sneak-card:hover{transform:translateY(-2px)}
-.sneak-card::before{content:"";position:absolute;top:-30px;right:-30px;width:100px;height:100px;border-radius:50%;background:rgba(249,115,22,.1)}
-.sneak-emoji{font-size:1.8rem;display:block;margin-bottom:10px}
-.sneak-tag{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--orange);margin-bottom:5px;display:block}
-.sneak-title{font-family:var(--font-display);font-size:1.1rem;color:#fff;margin-bottom:8px}
-.sneak-desc{font-size:.82rem;color:rgba(255,255,255,.6);line-height:1.6}
-.sneak-bar{height:3px;background:rgba(255,255,255,.08);border-radius:99px;margin-top:14px;overflow:hidden}
-.sneak-fill{height:100%;background:var(--orange);border-radius:99px;animation:snkFill 2.5s ease-in-out infinite alternate}
-@keyframes snkFill{from{width:30%;opacity:.7}to{width:45%;opacity:1}}
-/* ALGO CARD HIGHLIGHT + PULSE RING */
-.algo-card.pulse-highlight{animation:cardPulse .6s ease 2;border-color:var(--orange)!important;box-shadow:0 0 0 3px rgba(249,115,22,.2)!important}
-@keyframes cardPulse{0%,100%{border-color:var(--border);box-shadow:var(--shadow)}50%{border-color:var(--orange);box-shadow:0 0 0 4px rgba(249,115,22,.25)}}
-/* Rotating border ring around account status card */
-/* Glowing border on account status card */
-@keyframes borderGlow{
-  0%,100%{box-shadow:0 0 0 2px #147A3E, 0 0 14px 2px rgba(20,122,62,.25), 0 0 0 0 rgba(249,115,22,0)}
-  50%{box-shadow:0 0 0 2px #F97316, 0 0 18px 4px rgba(249,115,22,.22), 0 0 0 0 rgba(20,122,62,0)}
-}
-#accountStatusCard{animation:borderGlow 3s ease-in-out infinite;border:2px solid var(--green)!important;}
-/* FOOTER */
-footer{background:var(--dark);padding:24px 5%;text-align:center;margin-top:0}
-.footer-bar{font-size:.82rem;color:#6b7c72}
-@media(max-width:600px){.welcome-hero{padding:24px}.algo-chat{padding:14px 16px}.chat-choices{padding:0 16px 12px}.algo-input-area{padding:12px 16px}}
+
+/* ── DASHBOARD LAYOUT ── */
+.dashboard{max-width:920px;margin:0 auto;padding:24px 18px 80px}
+.welcome-hero{background:linear-gradient(135deg,var(--green),var(--green-dark));border-radius:var(--radius-lg);padding:28px 30px;color:#fff;margin-bottom:20px;box-shadow:var(--shadow)}
+.welcome-inner{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
+.welcome-hero h1{font-family:var(--font-display);font-size:1.7rem;font-weight:400}
+.welcome-hero p{font-size:.9rem;opacity:.9;margin-top:5px;max-width:560px}
+.studera-id-pill{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);border-radius:30px;padding:8px 16px;font-size:.82rem;white-space:nowrap}
+
+/* ── PROFILE STATUS BANNER (top of dashboard) ── */
+.status-banner{display:flex;align-items:center;gap:14px;border-radius:var(--radius);padding:16px 20px;margin-bottom:20px;font-size:.9rem;font-weight:600}
+.status-banner .sb-icon{font-size:1.5rem;flex-shrink:0}
+.status-banner .sb-sub{font-weight:400;font-size:.8rem;opacity:.85;margin-top:2px}
+.sb-incomplete{background:#fff7f0;border:1.5px solid var(--orange);color:var(--orange-dark)}
+.sb-pending{background:#fffbeb;border:1.5px solid #f0c000;color:#8a6d00}
+.sb-verified{background:var(--green-light);border:1.5px solid var(--green);color:var(--green-dark)}
+.sb-matching{background:#eef4ff;border:1.5px solid #3b6fd4;color:#244a93}
+.sb-open{background:#eef9f1;border:1.5px solid var(--green);color:var(--green-dark)}
+
+/* ── GENERIC CARD ── */
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);margin-bottom:22px;overflow:hidden}
+.card-head{display:flex;align-items:center;gap:13px;padding:20px 24px;border-bottom:1px solid var(--border);background:var(--green-faint)}
+.card-head-icon{width:44px;height:44px;border-radius:12px;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.card-head h3{font-family:var(--font-display);font-size:1.18rem;color:var(--dark);font-weight:400}
+.card-head .eyebrow{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--green);margin-bottom:2px}
+.card-body{padding:24px}
+.section-divider{border:none;border-top:1px solid var(--border);margin:22px 0 0}
+.section-divider-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--green);margin:14px 0 12px}
+
+/* ── FORM FIELDS ── */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;font-family:var(--font-body);font-size:.88rem;color:var(--dark);outline:none;background:#fff;transition:border-color .15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--green)}
+.field input[readonly]{background:#f4f7f5;color:var(--muted);cursor:not-allowed}
+.field-hint{font-size:.74rem;color:var(--muted);margin-top:5px;line-height:1.5}
+.required-star{color:var(--orange)}
+.row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:520px){.row-2{grid-template-columns:1fr}}
+.locked-field{position:relative}
+.locked-overlay{font-size:.72rem;color:var(--muted);font-style:italic;margin-top:4px}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:10px;padding:12px 20px;font-family:var(--font-body);font-size:.9rem;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .2s,background .2s}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--green);color:#fff}
+.btn-primary:hover{background:var(--green-dark)}
+.btn-orange{background:var(--orange);color:#fff}
+.btn-orange:hover{background:var(--orange-dark)}
+.btn-ghost{background:#fff;border:1.5px solid var(--border);color:var(--muted)}
+.btn-ghost:hover{border-color:var(--green);color:var(--green)}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-lg{padding:15px 26px;font-size:1rem}
+.add-btn{display:inline-flex;align-items:center;gap:7px;background:var(--green-faint);border:1.5px dashed var(--green);color:var(--green-dark);border-radius:10px;padding:10px 16px;font-size:.84rem;font-weight:700;cursor:pointer;margin-top:6px}
+.add-btn:hover{background:var(--green-light)}
+.mini-remove{background:none;border:none;color:#c0392b;font-size:1.05rem;cursor:pointer;font-weight:700;padding:2px 6px}
+
+/* ── SEARCH DROPDOWN (university autocomplete) ── */
+.uni-search-wrap{position:relative}
+.uni-search-results{position:absolute;top:100%;left:0;right:0;z-index:30;background:#fff;border:1.5px solid var(--border);border-top:none;border-radius:0 0 10px 10px;max-height:230px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.1);display:none}
+.uni-search-results.open{display:block}
+.uni-search-item{padding:9px 13px;font-size:.84rem;cursor:pointer;border-bottom:1px solid #f0f4f1}
+.uni-search-item:hover,.uni-search-item.active{background:var(--green-faint)}
+.uni-search-item small{display:block;color:var(--muted);font-size:.72rem}
+.uni-search-none{padding:11px 13px;font-size:.82rem;color:var(--muted)}
+
+/* ── MAJOR PICKER ── */
+.major-search-input{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:.88rem;margin-bottom:8px;outline:none}
+.major-search-input:focus{border-color:var(--green)}
+.major-picker-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-height:300px;overflow-y:auto;padding:6px;border:1px solid var(--border);border-radius:10px;background:#fcfcfc}
+@media(max-width:480px){.major-picker-grid{grid-template-columns:1fr}}
+.major-pick-option{display:flex;align-items:center;gap:8px;padding:9px 11px;border-radius:8px;font-size:.82rem;cursor:pointer;transition:background .15s;line-height:1.35;border:1px solid transparent}
+.major-pick-option:hover{background:var(--green-faint)}
+.major-pick-option.checked{background:var(--green-light);border-color:var(--green)}
+.major-pick-option input{accent-color:var(--green);flex-shrink:0}
+.major-pick-option.dimmed{opacity:.4;pointer-events:none}
+.major-count-label{font-size:.78rem;color:var(--muted);margin-top:8px;font-weight:600}
+.major-uni-block{border:1px solid var(--border);border-radius:12px;padding:16px;margin-top:14px;background:#fcfdfc}
+.major-uni-block h4{font-size:.9rem;color:var(--green-dark);margin-bottom:4px;font-family:var(--font-body);font-weight:700}
+.major-uni-block .muh-sub{font-size:.76rem;color:var(--muted);margin-bottom:12px}
+.uni-degree-row{display:flex;gap:8px;align-items:flex-start;padding:8px;border-radius:8px;cursor:pointer;border:1px solid transparent}
+.uni-degree-row:hover{background:var(--green-faint)}
+.uni-degree-row.checked{background:var(--green-light);border-color:var(--green)}
+.uni-degree-row input{accent-color:var(--green);margin-top:3px}
+.uni-degree-row .udr-name{font-size:.84rem;font-weight:600;color:var(--dark)}
+.uni-degree-row .udr-deg{font-size:.76rem;color:var(--muted)}
+
+/* ── FILE UPLOAD ROWS ── */
+.upload-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 16px;border:1px solid var(--border);border-radius:11px;margin-bottom:10px;flex-wrap:wrap;background:#fff}
+.upload-row-label{font-size:.85rem;font-weight:600;color:var(--dark)}
+.upload-row-label .tag{display:inline-block;font-size:.68rem;font-weight:700;color:var(--orange-dark);background:#fff1e6;padding:2px 8px;border-radius:20px;margin-left:6px}
+.upload-row-label .tag.done{color:var(--green-dark);background:var(--green-light)}
+.file-label{display:inline-flex;align-items:center;gap:7px;background:var(--green-faint);border:1.5px solid var(--border);border-radius:9px;padding:9px 14px;font-size:.8rem;font-weight:600;color:var(--green-dark);cursor:pointer;white-space:nowrap}
+.file-label:hover{border-color:var(--green)}
+.file-label.has-file{background:var(--green-light);border-color:var(--green)}
+.file-label input{display:none}
+.status-tick{font-size:1.05rem}
+
+/* accordion (mentor uni list docs) */
+.acc-item{border:1px solid var(--border);border-radius:11px;margin-bottom:10px;overflow:hidden}
+.acc-head{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;background:#fff;font-weight:600;font-size:.88rem}
+.acc-head:hover{background:var(--green-faint)}
+.acc-body{padding:0 16px 16px;display:none}
+.acc-item.open .acc-body{display:block}
+.acc-chevron{transition:transform .2s}
+.acc-item.open .acc-chevron{transform:rotate(180deg)}
+
+/* ── CALENDAR ── */
+.cal-wrap{margin-top:8px}
+.cal-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px;flex-wrap:wrap}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal-dayhead{text-align:center;font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;padding:4px 0}
+.cal-day{border:1px solid var(--border);border-radius:9px;min-height:74px;padding:5px;font-size:.74rem;background:#fff;display:flex;flex-direction:column;gap:3px}
+.cal-day.empty{background:transparent;border:none}
+.cal-day.past{opacity:.4;background:#f6f6f6}
+.cal-daynum{font-weight:700;color:var(--dark);font-size:.74rem}
+.cal-slot{font-size:.66rem;border-radius:5px;padding:2px 4px;cursor:pointer;line-height:1.3;border:1px solid}
+.cal-slot.open{background:var(--green-light);border-color:var(--green);color:var(--green-dark)}
+.cal-slot.open:hover{background:var(--green);color:#fff}
+.cal-slot.booked{background:#eee;border-color:#ccc;color:#999;cursor:not-allowed}
+.cal-slot.mine{background:#fff1e6;border-color:var(--orange);color:var(--orange-dark)}
+.cal-addslot{font-size:.64rem;color:var(--green);cursor:pointer;font-weight:700;margin-top:auto}
+.slot-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.72rem;color:var(--muted);margin-top:10px}
+.slot-legend span{display:inline-flex;align-items:center;gap:5px}
+.legend-dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+
+/* ── SESSIONS LIST ── */
+.session-item{display:flex;align-items:center;gap:13px;padding:14px 16px;border:1px solid var(--border);border-radius:12px;margin-bottom:10px;background:#fff}
+.session-when{font-weight:700;color:var(--dark);font-size:.88rem}
+.session-meta{font-size:.76rem;color:var(--muted)}
+.session-link{margin-left:auto;background:var(--green);color:#fff;border-radius:8px;padding:8px 14px;font-size:.8rem;font-weight:700}
+.session-pill{font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:20px;margin-left:auto}
+.session-pill.pending{background:#fffbeb;color:#8a6d00}
+.session-pill.paid{background:var(--green-light);color:var(--green-dark)}
+.session-review-btn{margin-left:auto;background:var(--orange);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:.8rem;font-weight:700;cursor:pointer}
+.session-review-btn:hover{background:var(--orange-dark)}
+/* confidential document viewer */
+.doc-review-note{background:#fff7f0;border:1.5px solid var(--orange);border-radius:11px;padding:13px 16px;font-size:.82rem;line-height:1.6;margin-bottom:16px;color:var(--body)}
+.conf-doc{position:relative;border:1px solid var(--border);border-radius:11px;overflow:hidden;margin-bottom:16px;background:#f6f8f7;user-select:none}
+.conf-doc-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#fff;border-bottom:1px solid var(--border);font-size:.82rem;font-weight:700;color:var(--dark)}
+.conf-doc-frame{position:relative;width:100%;height:520px;overflow:hidden}
+.conf-doc-frame iframe,.conf-doc-frame img{width:100%;height:100%;border:none;object-fit:contain;pointer-events:none}
+.conf-watermark{position:absolute;inset:0;z-index:5;pointer-events:none;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;overflow:hidden}
+.conf-watermark span{font-family:var(--font-display);font-size:1.5rem;color:rgba(20,122,62,.16);transform:rotate(-30deg);white-space:nowrap;margin:30px;font-weight:700;letter-spacing:2px}
+.conf-doc-block{position:absolute;inset:0;z-index:6;background:transparent} /* swallows right-click/drag */
+.conf-empty{padding:24px;text-align:center;color:var(--muted);font-size:.85rem}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,26,20,.55);backdrop-filter:blur(3px);z-index:100;display:none;align-items:flex-start;justify-content:center;padding:30px 16px;overflow-y:auto}
+.modal-overlay.open{display:flex}
+.modal-box{background:#fff;border-radius:var(--radius-lg);max-width:560px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);margin:auto}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:#fff;border-radius:var(--radius-lg) var(--radius-lg) 0 0;z-index:2}
+.modal-header h2{font-family:var(--font-display);font-size:1.3rem;color:var(--dark);font-weight:400}
+.modal-close{background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--muted);line-height:1}
+.modal-body{padding:24px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.save-status{margin-top:12px;font-size:.84rem;font-weight:600;text-align:right}
+.save-status.success{color:var(--green)}
+.save-status.error{color:#c0392b}
+
+/* terms box */
+.terms-box{background:#fafdfb;border:1px solid var(--border);border-radius:12px;padding:16px;font-size:.82rem;line-height:1.65;max-height:230px;overflow-y:auto;margin-bottom:14px}
+.terms-box h5{font-size:.84rem;color:var(--green-dark);margin:12px 0 4px}
+.terms-box ul{margin:4px 0 4px 18px}
+.terms-box li{margin-bottom:4px}
+.price-strike{text-decoration:line-through;opacity:.55;margin-right:8px}
+.price-now{color:var(--green);font-weight:700;font-size:1.25rem}
+.checkbox-line{display:flex;gap:9px;align-items:flex-start;font-size:.84rem;margin-bottom:10px;cursor:pointer}
+.checkbox-line input{accent-color:var(--green);margin-top:3px;flex-shrink:0}
+
+/* misc */
+.privacy-note{background:var(--green-faint);border:1px solid var(--border);border-radius:11px;padding:13px 16px;font-size:.8rem;line-height:1.6;margin-bottom:18px}
+.profile-pic-section{display:flex;align-items:center;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+.profile-pic-circle{width:74px;height:74px;border-radius:50%;background:var(--green-faint);border:2px solid var(--green-light);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;flex-shrink:0}
+.profile-pic-circle img{width:100%;height:100%;object-fit:cover}
+.profile-pic-initials-lg{font-size:1.6rem;font-weight:700;color:var(--green)}
+.pic-meta{font-size:.72rem;color:var(--muted);margin-top:3px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--dark);color:#fff;padding:13px 22px;border-radius:12px;font-size:.86rem;font-weight:600;z-index:200;box-shadow:0 8px 30px rgba(0,0,0,.3);display:none}
+.toast.show{display:block;animation:toastIn .3s ease}
+@keyframes toastIn{from{opacity:0;transform:transl(-50%,12px)}to{opacity:1}}
+.empty-hint{font-size:.82rem;color:var(--muted);text-align:center;padding:18px;background:#fafafa;border-radius:10px;border:1px dashed var(--border)}
+/* confidential document viewer */
+.doc-review-item{border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden;background:#fff}
+.doc-review-head{display:flex;align-items:center;justify-content:space-between;padding:11px 15px;background:var(--green-faint);font-size:.85rem;font-weight:700;color:var(--green-dark)}
+.doc-view-btn{background:var(--green);color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:var(--font-body)}
+.doc-stage{position:relative;display:none;background:#2b2b2b;padding:10px;text-align:center;max-height:520px;overflow:auto}
+.doc-stage.open{display:block}
+.doc-stage canvas,.doc-stage iframe{max-width:100%;border-radius:6px;background:#fff;pointer-events:none}
+.doc-stage iframe{width:100%;height:480px;border:none}
+/* tiled watermark overlay sits above the rendered doc */
+.doc-watermark{position:absolute;inset:0;pointer-events:none;z-index:5;
+  background-image:repeating-linear-gradient(-30deg, transparent 0 90px, rgba(0,0,0,0) 90px);
+  display:flex;align-items:center;justify-content:center;flex-wrap:wrap;overflow:hidden}
+.doc-wm-text{position:absolute;color:rgba(220,40,40,.30);font-weight:800;font-size:1.05rem;transform:rotate(-30deg);white-space:nowrap;letter-spacing:1px}
+.doc-noselect{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.explore-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px}
+@media(max-width:640px){.explore-grid{grid-template-columns:1fr}}
+.explore-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);transition:transform .15s}
+.explore-card:hover{transform:translateY(-3px)}
+.explore-card-icon{font-size:1.7rem}
+.explore-card-title{font-weight:700;color:var(--dark);margin-top:8px;font-size:.96rem}
+.explore-card-sub{font-size:.78rem;color:var(--muted);margin-top:3px}
 </style>
 </head>
 <body>
 
-<nav>
-  <a href="index.html" class="nav-logo">
-    <img src="logo.png" alt="Studera" class="nav-logo-img" onerror="this.style.display='none';document.getElementById('dbNL').style.display='block'"/>
-    <span id="dbNL" style="display:none" class="nav-logo-text"><span class="brand">Studera</span></span>
-  </a>
+<!-- ══════════ NAVBAR (unchanged structure) ══════════ -->
+<nav class="navbar">
+  <span class="nav-logo-text"><span class="brand">Studera</span></span>
   <div class="nav-right">
     <span class="nav-user" id="navUserName">Dashboard</span>
-    <button class="nav-signout" onclick="signOut()">Sign out</button>
+    <button class="nav-profile-btn" id="navProfileBtn" onclick="openProfileModal()" title="View / edit your profile">
+      <span class="nav-profile-initials" id="navProfileInitials">?</span>
+    </button>
+    <button class="nav-signout" onclick="signOut()">Sign Out</button>
   </div>
 </nav>
 
+<div id="toast" class="toast"></div>
 
+<!-- ══════════ PROFILE MODAL ══════════ -->
+<div class="modal-overlay" id="profileModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>Your Profile</h2>
+      <button class="modal-close" onclick="closeProfileModal()">✕</button>
+    </div>
+    <div class="modal-body">
 
-<!-- INCOMPLETE PROFILE ALERT -->
-<div class="incomplete-alert hidden" id="incompleteAlert" onclick="scrollToStatusCard()">
-  <p>⚠️ Your profile is incomplete — coming Early July 2026. The Doctor Algorithm will build your full profile once it is ready.</p>
-  <span>Click to see your account status →</span>
+      <!-- Profile picture -->
+      <div class="profile-pic-section">
+        <div class="profile-pic-circle" onclick="document.getElementById('profilePicInput').click()">
+          <img id="profilePicPreview" src="" alt="" style="display:none"/>
+          <span class="profile-pic-initials-lg" id="profilePicInitials">?</span>
+        </div>
+        <div>
+          <button class="btn btn-primary" style="padding:8px 14px;font-size:.82rem" onclick="document.getElementById('profilePicInput').click()">Upload Photo</button>
+          <p class="pic-meta">JPG, PNG or WEBP · Max 2 MB</p>
+          <p class="pic-meta">Visible when your profile is shown in our app.</p>
+        </div>
+        <input type="file" id="profilePicInput" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="handlePicSelect(event)"/>
+      </div>
+
+      <div class="privacy-note">🔒 <strong>Privacy Guarantee:</strong> Studera never discloses your data to threatening third parties. By saving your profile you agree to Studera's Privacy Policy, which permits Studera to use aggregated profile data to improve and personalise our services, including relevant educational marketing.</div>
+
+      <!-- Locked identity fields -->
+      <div class="field"><label>Full Name</label><input type="text" id="pf-name" readonly/></div>
+      <div class="field"><label>Login Email</label><input type="text" id="pf-email" readonly/></div>
+      <div class="field"><label>Studera ID</label><input type="text" id="pf-sid" readonly/></div>
+      <div class="field"><label>Role</label><input type="text" id="pf-role" readonly/></div>
+      <div class="field"><label>Mobile Number <span class="required-star">*</span></label><input type="tel" id="pf-phone" placeholder="e.g. +92 300 1234567"/></div>
+
+      <hr class="section-divider"/>
+      <div class="section-divider-label">Personal Details</div>
+      <div class="row-2">
+        <div class="field"><label>Date of Birth <span class="required-star">*</span></label><input type="date" id="pf-dob" onchange="onDobChange()"/></div>
+        <div class="field"><label>Age</label><input type="text" id="pf-age" readonly placeholder="Auto"/></div>
+      </div>
+      <div class="field">
+        <label id="pf-year-label">Class / Year <span class="required-star">*</span></label>
+        <select id="pf-year" onchange="onYearChange()"><option value="">— Select —</option></select>
+      </div>
+
+      <hr class="section-divider"/>
+      <div class="section-divider-label">SAT Status</div>
+      <div class="field">
+        <label>Have you taken the SAT? <span class="required-star">*</span></label>
+        <select id="pf-sat-status" onchange="onSatStatusChange()">
+          <option value="">— Select —</option>
+          <option value="Yes">Yes</option>
+          <option value="Test Optional">Test Optional</option>
+        </select>
+      </div>
+      <div class="field" id="pf-sat-count-wrap" style="display:none">
+        <label>How many SAT tests have you taken?</label>
+        <select id="pf-sat-count"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+        <div class="field-hint">You'll upload these score reports in the Documents section below.</div>
+      </div>
+
+      <!-- ══ HIGH SCHOOL ONLY: MAJOR INTERESTS ══ -->
+      <div id="pf-majors-section" style="display:none">
+        <hr class="section-divider"/>
+        <div class="section-divider-label">Areas of Interest</div>
+        <div class="field">
+          <label>Select your major interests <span class="required-star">*</span> <span style="font-weight:400;text-transform:none;color:var(--muted)">(min 2, max 5)</span></label>
+          <input type="text" class="major-search-input" id="majorSearchInput" placeholder="🔍 Search majors…" oninput="filterMajorGrid()"/>
+          <div class="major-picker-grid" id="majorPickerGrid"></div>
+          <div class="major-count-label" id="majorCountLabel">0 of 5 selected (minimum 2 required)</div>
+        </div>
+        <div class="field-hint" style="margin-bottom:6px">For each interest, pick the universities + exact majors you'd like mentorship for:</div>
+        <div id="majorUniBlocks"></div>
+      </div>
+
+      <!-- ══ MENTOR ONLY: CURRENT UNIVERSITY ══ -->
+      <div id="pf-mentor-uni-section" style="display:none">
+        <hr class="section-divider"/>
+        <div class="section-divider-label">Current University</div>
+
+        <div class="field">
+          <label>University Email <span class="required-star">*</span></label>
+          <input type="email" id="pf-uni-email" placeholder="you@university.edu" oninput="onUniEmailInput()"/>
+          <div class="field-hint">We auto-fill your university, country & state from your email domain.</div>
+        </div>
+        <label class="checkbox-line" style="margin-bottom:12px">
+          <input type="checkbox" id="pf-no-uni-email" onchange="onNoUniEmailToggle()"/>
+          <span>I don't have my university email yet (incoming freshman). Let me search manually.</span>
+        </label>
+
+        <!-- Manual search (hidden until checkbox) -->
+        <div class="field" id="pf-uni-manual-search" style="display:none">
+          <label>Search your university</label>
+          <div class="uni-search-wrap">
+            <input type="text" id="pf-uni-search-input" placeholder="Type to search… e.g. Roch" autocomplete="off"
+                   oninput="onUniSearchInput('pf-uni-search-input','pf-uni-search-results','current')"/>
+            <div class="uni-search-results" id="pf-uni-search-results"></div>
+          </div>
+          <div id="pf-uni-notfound" style="display:none;margin-top:8px">
+            <div class="field-hint" style="color:var(--orange-dark)">University not found.</div>
+            <button class="btn btn-ghost" style="padding:8px 14px;font-size:.82rem;margin-top:4px" onclick="enableManualUni()">Manually enter my university</button>
+          </div>
+        </div>
+
+        <div class="field"><label>University Name</label><input type="text" id="pf-uni-name" readonly placeholder="Auto-filled from email"/></div>
+        <div class="row-2">
+          <div class="field"><label>Country</label><input type="text" id="pf-uni-country" readonly placeholder="Auto"/></div>
+          <div class="field"><label>State / Province</label><input type="text" id="pf-uni-state" readonly placeholder="Auto"/></div>
+        </div>
+        <div class="field">
+          <label>Major Category <span class="required-star">*</span></label>
+          <select id="pf-uni-majorcat"><option value="">— Select —</option></select>
+        </div>
+        <div class="field">
+          <label>Exact Major / Degree Name <span class="required-star">*</span></label>
+          <input type="text" id="pf-uni-majorname" placeholder="e.g. BS Computer Science"/>
+        </div>
+
+        <hr class="section-divider"/>
+        <div class="section-divider-label">University List — other admissions</div>
+        <div class="field-hint" style="margin-bottom:10px">Add universities where you were admitted (even if not attending). You can mentor students for these too. Max 5.</div>
+        <div id="pf-uni-list"></div>
+        <button class="add-btn" id="pf-add-uni-btn" onclick="addUniListItem()">＋ Add another university</button>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="closeProfileModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
+      </div>
+      <div class="save-status" id="saveStatus"></div>
+    </div>
+  </div>
 </div>
 
+<!-- ══════════ DASHBOARD ══════════ -->
 <div class="dashboard">
 
-  <!-- WELCOME HERO -->
+  <!-- Welcome hero -->
   <div class="welcome-hero">
     <div class="welcome-inner">
-      <div class="welcome-left">
+      <div>
         <h1>Welcome back, <span id="heroName">—</span></h1>
-        <p id="heroSub">Here is what the Doctor Algorithm knows about you so far. Let us build your profile further.</p>
+        <p id="heroSub">Complete your profile, upload your documents, and book your sessions — all in one place.</p>
       </div>
       <div class="studera-id-pill">ID: <strong id="heroStuderaID">—</strong></div>
     </div>
   </div>
 
-  <!-- ACCOUNT STATUS CARD -->
-  <div class="algo-card" id="accountStatusCard">
-    <div class="algo-header">
-      <div class="algo-header-icon">🩺</div>
-      <div class="algo-header-text">
-        <h3>Studera's Doctor Algorithm</h3>
-        <p id="algoHeaderSub">Account activated — profile building coming Early July</p>
-      </div>
+  <!-- PROFILE STATUS BANNER -->
+  <div id="statusBanner" class="status-banner sb-incomplete" style="display:none">
+    <span class="sb-icon" id="sbIcon">⚠️</span>
+    <div>
+      <div id="sbText">Your profile is incomplete</div>
+      <div class="sb-sub" id="sbSub">Fill in your profile and upload documents to get verified.</div>
     </div>
-    <div style="padding:32px 28px 28px;">
-
-        <!-- Main message -->
-        <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:24px;">
-          <div style="font-size:2.2rem;flex-shrink:0;animation:boltPulse 2.2s ease-in-out infinite;">🩺</div>
-          <div>
-            <p style="font-size:1rem;font-weight:700;color:var(--dark);margin-bottom:8px;font-family:var(--font-display);">Your account is fully activated but incomplete.</p>
-            <p style="font-size:.88rem;color:var(--body);line-height:1.7;">Once Studera's Algorithm is ready, we will continue to build your account, gather all necessary details and finalise your full <span id="profileTypeLabel">Student Profile</span> by <strong>Early July 2026</strong>. Till then, keep checking your Dashboard and <a href="https://www.instagram.com/studeraglobal/" target="_blank" rel="noopener" style="color:var(--green);font-weight:700;">Studera's Instagram</a> for updates.</p>
-          </div>
-        </div>
-
-        <!-- Opportunities nudge -->
-        <div style="background:var(--green-faint);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:20px;display:flex;gap:12px;align-items:flex-start;">
-          <span style="font-size:1.4rem;flex-shrink:0;">🌍</span>
-          <p style="font-size:.86rem;color:var(--body);line-height:1.65;"><strong>Keep an eye on the Opportunities Page.</strong> Our team regularly adds new scholarships, programmes, and competitions. Don't miss out — check for new opportunities that can boost your extracurriculars.</p>
-        </div>
-
-        <!-- Mentor-only message — shown/hidden via JS -->
-        <div id="mentorMsg" style="display:none;background:#fff7f0;border:2px solid #F97316;border-radius:var(--radius);padding:16px 20px;box-shadow:0 0 12px 2px rgba(249,115,22,.18);">
-          <div style="display:flex;gap:12px;align-items:flex-start;">
-            <span style="font-size:1.4rem;flex-shrink:0;">🎓</span>
-            <div>
-              <p style="font-size:.88rem;font-weight:700;color:var(--orange-dark);margin-bottom:6px;">Important for Mentors</p>
-              <p style="font-size:.85rem;color:var(--body);line-height:1.65;">Mentors will be required to pass our authentication process by submitting verification documents — including Admission Letter(s), Scholarship Verification Document(s), and more. We will soon open a dedicated portal for document submission. More guidance will follow — keep a lookout for updates.</p>
-            </div>
-          </div>
-        </div>
-
-    </div>
-    <div class="algo-disclaimer">🩺 <strong>Doctor Algorithm:</strong> This is NOT your full Student or Mentor Profile. I am still under development. Once ready, I will build your complete profile and find your perfect match.</div>
   </div>
 
-  <!-- ALGORITHM STATUS — CHARGING ANIMATION -->
-  <div class="status-card">
-    <div class="battery-wrap">
-      <div style="position:relative;display:inline-block">
-        <div class="battery-outer">
-          <div class="battery-tip"></div>
-          <div class="battery-fill" id="batteryFill" style="height:72%">
-            <div class="battery-pct" id="batteryPct">72%</div>
-          </div>
-        </div>
+  <!-- PROFILE PROMPT CARD -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-head-icon">👤</div>
+      <div>
+        <div class="eyebrow">Step 1</div>
+        <h3>Complete Your Profile</h3>
       </div>
-      <div class="charge-bolt">⚡</div>
     </div>
-    <h2 class="status-title">Algorithm Development in Progress</h2>
-    <p class="status-sub">By <strong>Early July 2026</strong>, Studera's Doctor Algorithm will complete full Student and Mentor profiles and make its first ever match.</p>
-    <span class="status-ahead">🚀 We Are Ahead of Schedule</span>
+    <div class="card-body">
+      <p style="font-size:.88rem;color:var(--body);margin-bottom:14px" id="profileCardText">Add your personal details, university information and areas of interest. Everything saves instantly.</p>
+      <button class="btn btn-primary" onclick="openProfileModal()">Open Profile Editor</button>
+    </div>
   </div>
 
-  <!-- EXPLORE CARDS -->
+  <!-- ══ DOCUMENT UPLOAD: HIGH SCHOOL ══ -->
+  <div class="card" id="hsDocsCard" style="display:none">
+    <div class="card-head">
+      <div class="card-head-icon">📂</div>
+      <div><div class="eyebrow">Step 2</div><h3>Upload Your Documents</h3></div>
+    </div>
+    <div class="card-body">
+      <div class="field-hint" style="margin-bottom:14px">Transcripts required depend on your selected class/year. If one document contains multiple years, upload it in each slot.</div>
+      <div id="hsTranscriptRows"></div>
+
+      <!-- Extracurricular portfolio -->
+      <div style="margin-top:6px">
+        <div class="upload-row-label" style="margin-bottom:8px">Extracurricular Portfolio <span class="tag" id="ecTag">Required · PDF</span></div>
+        <a class="btn btn-ghost" id="ecDownloadBtn" href="https://raw.githubusercontent.com/studera-global/Platform/main/Studera_Extracurricular_Portfolio_Form.pdf" target="_blank" rel="noopener" style="font-size:.82rem;padding:9px 14px">⬇ Download Portfolio Form</a>
+        <div class="field-hint" style="margin:8px 0">Fill it completely, then rename it to <strong><span id="ecFilename">YourStuderaID</span>_Extracurricular_Portfolio.pdf</strong> before uploading.</div>
+        <label class="file-label" id="ecFileLabel">📎 Upload completed portfolio (PDF)
+          <input type="file" id="ecFile" accept=".pdf" onchange="markFile('ecFileLabel','ecFile')"/>
+        </label>
+      </div>
+
+      <!-- SAT reports (HS) -->
+      <div id="hsSatRows" style="margin-top:18px"></div>
+
+      <button class="btn btn-primary btn-block btn-lg" id="hsDocSubmitBtn" style="margin-top:18px" onclick="submitHsDocuments()">Submit Documents</button>
+      <div class="save-status" id="hsDocStatus"></div>
+    </div>
+  </div>
+
+  <!-- ══ DOCUMENT UPLOAD: MENTOR ══ -->
+  <div class="card" id="mentorDocsCard" style="display:none">
+    <div class="card-head">
+      <div class="card-head-icon">📄</div>
+      <div><div class="eyebrow">Step 2</div><h3>Upload Your Documents</h3></div>
+    </div>
+    <div class="card-body">
+
+      <div class="section-divider-label" style="margin-top:0">A · Current University Documents</div>
+      <div class="field-hint" style="margin-bottom:10px">University: <strong id="mdCurrentUniName">—</strong>. Transcripts required depend on your year.</div>
+      <div id="mentorCurrentDocs"></div>
+
+      <div class="section-divider-label">B · University List Documents</div>
+      <div class="field-hint" style="margin-bottom:10px">For each admitted university, upload your Letter of Admission and Proof of Scholarship.</div>
+      <div id="mentorUniListDocs"><div class="empty-hint">Add universities in your profile's University List first.</div></div>
+
+      <div class="section-divider-label">C · General Documents</div>
+      <div id="mentorGeneralDocs"></div>
+
+      <button class="btn btn-primary btn-block btn-lg" id="mentorDocSubmitBtn" style="margin-top:18px" onclick="submitMentorDocuments()">Submit Documents</button>
+      <div class="save-status" id="mentorDocStatus"></div>
+    </div>
+  </div>
+
+  <!-- ══ BOOKING / MATCH ACTION ══ -->
+  <div class="card" id="actionCard">
+    <div class="card-head">
+      <div class="card-head-icon">🎯</div>
+      <div><div class="eyebrow">Step 3</div><h3 id="actionCardTitle">Book Your Session</h3></div>
+    </div>
+    <div class="card-body">
+      <!-- High school booking -->
+      <div id="studentAction" style="display:none">
+        <p style="font-size:.9rem;margin-bottom:14px">Book your <strong>1-on-1 mentorship session</strong> with a verified undergraduate mentor.</p>
+        <button class="btn btn-orange btn-block btn-lg" id="bookBtn" onclick="onBookClick()">📅 Book your 1-on-1 mentorship session now</button>
+      </div>
+      <!-- Mentor availability -->
+      <div id="mentorAction" style="display:none">
+        <p style="font-size:.9rem;margin-bottom:14px">Make your slots visible to high schoolers and start receiving session requests.</p>
+        <button class="btn btn-orange btn-block btn-lg" id="matchBtn" onclick="onMatchClick()">✅ Make yourself available for a match now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CALENDAR ══ -->
+  <div class="card" id="calendarCard" style="display:none">
+    <div class="card-head">
+      <div class="card-head-icon">📆</div>
+      <div><div class="eyebrow">Schedule</div><h3 id="calTitle">Availability Calendar</h3></div>
+    </div>
+    <div class="card-body">
+      <div id="calGoogleConnect" style="margin-bottom:14px;display:none">
+        <button class="btn btn-ghost" onclick="connectGoogleCalendar()">🔗 Connect Google Calendar</button>
+        <span class="field-hint" id="calConnectHint" style="margin-left:8px">Connect to sync confirmed sessions automatically.</span>
+      </div>
+      <div class="cal-toolbar">
+        <button class="btn btn-ghost" style="padding:7px 12px" onclick="calMove(-1)">‹ Prev</button>
+        <strong id="calMonthLabel" style="font-size:.95rem"></strong>
+        <button class="btn btn-ghost" style="padding:7px 12px" onclick="calMove(1)">Next ›</button>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="slot-legend">
+        <span><i class="legend-dot" style="background:var(--green-light);border:1px solid var(--green)"></i> Available</span>
+        <span><i class="legend-dot" style="background:#fff1e6;border:1px solid var(--orange)"></i> Your slot</span>
+        <span><i class="legend-dot" style="background:#eee;border:1px solid #ccc"></i> Booked</span>
+      </div>
+      <p class="field-hint" id="mentorSlotHint" style="display:none;margin-top:10px">💡 Click any day (June 25 onwards, 7am–2pm EST) to add a 1-hour slot.</p>
+    </div>
+  </div>
+
+  <!-- ══ MY SESSIONS ══ -->
+  <div class="card" id="sessionsCard" style="display:none">
+    <div class="card-head">
+      <div class="card-head-icon">🎓</div>
+      <div><div class="eyebrow">Confirmed</div><h3>My Sessions</h3></div>
+    </div>
+    <div class="card-body"><div id="sessionsList"><div class="empty-hint">No confirmed sessions yet.</div></div></div>
+  </div>
+
+  <!-- Explore cards (kept) -->
   <div class="explore-grid">
-    <a href="technology.html" class="explore-card">
-      <span class="explore-card-icon">🧠</span>
-      <div class="explore-card-title">How Our Algorithm Works</div>
-      <div class="explore-card-sub">Understand the Doctor Algorithm</div>
-      <div class="explore-expand">Learn how we match you with the most compatible mentor using our proprietary Doctor Algorithm →</div>
-    </a>
     <a href="opportunities.html?auth=1" class="explore-card">
       <span class="explore-card-icon">🌍</span>
       <div class="explore-card-title">Opportunities</div>
-      <div class="explore-card-sub" id="oppCardSub">Filtered according to your profile</div>
-      <div class="explore-expand" id="oppExpand">Curated scholarships, programmes and competitions matched to your background. If new ones fit your profile, we will email you →</div>
+      <div class="explore-card-sub">Scholarships & programmes for you</div>
     </a>
     <a href="updates.html" class="explore-card">
       <span class="explore-card-icon">🔔</span>
       <div class="explore-card-title">Updates</div>
       <div class="explore-card-sub">Latest from Studera</div>
-      <div class="explore-expand">See what is new, what is coming, and what you need to know →</div>
     </a>
-  </div>
-
-  <!-- BETA STRIP -->
-  <div class="beta-strip">
-    <div class="beta-strip-icon">🧪</div>
-    <div>
-      <h3>You are an Alpha Tester</h3>
-      <p>As per your survey response, you agreed to help Studera during Beta Testing — testing our algorithm pre-launch, trialling multiple variations, and providing feedback. More details will follow as we approach Beta.</p>
-    </div>
-  </div>
-
-  <!-- SNEAK PEEKS -->
-  <div class="sneak-section">
-    <h2>Coming Next from Studera</h2>
-    <p>Two features currently in development. Click to learn more.</p>
-    <div class="sneak-card" onclick="window.open('https://www.instagram.com/studeraglobal/','_blank')" style="background:linear-gradient(135deg,#1a0a00,#2d1a00);border:1px solid rgba(225,48,108,.25);">
-      <span class="sneak-emoji">📸</span>
-      <span class="sneak-tag" style="color:#e1306c;">Now Live</span>
-      <h3 class="sneak-title">Studera is now on Instagram</h3>
-      <p class="sneak-desc">Follow <strong style="color:#e1306c;">@studeraglobal</strong> for daily updates, opportunities, tips, and behind-the-scenes from the Studera team. Be part of the journey from day one.</p>
-      <div class="sneak-bar"><div class="sneak-fill" style="background:#e1306c;width:100%;animation:none;opacity:.8"></div></div>
-    </div>
-    <div class="sneak-card" onclick="window.location.href='updates.html'">
-      <span class="sneak-emoji">🏆</span>
-      <span class="sneak-tag">Coming Aug 2026</span>
-      <h3 class="sneak-title">Studera for Student Athletes</h3>
-      <p class="sneak-desc">Universities value sports as much as grades. Your sport could be your ticket to your dream university. Studera is about to announce something special for all student athletes.</p>
-      <div class="sneak-bar"><div class="sneak-fill"></div></div>
-    </div>
-    <div class="sneak-card" onclick="window.location.href='updates.html'">
-      <span class="sneak-emoji">📚</span>
-      <span class="sneak-tag">Coming Aug 2026</span>
-      <h3 class="sneak-title">SAT, ACT & MDCAT Mentorship</h3>
-      <p class="sneak-desc">Real mentorship from people who scored 1480+. No more Instagram influencers. No more dopamine-boosting reels. The exact path that works.</p>
-      <div class="sneak-bar"><div class="sneak-fill" style="animation-delay:.7s"></div></div>
-    </div>
+    <a href="https://www.instagram.com/studeraglobal/" target="_blank" rel="noopener" class="explore-card">
+      <span class="explore-card-icon">📸</span>
+      <div class="explore-card-title">Instagram</div>
+      <div class="explore-card-sub">@studeraglobal</div>
+    </a>
   </div>
 
 </div>
 
-<footer><div class="footer-bar"><span class="brand">Studera</span> © 2026. All rights reserved. &nbsp;|&nbsp; info.studera@gmail.com</div></footer>
+<!-- ══════════ BOOKING TERMS MODAL (High School) ══════════ -->
+<div class="modal-overlay" id="bookModal">
+  <div class="modal-box">
+    <div class="modal-header"><h2>Book a Mentorship Session</h2><button class="modal-close" onclick="closeModal('bookModal')">✕</button></div>
+    <div class="modal-body">
+      <div style="background:var(--green-faint);border:1px solid var(--border);border-radius:11px;padding:13px 16px;margin-bottom:14px;font-size:.85rem">
+        🇺🇸 We are currently matching students with undergraduate mentors from <strong>USA universities only</strong>.
+      </div>
+      <div style="text-align:center;margin-bottom:14px">
+        <span class="price-strike">$29</span><span class="price-now">$14.50</span>
+        <div style="font-size:.78rem;color:var(--orange-dark);font-weight:700">50% launch discount · per 1-hour session</div>
+      </div>
+      <div class="terms-box">
+        <h5>Session Terms</h5>
+        <ul>
+          <li>Sessions are <strong>non-refundable</strong> if missed or cancelled by the student.</li>
+          <li>Sessions are recorded for quality, safety and training purposes.</li>
+          <li>Any abusive, dishonest or inappropriate conduct during a session may result in suspension and, where warranted, disciplinary or legal action.</li>
+          <li>Studera facilitates the match; academic outcomes are not guaranteed.</li>
+        </ul>
+        <h5>Sharing Your Documents</h5>
+        <ul>
+          <li>You authorise Studera to share your uploaded documents (transcripts, extracurricular portfolio, and SAT score reports where applicable) with your matched mentor on a strict <strong>review-only</strong> basis, solely so they can guide you effectively.</li>
+          <li>These documents are shown to the mentor as watermarked, non-downloadable previews. Mentors are bound by Studera's confidentiality terms, and misuse carries a ban and legal action.</li>
+        </ul>
+        <h5>Privacy Policy</h5>
+        <p>By proceeding, you reaffirm and agree to Studera's Privacy Policy. You consent to the review-only sharing of your documents with your matched mentor as described above. To improve our services and share relevant educational opportunities, Studera may also use your profile and usage data for personalised and targeted marketing communications. Your data is never sold or disclosed to threatening third parties.</p>
+      </div>
+      <label class="checkbox-line"><input type="checkbox" id="bookAgreeTerms"/><span>I agree to the Session Terms & Conditions above, including review-only sharing of my documents with my matched mentor.</span></label>
+      <label class="checkbox-line"><input type="checkbox" id="bookAgreePrivacy"/><span>I reaffirm and agree to Studera's Privacy Policy.</span></label>
+      <div style="background:#eef4ff;border:1px solid #c3d4f5;border-radius:11px;padding:12px 15px;font-size:.82rem;margin:12px 0">
+        By clicking below you alert Studera's algorithm that you're ready to match. <strong>Matching takes up to 72 hours.</strong> Once matched, your mentor's slots appear on your calendar.
+      </div>
+      <button class="btn btn-orange btn-block btn-lg" id="confirmMatchBtn" onclick="confirmStudentMatch()">I agree — alert the algorithm I'm ready to match</button>
+      <div class="save-status" id="bookStatus"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ MENTOR MATCH TERMS MODAL ══════════ -->
+<div class="modal-overlay" id="matchModal">
+  <div class="modal-box">
+    <div class="modal-header"><h2>Become Available for Matching</h2><button class="modal-close" onclick="closeModal('matchModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="terms-box">
+        <h5>Mentor Payment & Conduct Terms</h5>
+        <ul>
+          <li>Pay is <strong>$12–14 per hour</strong> after platform fees and applicable taxes.</li>
+          <li>Paid <strong>monthly</strong> — e.g. sessions from June 1–30 are paid out by July 7 (7 working-day buffer).</li>
+          <li>All sessions are recorded.</li>
+          <li><strong>No payment</strong> is issued if you: join more than 5 minutes late, cancel, or leave before the 1-hour slot ends (unless the student chooses to end early).</li>
+        </ul>
+        <h5>Confidential Documents</h5>
+        <ul>
+          <li>For confirmed sessions, you may be granted <strong>review-only</strong> access to a student's documents (transcripts, extracurricular portfolio, SAT reports) solely to guide that student. These are watermarked and not downloadable.</li>
+          <li>If you leak, publish, copy, distribute, or otherwise misuse any confidential student document, <strong>Studera reserves the right to permanently ban you and pursue strict legal action.</strong></li>
+        </ul>
+        <p>By clicking below, your profile enters the <strong>"Open for a Match"</strong> category and your available slots become visible to high-school students.</p>
+      </div>
+      <label class="checkbox-line"><input type="checkbox" id="matchAgree"/><span>I understand and agree to the mentor terms above.</span></label>
+      <button class="btn btn-orange btn-block btn-lg" id="confirmMentorMatchBtn" onclick="confirmMentorMatch()">Confirm — make me available for a match</button>
+      <div class="save-status" id="matchStatus"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SESSION REQUEST MODAL (HS clicks a slot) ══════════ -->
+<div class="modal-overlay" id="requestModal">
+  <div class="modal-box">
+    <div class="modal-header"><h2>Request This Session</h2><button class="modal-close" onclick="closeModal('requestModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Mentor</label><input type="text" id="rq-mentor" readonly/></div>
+      <div class="row-2">
+        <div class="field"><label>Date</label><input type="text" id="rq-date" readonly/></div>
+        <div class="field"><label>Day</label><input type="text" id="rq-day" readonly/></div>
+      </div>
+      <div class="field"><label>Time (EST)</label><input type="text" id="rq-time" readonly/></div>
+      <div style="background:var(--green-faint);border:1px solid var(--border);border-radius:11px;padding:13px 16px;font-size:.83rem;line-height:1.6;margin-bottom:14px">
+        After you send this request, our team will contact you about your <strong>payment plan</strong>. Once payment is confirmed, the session appears on your dashboard calendar with a <strong>Google Meet link</strong>. Please keep checking your email for instructions.
+      </div>
+      <button class="btn btn-primary btn-block btn-lg" id="sendRequestBtn" onclick="sendSessionRequest()">Send Session Request</button>
+      <div class="save-status" id="requestStatus"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ ADD SLOT MODAL (Mentor) ══════════ -->
+<div class="modal-overlay" id="slotModal">
+  <div class="modal-box" style="max-width:420px">
+    <div class="modal-header"><h2>Add Availability Slot</h2><button class="modal-close" onclick="closeModal('slotModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Date</label><input type="text" id="slot-date" readonly/></div>
+      <div class="field">
+        <label>Start time (EST) — 1 hour slots, 7am–2pm</label>
+        <select id="slot-time"></select>
+      </div>
+      <button class="btn btn-primary btn-block" onclick="saveSlot()">Add Slot</button>
+      <div class="save-status" id="slotStatus"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ CONFIDENTIAL DOCUMENT REVIEW MODAL (Mentor, confirmed sessions only) ══════════ -->
+<div class="modal-overlay" id="docReviewModal">
+  <div class="modal-box" style="max-width:760px">
+    <div class="modal-header">
+      <h2>Student Documents — Review Only</h2>
+      <button class="modal-close" onclick="closeDocReview()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:#fff7f0;border:1.5px solid var(--orange);border-radius:11px;padding:13px 16px;font-size:.83rem;line-height:1.6;margin-bottom:16px">
+        🔒 <strong>Confidential — for mentoring review only.</strong> These documents are shared so you can guide this student effectively. They are <strong>not downloadable</strong>. Leaking, publishing, copying or misusing them is a serious breach of Studera's mentor agreement and may result in an immediate ban and strict legal action.
+      </div>
+      <div id="docReviewBody"><div class="empty-hint">Loading documents…</div></div>
+    </div>
+  </div>
+</div>
 
 <script>
-// ═══════════════════════════════════════════
-// CONFIG — Replace with your actual keys
-// ═══════════════════════════════════════════
-const GEMINI_API_KEY = 'AIzaSyAJ9bjb7Y1j-3vBInsgSA_n9_jiUTSz5ro';
+/* ═══════════════════════ CONFIG ═══════════════════════ */
 const SUPABASE_URL = 'https://thmcurfueobamkctupez.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRobWN1cmZ1ZW9iYW1rY3R1cGV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDE5NDksImV4cCI6MjA5NTIxNzk0OX0.mEsgYakV9Xbo6PMeAX_AQCMa_nhveP7NydfiPFsbfPM';
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+const SB_HEADERS = { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`, 'Content-Type': 'application/json' };
+// Your deployed Edge Function base (calendar). UPDATE if the function name differs:
+const EDGE_BASE = `${SUPABASE_URL}/functions/v1/google-calendar`;
+const STUDERA_EMAIL = 'studera.global@gmail.com';
+const SUPPORT_EMAIL = 'info.studera@gmail.com';
 
-// ═══════════════════════════════════════════
-// USER LOAD — Use stored session data directly (no API fetch)
-// ═══════════════════════════════════════════
+const MAJORS = window.STUDERA_MAJORS || [];
+const UNI_DATA = window.STUDERA_UNI_DATA || {};
+const ALL_UNIS = window.STUDERA_ALL_UNIS || [];
+const DIR = window.STUDERA_UNI_DIRECTORY || {d:{},n:[]};
+
+/* ═══════════════════════ USER ═══════════════════════ */
 let user = {};
-try { 
-  user = JSON.parse(sessionStorage.getItem('studera_user') || '{}'); 
-} catch(e){}
+try { user = JSON.parse(sessionStorage.getItem('studera_user') || '{}'); } catch(e){}
+if (!user.logged_in && !user.name) { window.location.href = 'login.html'; }
+const isMentor = (user.role || '').toLowerCase() === 'mentor';
+let profileData = {};          // row from users table
+let mentorOfferings = [];      // live mentor uni additions (merged into HS picker)
 
-if (!user.logged_in && !user.name) {
-  window.location.href = 'login.html';
+/* ═══════════════════════ HELPERS ═══════════════════════ */
+function $(id){ return document.getElementById(id); }
+function getInitials(n){ return !n?'?':n.trim().split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase(); }
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3200); }
+function openModal(id){ $(id).classList.add('open'); document.body.style.overflow='hidden'; }
+function closeModal(id){ $(id).classList.remove('open'); document.body.style.overflow=''; }
+async function sbGet(path){ const r=await fetch(`${SUPABASE_URL}/rest/v1/${path}`,{headers:SB_HEADERS}); return r.ok?r.json():[]; }
+async function sbPatch(path,body){ return fetch(`${SUPABASE_URL}/rest/v1/${path}`,{method:'PATCH',headers:{...SB_HEADERS,'Prefer':'return=minimal'},body:JSON.stringify(body)}); }
+async function sbInsert(table,body){ return fetch(`${SUPABASE_URL}/rest/v1/${table}`,{method:'POST',headers:{...SB_HEADERS,'Prefer':'return=representation'},body:JSON.stringify(body)}); }
+const userId = () => user.id || profileData.id;
+
+async function sbUpload(bucket, path, file){
+  const r = await fetch(`${SUPABASE_URL}/storage/v1/object/${bucket}/${path}`,{
+    method:'POST',
+    headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':`Bearer ${SUPABASE_ANON_KEY}`,'Content-Type':file.type||'application/octet-stream','x-upsert':'true'},
+    body:file
+  });
+  if(!r.ok) throw new Error('upload failed '+path);
+  return `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
 }
 
-// Populate UI from stored session data
-document.getElementById('heroName').textContent = user.name || 'there';
-document.getElementById('navUserName').textContent = user.name || 'User';
-document.getElementById('heroStuderaID').textContent = user.studera_id || '—';
-document.getElementById('heroSub').textContent = `Your account is activated. Full profile development begins Early July | Stay Tuned.`;
+/* ═══════════════════════ INIT ═══════════════════════ */
+$('heroName').textContent = user.name || 'there';
+$('navUserName').textContent = user.name || 'User';
+$('heroStuderaID').textContent = user.studera_id || '—';
+$('navProfileInitials').textContent = getInitials(user.name);
 
-// Show mentor message if role is mentor (from stored data)
-if ((user.role || '').toLowerCase() === 'mentor') {
-  const mentorMsg = document.getElementById('mentorMsg');
-  if (mentorMsg) mentorMsg.style.display = 'block';
-  const algoHeaderSub = document.getElementById('algoHeaderSub');
-  if (algoHeaderSub) algoHeaderSub.textContent = 'Account activated — mentor verification portal coming soon';
-  const profileTypeLabel = document.getElementById('profileTypeLabel');
-  if (profileTypeLabel) profileTypeLabel.textContent = 'Mentor Profile';
+function signOut(){ sessionStorage.clear(); window.location.href='index.html'; }
+
+async function loadProfile(){
+  if(!user.email && !user.id) return;
+  const filter = user.id ? `id=eq.${encodeURIComponent(user.id)}` : `email=eq.${encodeURIComponent(user.email)}`;
+  const rows = await sbGet(`users?${filter}&limit=1`);
+  if(rows && rows.length){ profileData = rows[0]; }
+  // nav avatar
+  const url = profileData.avatar_url || profileData.profile_picture;
+  if(url){ $('navProfileBtn').innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"/>`; }
 }
 
-// Check profile completeness
-let prelimData = {};
-try { prelimData = JSON.parse(sessionStorage.getItem('studera_prelim') || '{}'); } catch(e){}
-const profileComplete = user.profile_complete || prelimData.complete || false;
-if (!profileComplete) {
-  document.getElementById('incompleteAlert').classList.remove('hidden');
-  document.getElementById('oppCardSub').textContent = 'Complete your profile to unlock filtered opportunities';
-  document.getElementById('oppExpand').textContent = 'Your profile is incomplete — complete it so the Doctor Algorithm can filter opportunities for you →';
+/* status banner reflects users.profile_status / verification / match state */
+function renderStatusBanner(){
+  const b=$('statusBanner'); b.style.display='flex';
+  const docs = profileData.documents_submitted;
+  const verified = profileData.profile_verified;
+  const status = profileData.profile_status || 'Incomplete';
+  b.className='status-banner';
+  if(status==='Looking for a Match'){ b.classList.add('sb-matching'); $('sbIcon').textContent='🔎'; $('sbText').textContent='Looking for a Match'; $('sbSub').textContent='Our algorithm is finding your mentor. This can take up to 72 hours.'; return; }
+  if(status==='Open for a Match'){ b.classList.add('sb-open'); $('sbIcon').textContent='🟢'; $('sbText').textContent='Open for a Match'; $('sbSub').textContent='Your slots are visible to students. You will be notified of requests.'; return; }
+  if(verified){ b.classList.add('sb-verified'); $('sbIcon').textContent='✅'; $('sbText').textContent='Profile Verified'; $('sbSub').textContent='You can now '+(isMentor?'make yourself available for matching.':'book a session.'); return; }
+  if(docs && !verified){ b.classList.add('sb-pending'); $('sbIcon').textContent='⏳'; $('sbText').textContent='Pending Verification'; $('sbSub').textContent='Documents received. Studera verifies within 48 hours.'; return; }
+  b.classList.add('sb-incomplete'); $('sbIcon').textContent='⚠️'; $('sbText').textContent='Profile Incomplete'; $('sbSub').textContent='Complete your profile and upload all required documents.';
 }
 
-function scrollToStatusCard() {
-  const card = document.getElementById('accountStatusCard');
-  if (card) card.scrollIntoView({behavior:'smooth', block:'start'});
-}
+/* ═══════════════════════ PROFILE MODAL ═══════════════════════ */
+const HS_YEARS = ['Class 9','Class 10','Class 11','Class 12','Gap Year (Deferral without Admission)'];
+const MENTOR_YEARS = ['Gap Year (Deferral with Admission)','Incoming Freshman','Freshman','Sophomore','Junior','Senior'];
+let selectedPicFile = null;
 
-function resumeProfile() {
-  const lastState = user.last_conversation_state || prelimData.last_state || null;
-  if (lastState) conversationState = lastState;
+function openProfileModal(){
+  $('pf-name').value = user.name || profileData.name || '';
+  $('pf-email').value = user.email || profileData.email || '';
+  $('pf-sid').value = user.studera_id || profileData.studera_id || '';
+  $('pf-role').value = (user.role || profileData.role || '');
+  $('pf-phone').value = profileData.phone_number || profileData.phone || profileData.mobile || '';
+  $('pf-dob').value = profileData.date_of_birth || '';
+  if(profileData.age) $('pf-age').value = profileData.age + ' years';
 
-  // Scroll to the algo card and highlight it
-  const card = document.querySelector('.algo-card');
-  card.scrollIntoView({behavior:'smooth', block:'start'});
+  // year dropdown by role
+  const yearSel=$('pf-year'); yearSel.innerHTML='<option value="">— Select —</option>';
+  (isMentor?MENTOR_YEARS:HS_YEARS).forEach(y=>{ const o=document.createElement('option'); o.value=y; o.textContent=y; if(profileData.grade_year===y)o.selected=true; yearSel.appendChild(o); });
+  $('pf-year-label').innerHTML = (isMentor?'Year of Study':'Class / Year')+' <span class="required-star">*</span>';
 
-  // Pulse border to draw attention
-  card.classList.remove('pulse-highlight');
-  void card.offsetWidth; // reflow to restart animation
-  card.classList.add('pulse-highlight');
-  setTimeout(() => card.classList.remove('pulse-highlight'), 1400);
+  // SAT
+  $('pf-sat-status').value = profileData.sat_taken ? 'Yes' : (profileData.sat_taken===false && profileData.sat_count===0 && profileData.grade_year ? 'Test Optional' : '');
+  onSatStatusChange();
+  if(profileData.sat_count) $('pf-sat-count').value = profileData.sat_count;
 
-  // If chat is empty (fresh page load), start the chat
-  const chatEl = document.getElementById('algoChat');
-  if (chatEl.children.length === 0) {
-    // startChat() deferred until July — algo card replaced with status message
-    return;
+  // picture
+  const url=profileData.avatar_url||profileData.profile_picture||'';
+  if(url){ $('profilePicPreview').src=url; $('profilePicPreview').style.display='block'; $('profilePicInitials').style.display='none'; }
+  else { $('profilePicPreview').style.display='none'; $('profilePicInitials').style.display='block'; $('profilePicInitials').textContent=getInitials(user.name); }
+
+  // role-specific sections
+  if(isMentor){
+    $('pf-mentor-uni-section').style.display='block';
+    $('pf-majors-section').style.display='none';
+    initMentorUniMajorCat();
+    restoreMentorUni();
+  } else {
+    $('pf-majors-section').style.display='block';
+    $('pf-mentor-uni-section').style.display='none';
+    renderMajorGrid();
+    restoreHsMajors();
   }
+  $('saveStatus').textContent='';
+  openModal('profileModal');
+}
+function closeProfileModal(){ closeModal('profileModal'); }
+$('profileModal').addEventListener('click',e=>{ if(e.target===$('profileModal')) closeProfileModal(); });
 
-  // If chat has content and we have a last state, prompt them to continue
-  if (lastState && lastState !== 'COMPLETE') {
-    setTimeout(() => {
-      addMsg('Welcome back! Let us continue where we left off. Please respond to the last question above, or use the buttons below.', 'algo');
-    }, 500);
-  }
+function handlePicSelect(e){
+  const f=e.target.files[0]; if(!f) return;
+  if(f.size>2*1024*1024){ alert('Max size is 2 MB.'); return; }
+  selectedPicFile=f;
+  const r=new FileReader();
+  r.onload=ev=>{ $('profilePicPreview').src=ev.target.result; $('profilePicPreview').style.display='block'; $('profilePicInitials').style.display='none'; };
+  r.readAsDataURL(f);
+}
+async function uploadPic(){
+  if(!selectedPicFile||!userId()) return null;
+  try{ const ext=selectedPicFile.name.split('.').pop(); return await sbUpload('mentor-docs',`avatars/${userId()}.${ext}`,selectedPicFile); }catch(e){ return null; }
 }
 
-function signOut() { sessionStorage.clear(); window.location.href = 'index.html'; }
-
-// ═══════════════════════════════════════════
-// BATTERY ANIMATION
-// ═══════════════════════════════════════════
-let battPct = 72, battDir = 1;
-setInterval(() => {
-  battPct += battDir * 0.4;
-  if (battPct >= 78) battDir = -1;
-  if (battPct <= 68) battDir = 1;
-  document.getElementById('batteryFill').style.height = battPct + '%';
-  document.getElementById('batteryPct').textContent = Math.round(battPct) + '%';
-}, 80);
-
-// ═══════════════════════════════════════════
-// CONVERSATION STATE MACHINE
-// All categories and branches handled here.
-// LLM (Gemini) handles natural language;
-// state machine controls the flow.
-// ═══════════════════════════════════════════
-let conversationState = 'WELCOME';
-let conversationHistory = [];
-const cat = user.category || 1; // 1=Class8-11, 2=Class12, 3=University
-
-// What the algorithm already knows from survey
-const known = {
-  name: user.name, country: user.country, role: user.role,
-  category: cat, grade: user.grade, schooling: user.schooling_system,
-  university: user.university, major: user.major, year_of_study: user.year_of_study,
-  willing_beta: user.willing_beta !== false, age: user.age
-};
-
-// FULL SYSTEM PROMPT — covers all categories, all branches
-const SYSTEM_PROMPT = `You are Studera's Doctor Algorithm in Preliminary Data Collection mode on the dashboard. You collect supplementary data from users who already filled the Studera survey.
-
-WHAT YOU ALREADY KNOW about this user:
-- Name: ${known.name}, Country: ${known.country}, Role: ${known.role}
-- Category: ${known.category} (1=Class 8-11 student, 2=Class 12 student, 3=University Year 1-4 mentor-eligible)
-- Grade/Year: ${known.grade}, School/University: ${known.university || 'not specified'}
-- Major/Programme: ${known.major || 'not specified'}, Schooling: ${known.schooling}
-- Willing for beta testing: ${known.willing_beta}
-
-YOUR CONVERSATION FLOW — follow this ORDER based on category:
-
-STEP 1 — WELCOME & SURVEY CONFIRMATION
-Greet warmly using their name. Say "As per your survey responses, here is what I know about you: [summarise known data]." Ask if they want to update or correct anything. If yes, let them tell you and acknowledge it. Then proceed.
-
-STEP 2 — BETA TESTING ACKNOWLEDGEMENT
-Mention: "You indicated you are willing to help Studera during Beta Testing. This means testing our algorithm pre-launch for research purposes, trialling multiple variations, and providing feedback so the Studera team can collect user experience data. We will reach out as Beta Testing begins."
-
-STEP 3 — STANDARDISED TESTS (ask ALL categories)
-Ask: "Have you taken or are you planning to take any standardised tests such as the SAT, ACT, MDCAT, UCAT, or others?"
-- If already taken: ask which test(s) and what score(s).
-  * Score 1450+ on SAT: "That is a genuinely competitive score. If you are targeting top Ivy League universities, you might consider a retest — but for most universities this is strong. Note: Instagram reels and short YouTube videos are nothing more than dopamine boosters for SAT prep — they lack consistency and mislead students. Would you like mentorship from someone who scored 1480+?"
-  * Score 1350-1449 on SAT (Cat 3 only): "Your score is well above average. Would you be interested in mentoring students through Studera's upcoming SAT guidance feature — helping students who do not need a 1480+ but want solid preparation?"
-  * Score below 1350: do not ask about mentoring.
-  * For MDCAT: ask their score and whether they would benefit from targeted mentorship.
-- If planning to take: ask which one and when.
-- For Category 3 (university): ask what score they got, and whether they would be willing to mentor students for that test in a future Studera update.
-Always mention: "Receiving guidance from Instagram reels or short YouTube videos are nothing more than dopamine boosters. They lack consistency and mislead students — one of the greatest barriers to achieving a 1480+."
-
-STEP 4 — SPORTS (ask Category 1 and 2 only)
-Say: "Universities value sports engagement as much as they value grades. Playing at a high level can earn you offer letters and scholarships based on your contribution to a university's sports team — and if you really stand out, you could be recruited."
-Ask: "Do you play any varsity or competitive sports?"
-- If yes: ask what sport(s) and what level — school, local community, regional, state/national, international.
-- Then say: "Soon, Studera will announce a new service allowing students active in sports to leverage their experience for university admission and scholarships. We will keep you posted."
-- If no: acknowledge and move on.
-
-STEP 5 — CATEGORY 2 SPECIFIC (Class 12 only)
-Ask: "Since you are in your final year of school, I want to ask — have you already been accepted or enrolled into a university?"
-- If yes enrolled: "That is fantastic. Since you are now a university student, Studera would like to update your profile from High School Student to University Mentor — you are now eligible to guide the next generation of applicants. Would you like to proceed with that?" Then ask year of study, university name, programme, country applied from.
-- If gap year, plan to apply next year: keep as Category 2.
-- If accepted but deferred to next year: keep as Category 2 but note the deferral.
-- If no: continue as Category 2.
-
-STEP 6 — COMPLETION
-Say: "This is NOT your full Student or Mentor Profile. This is preliminary data being collected so that the Doctor Algorithm can understand you better. Though I am Studera's Doctor Algorithm, I am still under development. Once ready — by 1st June 2026 — I will build your complete profile and find your perfect match. You are helping build something special."
-Then offer three options (present as choices): "Understand How Studera's Algorithm Works", "View Extracurricular Opportunities", "Check Latest Updates".
-
-CRITICAL RULES:
-- One question or topic at a time. Never ask multiple questions in one message.
-- Warm, conversational, encouraging tone throughout.
-- Reference their survey data naturally — never ask something you already know.
-- Never reveal internal flags or category classifications to the user.
-- Save all collected data in the data_collected field.
-- RETURN ONLY VALID JSON: {"message":"your message","choices":["opt1","opt2"] or [],"state":"WELCOME|SURVEY_CHECK|BETA_ACK|TESTS|SPORTS|CAT2_CHECK|COMPLETE","data_collected":{"field":"value"},"complete":false}`;
-
-// ═══════════════════════════════════════════
-// GEMINI API
-// ═══════════════════════════════════════════
-async function callGemini(userMsg) {
-  conversationHistory.push({ role:'user', content: userMsg });
-  if (GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY_HERE') return getDemoResponse(userMsg);
-  try {
-    const history = conversationHistory.map(m => `${m.role==='user'?'User':'Algorithm'}: ${m.content}`).join('\n');
-    const res = await fetch(GEMINI_URL, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        system_instruction:{ parts:[{text:SYSTEM_PROMPT}] },
-        contents:[{ parts:[{text: history + '\n\nCurrent state: ' + conversationState}] }],
-        generationConfig:{ temperature:0.4, maxOutputTokens:600 }
-      })
-    });
-    const data = await res.json();
-    const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
-    const clean = raw.replace(/```json|```/g,'').trim();
-    const parsed = JSON.parse(clean);
-    conversationHistory.push({ role:'assistant', content: parsed.message });
-    return parsed;
-  } catch(e) { console.warn('Gemini error:', e); return getDemoResponse(userMsg); }
+function onDobChange(){
+  const dob=$('pf-dob').value; if(!dob){ $('pf-age').value=''; return; }
+  const d=new Date(dob), t=new Date(); let a=t.getFullYear()-d.getFullYear();
+  const m=t.getMonth()-d.getMonth(); if(m<0||(m===0&&t.getDate()<d.getDate())) a--;
+  $('pf-age').value = (a>=0&&a<120)? a+' years' : '';
+}
+function onYearChange(){ if(!isMentor) return; }
+function onSatStatusChange(){
+  const v=$('pf-sat-status').value;
+  $('pf-sat-count-wrap').style.display = v==='Yes' ? 'block':'none';
 }
 
-// Demo mode responses — realistic flow without API key
-function getDemoResponse(msg) {
-  const m = (msg||'').toLowerCase();
-  const responses = {
-    'WELCOME': {
-      message: `Welcome back, ${known.name}! I have your survey data on file.\n\nHere is what I know about you: you are from ${known.country||'your country'}, currently in ${known.grade||'your year'}, following the ${known.schooling||'your schooling system'} curriculum.\n\nIs there anything you would like to update or correct?`,
-      choices: ['Everything looks correct', 'I want to update something'], state:'SURVEY_CHECK', data_collected:{}
-    },
-    'SURVEY_CHECK': {
-      message: `Understood. Also, as per your survey response — you indicated you are willing to help Studera during Beta Testing. This means testing our algorithm pre-launch, trialling variations, and giving feedback. The Studera team will reach out when Beta Testing begins.\n\nNow let me ask — have you taken or are you planning to take any standardised tests? For example, SAT, ACT, MDCAT, UCAT, or others?`,
-      choices: ['Yes — already taken', 'Planning to take one', 'No plans currently'], state:'TESTS', data_collected:{}
-    },
-    'TESTS': {
-      message: cat === 3
-        ? `Noted. For Category 3 users, I will ask about your test scores next and whether you would mentor others.\n\nRemember — Instagram reels and short YouTube videos are nothing more than dopamine boosters. They lack consistency and mislead students, becoming one of the greatest barriers to a 1480+.\n\nDid you take the SAT, ACT, or MDCAT? If yes, what was your score?`
-        : `${cat === 2 ? "Before we move to sports, let me check —" : "Great."} Universities value sports engagement as much as grades. Playing competitively can earn you offer letters and scholarships. Do you play any varsity or competitive sports?`,
-      choices: cat === 3 ? ['Yes — I have a score to share','Not applicable to me'] : ['Yes — I play competitively','Recreationally / casually','No, I do not play sports'],
-      state: cat === 3 ? 'TESTS_DETAIL' : (cat === 2 ? 'SPORTS' : 'SPORTS'), data_collected:{}
-    },
-    'SPORTS': {
-      message: cat === 2
-        ? `Noted. Now — since you are in your final year of school, have you already been accepted or enrolled into a university?`
-        : `Excellent. I have noted your sports information.\n\nSoon, Studera will announce a new service allowing students active in sports to leverage their experience for university admission and scholarships. We will keep you posted.\n\nThis is NOT your full Student Profile. I am Studera's Doctor Algorithm, still under development. By 1st June 2026, I will be ready to build your complete profile and make your first mentor match. You are helping build something special.`,
-      choices: cat === 2
-        ? ['Yes — already enrolled','Accepted but taking a gap year','No — still applying']
-        : ['Understand the Algorithm','View Opportunities','Check Updates'],
-      state: cat === 2 ? 'CAT2_CHECK' : 'COMPLETE', data_collected:{}
-    },
-    'CAT2_CHECK': {
-      message:`Based on what you have shared, I have updated your profile accordingly.\n\nThis is NOT your full Student Profile. I am Studera's Doctor Algorithm, still under development. By 1st June 2026, I will be ready to build your complete profile and make your first match.`,
-      choices:['Understand the Algorithm','View Opportunities','Check Updates'], state:'COMPLETE', data_collected:{}
-    },
-    'TESTS_DETAIL': {
-      message:`Noted. ${cat===3 ? "Thank you for sharing that — it will be valuable data for our standardised test mentorship feature when it launches." : ""}\n\nThis is NOT your full ${known.role==='mentor'?'Mentor':'Student'} Profile. I am Studera's Doctor Algorithm, still under development. By 1st June 2026, I will be ready to build your complete profile and find your perfect match.`,
-      choices:['Understand the Algorithm','View Opportunities','Check Updates'], state:'COMPLETE', data_collected:{}, complete:true
-    },
-    'COMPLETE': {
-      message:`You are all set for now, ${known.name}. I have everything I need to continue building your understanding. Keep an eye on your email — we will be in touch as Studera's Doctor Algorithm gets closer to its first match. Welcome to the beginning of something special.`,
-      choices:[], state:'COMPLETE', data_collected:{}, complete:true
-    }
+async function saveProfile(){
+  const st=$('saveStatus'); st.className='save-status'; st.textContent='Saving…';
+  const phone=$('pf-phone').value.trim();
+  if(!phone){ st.className='save-status error'; st.textContent='⚠ Mobile number is required.'; return; }
+  if(!$('pf-dob').value){ st.className='save-status error'; st.textContent='⚠ Date of birth is required.'; return; }
+  if(!$('pf-year').value){ st.className='save-status error'; st.textContent='⚠ Please select your '+(isMentor?'year':'class')+'.'; return; }
+  if(!$('pf-sat-status').value){ st.className='save-status error'; st.textContent='⚠ Please select your SAT status.'; return; }
+
+  const ageNum = parseInt(($('pf-age').value||'').replace(/\D/g,''))||null;
+  const satYes = $('pf-sat-status').value==='Yes';
+  const payload = {
+    phone_number:phone, mobile:phone, phone:phone,
+    date_of_birth:$('pf-dob').value, age:ageNum,
+    grade_year:$('pf-year').value,
+    sat_taken:satYes, sat_count: satYes ? parseInt($('pf-sat-count').value)||0 : 0
   };
-  return responses[conversationState] || responses['COMPLETE'];
+
+  if(isMentor){
+    const cu = collectCurrentUni();
+    if(!cu.ok){ st.className='save-status error'; st.textContent='⚠ '+cu.msg; return; }
+    Object.assign(payload,{
+      current_university_email: cu.email, current_university_name: cu.name,
+      current_university_country: cu.country, current_university_state: cu.state,
+      current_major_category: cu.cat, current_major_name: cu.major,
+      university_list: collectUniList()
+    });
+  } else {
+    const mi = collectHsMajors();
+    if(!mi.ok){ st.className='save-status error'; st.textContent='⚠ '+mi.msg; return; }
+    payload.major_interests = mi.data;
+  }
+
+  if(selectedPicFile){ const u=await uploadPic(); if(u) payload.avatar_url=u; }
+  // mark profile_status complete-ish if not already in a match state
+  if(!['Looking for a Match','Open for a Match'].includes(profileData.profile_status)) payload.profile_status='Profile Complete';
+
+  try{
+    const filter = userId()? `id=eq.${encodeURIComponent(userId())}` : `email=eq.${encodeURIComponent(user.email)}`;
+    const r = await sbPatch(`users?${filter}`, payload);
+    if(r.ok||r.status===204){
+      Object.assign(profileData,payload);
+      if(payload.avatar_url) $('navProfileBtn').innerHTML=`<img src="${payload.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"/>`;
+      // mentor: push offerings live so HS students see them
+      if(isMentor) await syncMentorOfferings();
+      selectedPicFile=null;
+      st.className='save-status success'; st.textContent='✓ Profile saved.';
+      renderStatusBanner(); renderDocsSection(); refreshActionButtons(); buildMentorDocSections();
+      setTimeout(closeProfileModal,1100);
+    } else { throw new Error(r.status); }
+  }catch(e){ st.className='save-status error'; st.textContent='✗ Could not save. Please retry.'; }
 }
 
-// ═══════════════════════════════════════════
-// UI HELPERS
-// ═══════════════════════════════════════════
-const chatEl = document.getElementById('algoChat');
-const choicesEl = document.getElementById('chatChoices');
-const inputEl = document.getElementById('algoInput');
+/* ═══════════ HIGH SCHOOL: MAJOR PICKER + UNI SUB-SELECTION ═══════════ */
+let selectedMajors = [];        // category strings
+let hsUniSelections = {};       // {category: [{name,degree}]}
 
-function addMsg(text, sender) {
-  const msg = document.createElement('div');
-  msg.className = `msg ${sender}`;
-  const av = sender==='algo'?'🩺':'👤';
-  msg.innerHTML = `<div class="msg-av">${av}</div><div class="msg-bubble">${text.replace(/\n/g,'<br>')}</div>`;
-  chatEl.appendChild(msg);
-  chatEl.scrollTop = chatEl.scrollHeight;
+function renderMajorGrid(){
+  const grid=$('majorPickerGrid'); grid.innerHTML='';
+  MAJORS.forEach(m=>{
+    const checked = selectedMajors.includes(m);
+    const div=document.createElement('label');
+    div.className='major-pick-option'+(checked?' checked':'');
+    div.dataset.major=m.toLowerCase();
+    div.innerHTML=`<input type="checkbox" ${checked?'checked':''} onchange="toggleMajor('${m.replace(/'/g,"\\'")}',this)"/> <span>${m}</span>`;
+    grid.appendChild(div);
+  });
+  updateMajorCount();
 }
-
-function showTyping() {
-  const t=document.createElement('div');t.className='msg algo';t.id='typingMsg';
-  t.innerHTML=`<div class="msg-av">🩺</div><div class="typing-indicator"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>`;
-  chatEl.appendChild(t);chatEl.scrollTop=chatEl.scrollHeight;
-}
-function hideTyping(){const e=document.getElementById('typingMsg');if(e)e.remove();}
-
-function renderChoices(choices) {
-  choicesEl.innerHTML='';
-  if(!choices||!choices.length) return;
-  choices.forEach(c=>{
-    const btn=document.createElement('button');btn.className='chat-choice';btn.textContent=c;
-    btn.onclick=()=>{
-      // Handle navigation choices
-      if(c.includes('Algorithm')){window.location.href='technology.html';return;}
-      if(c.includes('Opportunities')){window.location.href='opportunities.html?auth=1';return;}
-      if(c.includes('Updates')){window.location.href='updates.html';return;}
-      sendMsg(c);
-    };
-    choicesEl.appendChild(btn);
+function filterMajorGrid(){
+  const q=$('majorSearchInput').value.toLowerCase();
+  document.querySelectorAll('#majorPickerGrid .major-pick-option').forEach(o=>{
+    o.style.display = o.dataset.major.includes(q)?'flex':'none';
   });
 }
-
-async function sendMsg(override) {
-  const msg=override||inputEl.value.trim();
-  if(!msg)return;
-  inputEl.value='';inputEl.style.height='auto';
-  choicesEl.innerHTML='';
-  document.getElementById('algoSendBtn').disabled=true;
-  addMsg(msg,'user');
-  showTyping();
-  await delay(900);
-  hideTyping();
-  const response=await callGemini(msg);
-  if(response.message) addMsg(response.message,'algo');
-  if(response.choices) renderChoices(response.choices);
-  if(response.state) conversationState=response.state;
-  if(response.data_collected) {
-    Object.assign(prelimData,response.data_collected);
-    prelimData.last_state=conversationState;
-    if(response.complete) {
-      prelimData.complete=true;
-      document.getElementById('incompleteAlert').classList.add('hidden');
-    }
-    try{sessionStorage.setItem('studera_prelim',JSON.stringify(prelimData));}catch(e){}
-    saveToSupabase(response.data_collected);
+function toggleMajor(m,cb){
+  if(cb.checked){
+    if(selectedMajors.length>=5){ cb.checked=false; toast('Maximum 5 interests.'); return; }
+    selectedMajors.push(m);
+  } else {
+    selectedMajors=selectedMajors.filter(x=>x!==m);
+    delete hsUniSelections[m];
   }
-  document.getElementById('algoSendBtn').disabled=false;
+  cb.closest('.major-pick-option').classList.toggle('checked',cb.checked);
+  updateMajorCount(); renderMajorUniBlocks();
+}
+function updateMajorCount(){
+  $('majorCountLabel').textContent = `${selectedMajors.length} of 5 selected (minimum 2 required)`;
 }
 
-function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
-function delay(ms){return new Promise(r=>setTimeout(r,ms));}
+/* merge static UNI_DATA with live mentor offerings for a category */
+function unisForCategory(cat){
+  const map={};
+  (UNI_DATA[cat]||[]).forEach(u=>{ const k=u.name+'|'+u.degree; map[k]={name:u.name,degree:u.degree}; });
+  mentorOfferings.filter(o=>o.major_category===cat).forEach(o=>{
+    const k=o.university_name+'|'+o.major_name; map[k]={name:o.university_name,degree:o.major_name};
+  });
+  return Object.values(map);
+}
 
-// Save prelim data to Supabase
-async function saveToSupabase(data) {
-  if(SUPABASE_URL==='YOUR_SUPABASE_URL_HERE'||!user.id) return;
-  try {
-    await fetch(`${SUPABASE_URL}/rest/v1/prelim_profiles?user_id=eq.${user.id}`, {
-      method:'PATCH',
-      headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':`Bearer ${SUPABASE_ANON_KEY}`,'Content-Type':'application/json'},
-      body:JSON.stringify({...data, last_updated:new Date().toISOString()})
+function renderMajorUniBlocks(){
+  const wrap=$('majorUniBlocks'); wrap.innerHTML='';
+  selectedMajors.forEach(cat=>{
+    const unis=unisForCategory(cat);
+    const block=document.createElement('div'); block.className='major-uni-block';
+    let inner=`<h4>${cat}</h4><div class="muh-sub">Choose the universities + majors you want mentorship for:</div>`;
+    if(unis.length===0){
+      inner+=`<div class="empty-hint">No mentors available for this field yet — we'll notify you when one joins. Your interest is saved.</div>`;
+    } else {
+      unis.forEach((u,i)=>{
+        const sel=(hsUniSelections[cat]||[]).some(s=>s.name===u.name&&s.degree===u.degree);
+        const id=`hsuni_${cat.replace(/\W/g,'')}_${i}`;
+        inner+=`<label class="uni-degree-row${sel?' checked':''}" for="${id}">
+          <input type="checkbox" id="${id}" ${sel?'checked':''} onchange="toggleHsUni('${cat.replace(/'/g,"\\'")}','${u.name.replace(/'/g,"\\'")}','${u.degree.replace(/'/g,"\\'")}',this)"/>
+          <div><div class="udr-name">${u.name}</div><div class="udr-deg">📘 ${u.degree}</div></div></label>`;
+      });
+    }
+    block.innerHTML=inner; wrap.appendChild(block);
+  });
+}
+function toggleHsUni(cat,name,degree,cb){
+  if(!hsUniSelections[cat]) hsUniSelections[cat]=[];
+  if(cb.checked) hsUniSelections[cat].push({name,degree});
+  else hsUniSelections[cat]=hsUniSelections[cat].filter(s=>!(s.name===name&&s.degree===degree));
+  cb.closest('.uni-degree-row').classList.toggle('checked',cb.checked);
+}
+function collectHsMajors(){
+  if(selectedMajors.length<2) return {ok:false,msg:'Select at least 2 major interests.'};
+  const data = selectedMajors.map(cat=>({category:cat, universities:hsUniSelections[cat]||[]}));
+  return {ok:true,data};
+}
+function restoreHsMajors(){
+  const mi = profileData.major_interests;
+  selectedMajors=[]; hsUniSelections={};
+  if(Array.isArray(mi)){
+    mi.forEach(item=>{
+      if(typeof item==='string'){ selectedMajors.push(item); }
+      else if(item&&item.category){ selectedMajors.push(item.category); hsUniSelections[item.category]=item.universities||[]; }
     });
-  } catch(e){}
+  }
+  renderMajorGrid(); renderMajorUniBlocks();
 }
 
-function resumeFromState(state) {
-  conversationState=state;
-  sendMsg('__RESUME__');
+/* ═══════════ MENTOR: CURRENT UNIVERSITY + LIST ═══════════ */
+function initMentorUniMajorCat(){
+  const sel=$('pf-uni-majorcat'); if(sel.options.length>1) return;
+  MAJORS.forEach(m=>{ const o=document.createElement('option'); o.value=m; o.textContent=m; sel.appendChild(o); });
 }
 
-// Start chat
-async function startChat() {
-  await delay(700);
-  showTyping();await delay(1100);hideTyping();
-  const r=await callGemini('__INIT__');
-  if(r.message)addMsg(r.message,'algo');
-  if(r.choices)renderChoices(r.choices);
-  if(r.state)conversationState=r.state;
+/* domain autofill from directory */
+function lookupDomain(email){
+  const at=email.split('@')[1]; if(!at) return null;
+  const dom=at.toLowerCase().trim();
+  if(DIR.d[dom]) return DIR.d[dom];
+  // try parent domain (sub.uni.edu -> uni.edu)
+  const parts=dom.split('.');
+  for(let i=1;i<parts.length-1;i++){ const p=parts.slice(i).join('.'); if(DIR.d[p]) return DIR.d[p]; }
+  return null;
 }
-// startChat() deferred until July — algo card replaced with status message
+function onUniEmailInput(){
+  if($('pf-no-uni-email').checked) return;
+  const email=$('pf-uni-email').value.trim();
+  const hit=email.includes('@')?lookupDomain(email):null;
+  if(hit){ $('pf-uni-name').value=hit[0]; $('pf-uni-country').value=hit[1]||''; $('pf-uni-state').value=hit[2]||''; }
+}
+function onNoUniEmailToggle(){
+  const manual=$('pf-no-uni-email').checked;
+  $('pf-uni-manual-search').style.display = manual?'block':'none';
+  $('pf-uni-email').readOnly = false;
+  if(manual){ $('pf-uni-name').value=''; $('pf-uni-country').value=''; $('pf-uni-state').value=''; }
+  else onUniEmailInput();
+}
+function enableManualUni(){
+  $('pf-uni-name').readOnly=false; $('pf-uni-country').readOnly=false; $('pf-uni-state').readOnly=false;
+  $('pf-uni-name').placeholder='Type your university name'; $('pf-uni-country').placeholder='Country'; $('pf-uni-state').placeholder='State/Province';
+  $('pf-uni-name').focus(); $('pf-uni-notfound').style.display='none';
+}
+
+/* generic directory search dropdown */
+function searchDirectory(q){
+  q=q.toLowerCase().trim(); if(q.length<2) return [];
+  const out=[];
+  for(const rec of DIR.n){ if(rec[0].toLowerCase().includes(q)){ out.push(rec); if(out.length>=20) break; } }
+  return out;
+}
+function onUniSearchInput(inputId,resultsId,target){
+  const q=$(inputId).value; const box=$(resultsId);
+  const res=searchDirectory(q);
+  if(q.trim().length<2){ box.classList.remove('open'); return; }
+  if(res.length===0){
+    box.innerHTML=`<div class="uni-search-none">University not found.</div>`; box.classList.add('open');
+    if(target==='current') $('pf-uni-notfound').style.display='block';
+    return;
+  }
+  if(target==='current') $('pf-uni-notfound').style.display='none';
+  box.innerHTML=res.map(r=>`<div class="uni-search-item" onclick='pickUni(${JSON.stringify(r).replace(/'/g,"&#39;")},"${target}","${inputId}","${resultsId}")'>${r[0]}<small>${[r[1],r[2]].filter(Boolean).join(' · ')||'—'}</small></div>`).join('');
+  box.classList.add('open');
+}
+function pickUni(rec,target,inputId,resultsId){
+  $(resultsId).classList.remove('open');
+  if(target==='current'){
+    $('pf-uni-name').value=rec[0]; $('pf-uni-country').value=rec[1]||''; $('pf-uni-state').value=rec[2]||'';
+    $(inputId).value=rec[0];
+  } else if(target.startsWith('list:')){
+    const idx=target.split(':')[1];
+    $(`uli-name-${idx}`).value=rec[0]; $(`uli-country-${idx}`).value=rec[1]||''; $(`uli-state-${idx}`).value=rec[2]||'';
+    $(inputId).value=rec[0];
+  }
+}
+document.addEventListener('click',e=>{ if(!e.target.closest('.uni-search-wrap')) document.querySelectorAll('.uni-search-results').forEach(b=>b.classList.remove('open')); });
+
+function collectCurrentUni(){
+  const email=$('pf-uni-email').value.trim();
+  const name=$('pf-uni-name').value.trim();
+  const cat=$('pf-uni-majorcat').value;
+  const major=$('pf-uni-majorname').value.trim();
+  if(!$('pf-no-uni-email').checked && !email) return {ok:false,msg:'Enter your university email (or tick the no-email box).'};
+  if(!name) return {ok:false,msg:'University name is required.'};
+  if(!cat) return {ok:false,msg:'Select your major category.'};
+  if(!major) return {ok:false,msg:'Enter your exact major/degree name.'};
+  return {ok:true,email,name,country:$('pf-uni-country').value.trim(),state:$('pf-uni-state').value.trim(),cat,major};
+}
+
+/* University list (max 5) */
+let uniListCount=0;
+function addUniListItem(data){
+  if(uniListCount>=5){ toast('Maximum 5 universities.'); return; }
+  const idx=uniListCount++;
+  const div=document.createElement('div'); div.className='major-uni-block'; div.id=`uli-block-${idx}`;
+  let catOpts=MAJORS.map(m=>`<option value="${m}" ${data&&data.major_category===m?'selected':''}>${m}</option>`).join('');
+  div.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center"><h4>University ${idx+1}</h4><button class="mini-remove" onclick="document.getElementById('uli-block-${idx}').remove()">✕ remove</button></div>
+    <div class="field"><label>Search University</label>
+      <div class="uni-search-wrap"><input type="text" id="uli-search-${idx}" placeholder="Type to search…" autocomplete="off" oninput="onUniSearchInput('uli-search-${idx}','uli-results-${idx}','list:${idx}')"/><div class="uni-search-results" id="uli-results-${idx}"></div></div>
+    </div>
+    <div class="field"><label>University Name</label><input type="text" id="uli-name-${idx}" value="${data?data.university_name||'':''}" placeholder="Selected university"/></div>
+    <div class="row-2">
+      <div class="field"><label>Country</label><input type="text" id="uli-country-${idx}" value="${data?data.country||'':''}" readonly/></div>
+      <div class="field"><label>State/Province</label><input type="text" id="uli-state-${idx}" value="${data?data.state||'':''}" readonly/></div>
+    </div>
+    <div class="field"><label>Major Category</label><select id="uli-cat-${idx}"><option value="">— Select —</option>${catOpts}</select></div>
+    <div class="field"><label>Exact Major / Degree Name</label><input type="text" id="uli-major-${idx}" value="${data?data.major_name||'':''}" placeholder="e.g. BBA Finance"/></div>`;
+  $('pf-uni-list').appendChild(div);
+}
+function collectUniList(){
+  const out=[];
+  document.querySelectorAll('#pf-uni-list > .major-uni-block').forEach(b=>{
+    const idx=b.id.split('-')[2];
+    const name=$(`uli-name-${idx}`).value.trim();
+    if(!name) return;
+    out.push({university_name:name,country:$(`uli-country-${idx}`).value.trim(),state:$(`uli-state-${idx}`).value.trim(),major_category:$(`uli-cat-${idx}`).value,major_name:$(`uli-major-${idx}`).value.trim()});
+  });
+  return out;
+}
+function restoreMentorUni(){
+  $('pf-uni-email').value=profileData.current_university_email||'';
+  $('pf-uni-name').value=profileData.current_university_name||'';
+  $('pf-uni-country').value=profileData.current_university_country||'';
+  $('pf-uni-state').value=profileData.current_university_state||'';
+  if(profileData.current_major_category) $('pf-uni-majorcat').value=profileData.current_major_category;
+  $('pf-uni-majorname').value=profileData.current_major_name||'';
+  $('pf-uni-list').innerHTML=''; uniListCount=0;
+  const list=profileData.university_list;
+  if(Array.isArray(list)&&list.length){ list.forEach(u=>addUniListItem(u)); }
+}
+
+/* push mentor's current+list unis into mentor_offerings so HS students see them live */
+async function syncMentorOfferings(){
+  const rows=[];
+  if(profileData.current_university_name && profileData.current_major_category){
+    rows.push({mentor_id:userId(),university_name:profileData.current_university_name,major_category:profileData.current_major_category,major_name:profileData.current_major_name||''});
+  }
+  (profileData.university_list||[]).forEach(u=>{ if(u.university_name&&u.major_category) rows.push({mentor_id:userId(),university_name:u.university_name,major_category:u.major_category,major_name:u.major_name||''}); });
+  if(!rows.length) return;
+  // delete existing then insert fresh (idempotent)
+  await fetch(`${SUPABASE_URL}/rest/v1/mentor_offerings?mentor_id=eq.${userId()}`,{method:'DELETE',headers:SB_HEADERS});
+  await sbInsert('mentor_offerings',rows);
+}
+
+/* ═══════════════════════ DOCUMENTS ═══════════════════════ */
+function markFile(labelId,inputId){
+  const label=$(labelId),input=$(inputId); if(!input||!input.files[0]) return;
+  const n=input.files[0].name, accept=input.accept||'';
+  label.classList.add('has-file');
+  label.innerHTML=`✅ ${n.slice(0,22)}${n.length>22?'…':''}<input type="file" id="${inputId}" accept="${accept}" onchange="markFile('${labelId}','${inputId}')"/>`;
+}
+function uploadRow(label,tag,labelId,inputId,accept){
+  return `<div class="upload-row"><div class="upload-row-label">${label} <span class="tag">${tag}</span></div>
+    <label class="file-label" id="${labelId}">📎 Choose file<input type="file" id="${inputId}" accept="${accept||'.pdf,.jpg,.jpeg,.png'}" onchange="markFile('${labelId}','${inputId}')"/></label></div>`;
+}
+
+/* transcripts required by class/year */
+function hsTranscripts(year){
+  const map={'Class 9':['9'],'Class 10':['9','10'],'Class 11':['9','10','11'],'Class 12':['9','10','11','12'],'Gap Year (Deferral without Admission)':['9','10','11','12']};
+  return map[year]||['9','10','11'];
+}
+function mentorTranscripts(year){
+  const map={'Incoming Freshman':[],'Gap Year (Deferral with Admission)':[],'Freshman':['Freshman — Semester 1'],
+    'Sophomore':['Freshman Year','Sophomore — Semester 1'],
+    'Junior':['Freshman Year','Sophomore Year','Junior — Semester 1'],
+    'Senior':['Freshman Year','Sophomore Year','Junior Year','Senior — Semester 1']};
+  return map[year]||[];
+}
+
+function renderDocsSection(){
+  if(isMentor){ $('mentorDocsCard').style.display='block'; buildMentorDocSections(); }
+  else { $('hsDocsCard').style.display='block'; buildHsDocs(); }
+}
+
+function buildHsDocs(){
+  const year=profileData.grade_year||'Class 11';
+  const classes=hsTranscripts(year);
+  let html='';
+  classes.forEach(c=>{
+    const isC12=c==='12'; const req = (year==='Class 12'||year.startsWith('Gap'))? 'Required' : (isC12?'Latest semester':'Required');
+    html+=uploadRow(`Class ${c} Transcript`, req, `t${c}Label`, `t${c}File`);
+  });
+  $('hsTranscriptRows').innerHTML=html;
+  $('ecFilename').textContent = (user.studera_id||'YourStuderaID');
+  // SAT rows
+  const satN = profileData.sat_taken ? (profileData.sat_count||0) : 0;
+  let satHtml = satN>0 ? '<div class="section-divider-label" style="margin-top:0">SAT Score Reports</div>':'';
+  for(let i=1;i<=satN;i++) satHtml+=uploadRow(`SAT Test ${i} Score Report`,'Required · PDF',`satLabel${i}`,`satFile${i}`,'.pdf');
+  $('hsSatRows').innerHTML=satHtml;
+}
+
+async function submitHsDocuments(){
+  const st=$('hsDocStatus'); st.className='save-status';
+  const year=profileData.grade_year||'Class 11';
+  const classes=hsTranscripts(year);
+  // validate required transcripts (Class 12 mandatory only for class 12 / gap)
+  for(const c of classes){
+    const mustHave = !(c==='12' && !(year==='Class 12'||year.startsWith('Gap')));
+    if(mustHave){ const el=$(`t${c}File`); if(!el||!el.files[0]){ st.className='save-status error'; st.textContent=`⚠ Class ${c} transcript is required.`; return; } }
+  }
+  if(!$('ecFile').files[0]){ st.className='save-status error'; st.textContent='⚠ Extracurricular Portfolio is required.'; return; }
+  // filename validation
+  const ecName=$('ecFile').files[0].name;
+  if(user.studera_id && !ecName.includes(user.studera_id)){ st.className='save-status error'; st.textContent=`⚠ Rename portfolio to include your Studera ID (${user.studera_id}).`; return; }
+  const satN = profileData.sat_taken?(profileData.sat_count||0):0;
+  for(let i=1;i<=satN;i++){ if(!$(`satFile${i}`).files[0]){ st.className='save-status error'; st.textContent=`⚠ SAT Test ${i} report required.`; return; } }
+
+  const btn=$('hsDocSubmitBtn'); btn.disabled=true; btn.textContent='Uploading…';
+  try{
+    const records=[]; const uid=userId()||user.studera_id;
+    const slots=[];
+    classes.forEach(c=>slots.push({inp:`t${c}File`,type:`class${c}_transcript`}));
+    slots.push({inp:'ecFile',type:'extracurricular_portfolio'});
+    for(let i=1;i<=satN;i++) slots.push({inp:`satFile${i}`,type:`sat_report_${i}`});
+    for(const s of slots){
+      const el=$(s.inp); if(!el||!el.files[0]) continue;
+      const f=el.files[0], ext=f.name.split('.').pop();
+      const path=`${uid}/${s.type}_${Date.now()}.${ext}`;
+      let url; try{ url=await sbUpload('student-docs',path,f);}catch(e){ url='upload-failed'; }
+      records.push({user_id:uid,document_type:s.type,file_url:url,uploaded_at:new Date().toISOString()});
+    }
+    await sbInsert('student_documents',records);
+    await markDocsSubmitted();
+    btn.style.display='none'; st.className='save-status success'; st.textContent='✓ Documents submitted. Verification within 48 hours.';
+    renderStatusBanner(); refreshActionButtons();
+  }catch(e){ btn.disabled=false; btn.textContent='Submit Documents'; st.className='save-status error'; st.textContent='✗ Upload failed. Please retry.'; }
+}
+
+/* ── MENTOR DOCS ── */
+function buildMentorDocSections(){
+  if(!isMentor) return;
+  $('mdCurrentUniName').textContent = profileData.current_university_name || '— (add in profile)';
+  // A. Current university: transcripts by year + admission + scholarship
+  const year=profileData.grade_year||'';
+  const trans=mentorTranscripts(year);
+  let a='';
+  if(trans.length===0) a+='<div class="field-hint" style="margin-bottom:8px">No transcripts required for your year.</div>';
+  trans.forEach((t,i)=>a+=uploadRow(`${t} Transcript`,'Required',`mcT${i}Label`,`mcT${i}File`));
+  a+=uploadRow('Letter of Admission','Required','mcAdmLabel','mcAdmFile');
+  a+=uploadRow('Proof of Scholarship','If applicable','mcSchLabel','mcSchFile');
+  $('mentorCurrentDocs').innerHTML=a;
+
+  // B. University list accordion
+  const list=profileData.university_list||[];
+  if(!list.length){ $('mentorUniListDocs').innerHTML='<div class="empty-hint">Add universities in your profile\'s University List first.</div>'; }
+  else {
+    $('mentorUniListDocs').innerHTML=list.map((u,i)=>`
+      <div class="acc-item" id="acc-${i}">
+        <div class="acc-head" onclick="document.getElementById('acc-${i}').classList.toggle('open')">
+          <span>University ${i+1}: ${u.university_name} <span id="accTick-${i}">⬜</span></span><span class="acc-chevron">▾</span></div>
+        <div class="acc-body">
+          ${uploadRow('Letter of Admission','Required',`mlAdm${i}Label`,`mlAdm${i}File`)}
+          ${uploadRow('Proof of Scholarship','If applicable',`mlSch${i}Label`,`mlSch${i}File`)}
+        </div></div>`).join('');
+  }
+  // C. General: SAT reports + resume
+  const satN=profileData.sat_taken?(profileData.sat_count||0):0;
+  let g='';
+  for(let i=1;i<=satN;i++) g+=uploadRow(`SAT Test ${i} Score Report`,'Required · PDF',`mSat${i}Label`,`mSat${i}File`,'.pdf');
+  g+=uploadRow('Resume / CV','Required · PDF','mResumeLabel','mResumeFile','.pdf');
+  $('mentorGeneralDocs').innerHTML=g;
+}
+
+async function submitMentorDocuments(){
+  const st=$('mentorDocStatus'); st.className='save-status';
+  if(!$('mcAdmFile')||!$('mcAdmFile').files[0]){ st.className='save-status error'; st.textContent='⚠ Current university Letter of Admission is required.'; return; }
+  if(!$('mResumeFile').files[0]){ st.className='save-status error'; st.textContent='⚠ Resume is required.'; return; }
+  const satN=profileData.sat_taken?(profileData.sat_count||0):0;
+  for(let i=1;i<=satN;i++){ if(!$(`mSat${i}File`).files[0]){ st.className='save-status error'; st.textContent=`⚠ SAT Test ${i} report required.`; return; } }
+
+  const btn=$('mentorDocSubmitBtn'); btn.disabled=true; btn.textContent='Uploading…';
+  try{
+    const uid=userId(); const records=[];
+    const push=async(inp,type,uni)=>{ const el=$(inp); if(!el||!el.files[0])return; const f=el.files[0],ext=f.name.split('.').pop(); const path=`${uid}/${type}_${Date.now()}.${ext}`; let url; try{url=await sbUpload('mentor-docs',path,f);}catch(e){url='upload-failed';} records.push({user_id:uid,university_name:uni||profileData.current_university_name||'',document_type:type,file_url:url,uploaded_at:new Date().toISOString()}); };
+    const trans=mentorTranscripts(profileData.grade_year||'');
+    for(let i=0;i<trans.length;i++) await push(`mcT${i}File`,`transcript_${trans[i].replace(/\W/g,'_')}`,profileData.current_university_name);
+    await push('mcAdmFile','letter_of_admission',profileData.current_university_name);
+    await push('mcSchFile','proof_of_scholarship',profileData.current_university_name);
+    const list=profileData.university_list||[];
+    for(let i=0;i<list.length;i++){ await push(`mlAdm${i}File`,'letter_of_admission',list[i].university_name); await push(`mlSch${i}File`,'proof_of_scholarship',list[i].university_name); }
+    for(let i=1;i<=satN;i++) await push(`mSat${i}File`,`sat_report_${i}`);
+    await push('mResumeFile','resume');
+    await sbInsert('mentor_documents',records);
+    await markDocsSubmitted();
+    btn.style.display='none'; st.className='save-status success'; st.textContent='✓ Documents submitted. Verification within 48 hours.';
+    renderStatusBanner(); refreshActionButtons();
+  }catch(e){ btn.disabled=false; btn.textContent='Submit Documents'; st.className='save-status error'; st.textContent='✗ Upload failed. Please retry.'; }
+}
+
+async function markDocsSubmitted(){
+  profileData.documents_submitted=true;
+  const filter=userId()?`id=eq.${userId()}`:`email=eq.${encodeURIComponent(user.email)}`;
+  await sbPatch(`users?${filter}`,{documents_submitted:true});
+}
+
+/* ═══════════════════════ ACTION BUTTONS (gating) ═══════════════════════ */
+function refreshActionButtons(){
+  if(isMentor){ $('mentorAction').style.display='block'; $('studentAction').style.display='none'; $('actionCardTitle').textContent='Open for Matching'; }
+  else { $('studentAction').style.display='block'; $('mentorAction').style.display='none'; $('actionCardTitle').textContent='Book Your Session'; }
+  // calendar visible once verified
+  if(profileData.profile_verified){ $('calendarCard').style.display='block'; renderCalendar(); }
+  if(isMentor && profileData.profile_status==='Open for a Match'){ $('matchBtn').textContent='🟢 You are Open for a Match'; $('mentorSlotHint').style.display='block'; }
+  if(!isMentor && profileData.profile_status==='Looking for a Match'){ $('bookBtn').textContent='🔎 Looking for a Match — view your calendar'; }
+  loadSessions();
+}
+
+function gateCheck(){
+  if(!profileData.documents_submitted){ toast('Please submit all required documents first.'); return false; }
+  if(!profileData.profile_verified){ toast('Please wait for Studera to verify your profile (up to 48 hours). After 48h, contact '+SUPPORT_EMAIL); return false; }
+  return true;
+}
+function onBookClick(){ if(!gateCheck()) return; openModal('bookModal'); }
+function onMatchClick(){
+  if(!gateCheck()) return;
+  const country=(profileData.current_university_country||profileData.country||'').toLowerCase();
+  const isUSA=country.includes('united states')||country==='usa'||country==='us';
+  if(!isUSA){ toast('Discounted sessions are currently only for USA undergraduates. Other mentors: opportunities opening soon.'); return; }
+  openModal('matchModal');
+}
+
+async function confirmStudentMatch(){
+  if(!$('bookAgreeTerms').checked||!$('bookAgreePrivacy').checked){ $('bookStatus').className='save-status error'; $('bookStatus').textContent='Please accept both agreements.'; return; }
+  await setMatchStatus('Looking for a Match');
+  closeModal('bookModal'); toast("You're in the matching queue — up to 72 hours.");
+}
+async function confirmMentorMatch(){
+  if(!$('matchAgree').checked){ $('matchStatus').className='save-status error'; $('matchStatus').textContent='Please accept the terms.'; return; }
+  await setMatchStatus('Open for a Match');
+  closeModal('matchModal'); toast('You are now Open for a Match. Your slots are visible to students.');
+}
+async function setMatchStatus(status){
+  profileData.profile_status=status;
+  const filter=userId()?`id=eq.${userId()}`:`email=eq.${encodeURIComponent(user.email)}`;
+  await sbPatch(`users?${filter}`,{profile_status:status});
+  renderStatusBanner(); refreshActionButtons();
+}
+
+/* ═══════════════════════ CALENDAR ═══════════════════════ */
+let calRef=new Date(2026,5,1); // June 2026
+let allSlots=[];
+const SLOT_TIMES=['07:00','08:00','09:00','10:00','11:00','12:00','13:00']; // 7am-2pm EST starts
+function fmtHour(h){ const n=parseInt(h); return (n>12?n-12:n)+(n>=12?'pm':'am'); }
+
+function initSlotTimes(){ const s=$('slot-time'); s.innerHTML=SLOT_TIMES.map(t=>`<option value="${t}">${fmtHour(t.split(':')[0])} – ${fmtHour(parseInt(t)+1)} EST</option>`).join(''); }
+
+async function loadSlots(){
+  if(isMentor){ allSlots=await sbGet(`calendar_slots?mentor_id=eq.${userId()}&order=slot_start`); }
+  else {
+    // students see slots from mentors who are open (status handled server-side ideally; here load booked-by-me + open)
+    allSlots=await sbGet(`calendar_slots?order=slot_start&limit=500`);
+  }
+}
+function calMove(d){ calRef.setMonth(calRef.getMonth()+d); renderCalendar(); }
+async function renderCalendar(){
+  await loadSlots();
+  $('calTitle').textContent = isMentor?'Your Availability — add 1-hour slots':'Available Mentor Slots';
+  if(isMentor) $('mentorSlotHint').style.display='block';
+  const y=calRef.getFullYear(),m=calRef.getMonth();
+  $('calMonthLabel').textContent=calRef.toLocaleString('en',{month:'long',year:'numeric'});
+  const first=new Date(y,m,1).getDay(), days=new Date(y,m+1,0).getDate();
+  const today=new Date(); today.setHours(0,0,0,0);
+  const minDate=new Date(2026,5,25);
+  let html=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>`<div class="cal-dayhead">${d}</div>`).join('');
+  for(let i=0;i<first;i++) html+='<div class="cal-day empty"></div>';
+  for(let d=1;d<=days;d++){
+    const date=new Date(y,m,d); const iso=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const past = date<minDate;
+    const daySlots=allSlots.filter(s=>(s.slot_start||'').startsWith(iso));
+    let slotHtml='';
+    daySlots.forEach(s=>{
+      const t=new Date(s.slot_start), hh=`${String(t.getHours()).padStart(2,'0')}:00`;
+      const mine=isMentor && s.mentor_id===userId();
+      if(s.is_booked){ slotHtml+=`<div class="cal-slot booked">${fmtHour(t.getHours())} booked</div>`; }
+      else if(mine){ slotHtml+=`<div class="cal-slot mine">${fmtHour(t.getHours())} mine</div>`; }
+      else if(!isMentor){ slotHtml+=`<div class="cal-slot open" onclick='openRequest(${JSON.stringify(s).replace(/'/g,"&#39;")})'>${fmtHour(t.getHours())} open</div>`; }
+    });
+    const addBtn = (isMentor && !past)? `<div class="cal-addslot" onclick="openAddSlot('${iso}')">＋ slot</div>`:'';
+    html+=`<div class="cal-day${past?' past':''}"><div class="cal-daynum">${d}</div>${slotHtml}${addBtn}</div>`;
+  }
+  $('calGrid').innerHTML=html;
+}
+function openAddSlot(iso){ $('slot-date').value=iso; $('slotStatus').textContent=''; openModal('slotModal'); }
+async function saveSlot(){
+  const iso=$('slot-date').value, t=$('slot-time').value;
+  const start=`${iso}T${t}:00`; const endH=String(parseInt(t)+1).padStart(2,'0'); const end=`${iso}T${endH}:00:00`.replace('::',':');
+  const st=$('slotStatus'); st.className='save-status'; st.textContent='Adding…';
+  try{
+    await sbInsert('calendar_slots',[{mentor_id:userId(),slot_start:start,slot_end:`${iso}T${endH}:00:00`,is_booked:false}]);
+    closeModal('slotModal'); renderCalendar(); toast('Slot added.');
+  }catch(e){ st.className='save-status error'; st.textContent='Could not add slot.'; }
+}
+
+/* ═══════════════════════ SESSION REQUEST ═══════════════════════ */
+let pendingSlot=null;
+function openRequest(slot){
+  if(!gateCheck()) return;
+  pendingSlot=slot;
+  const t=new Date(slot.slot_start);
+  $('rq-mentor').value='Assigned Mentor';
+  $('rq-date').value=t.toLocaleDateString('en',{year:'numeric',month:'short',day:'numeric'});
+  $('rq-day').value=t.toLocaleDateString('en',{weekday:'long'});
+  $('rq-time').value=`${fmtHour(t.getHours())} – ${fmtHour(t.getHours()+1)} EST`;
+  $('requestStatus').textContent=''; openModal('requestModal');
+}
+async function sendSessionRequest(){
+  if(!pendingSlot) return;
+  const st=$('requestStatus'); st.className='save-status'; st.textContent='Sending…';
+  try{
+    await sbInsert('session_requests',[{student_id:userId(),mentor_id:pendingSlot.mentor_id,slot_id:pendingSlot.id,status:'pending',payment_status:'pending'}]);
+    // notify team via mailto fallback
+    const t=new Date(pendingSlot.slot_start);
+    const subject=encodeURIComponent(`Session Request — ${user.name} (${user.studera_id||''})`);
+    const body=encodeURIComponent(`Student: ${user.name}\nStudera ID: ${user.studera_id||''}\nEmail: ${user.email}\nRequested slot: ${t.toLocaleString()} EST\nSlot ID: ${pendingSlot.id}`);
+    window.open(`mailto:${STUDERA_EMAIL}?subject=${subject}&body=${body}`,'_blank');
+    closeModal('requestModal');
+    toast('Request sent! Our team will contact you about payment.');
+  }catch(e){ st.className='save-status error'; st.textContent='Could not send request.'; }
+}
+
+/* ═══════════════════════ SESSIONS (confirmed = payment paid) ═══════════════════════ */
+async function loadSessions(){
+  const col=isMentor?'mentor_id':'student_id';
+  const reqs=await sbGet(`session_requests?${col}=eq.${userId()}&order=created_at.desc`);
+  $('sessionsCard').style.display='block';
+  if(!reqs.length){ $('sessionsList').innerHTML='<div class="empty-hint">No sessions yet.</div>'; return; }
+  // fetch slots for meet links
+  const html=[];
+  for(const r of reqs){
+    let slot=null; if(r.slot_id){ const s=await sbGet(`calendar_slots?id=eq.${r.slot_id}&limit=1`); slot=s[0]; }
+    const when = slot? new Date(slot.slot_start).toLocaleString('en',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})+' EST' : 'TBD';
+    const paid = r.payment_status==='paid';
+    const meet = paid && slot && slot.meeting_link
+      ? `<a class="session-link" href="${slot.meeting_link}" target="_blank">Join Meet</a>`
+      : `<span class="session-pill ${paid?'paid':'pending'}">${paid?'Confirmed':'Awaiting payment'}</span>`;
+    // Mentor sees a "Review Documents" button once the session is paid/confirmed
+    const reviewBtn = (isMentor && paid && r.student_id)
+      ? `<button class="session-review-btn" onclick="openDocReview('${r.student_id}')">🔒 Review Documents</button>` : '';
+    html.push(`<div class="session-item"><div><div class="session-when">${when}</div><div class="session-meta">${paid?'Payment confirmed':'Pending — our team will email your payment plan'}</div></div>${reviewBtn}${meet}</div>`);
+  }
+  $('sessionsList').innerHTML=html.join('');
+}
+
+/* ═══════════ CONFIDENTIAL DOCUMENT REVIEW (mentor, confirmed sessions only) ═══════════ */
+const DOC_LABELS = {
+  class9_transcript:'Class 9 Transcript', class10_transcript:'Class 10 Transcript',
+  class11_transcript:'Class 11 Transcript', class12_transcript:'Class 12 Transcript',
+  extracurricular_portfolio:'Extracurricular Portfolio',
+  sat_report_1:'SAT Score Report 1', sat_report_2:'SAT Score Report 2',
+  sat_report_3:'SAT Score Report 3', sat_report_4:'SAT Score Report 4', sat_report_5:'SAT Score Report 5'
+};
+function watermarkHTML(){
+  let s=''; for(let i=0;i<14;i++) s+='<span>STUDERA · CONFIDENTIAL · REVIEW ONLY</span>';
+  return `<div class="conf-watermark">${s}</div>`;
+}
+async function openDocReview(studentId){
+  openModal('docReviewModal');
+  $('docReviewBody').innerHTML='<div class="empty-hint">Loading documents…</div>';
+  let docs=[];
+  try{ docs=await sbGet(`student_documents?user_id=eq.${encodeURIComponent(studentId)}&order=uploaded_at.desc`); }catch(e){}
+  if(!docs.length){ $('docReviewBody').innerHTML='<div class="conf-empty">No documents available for this student yet.</div>'; return; }
+  // keep only the latest per document_type
+  const latest={}; docs.forEach(d=>{ if(!latest[d.document_type]) latest[d.document_type]=d; });
+  const items=Object.values(latest);
+  const blocks=items.map(d=>{
+    const label=DOC_LABELS[d.document_type]||d.document_type;
+    const url=d.file_url||'';
+    const isPdf=/\.pdf($|\?)/i.test(url);
+    // PDF viewer params hide toolbar/download UI; image fallback otherwise
+    const viewer = isPdf
+      ? `<iframe src="${url}#toolbar=0&navpanes=0&scrollbar=0" loading="lazy"></iframe>`
+      : `<img src="${url}" alt="document" draggable="false"/>`;
+    return `<div class="conf-doc" oncontextmenu="return false">
+      <div class="conf-doc-head"><span>${label}</span><span style="color:var(--orange-dark);font-weight:700">🔒 Review only</span></div>
+      <div class="conf-doc-frame">${viewer}${watermarkHTML()}<div class="conf-doc-block" oncontextmenu="return false"></div></div>
+    </div>`;
+  }).join('');
+  $('docReviewBody').innerHTML=blocks;
+}
+function closeDocReview(){ closeModal('docReviewModal'); }
+
+/* Google Calendar connect (uses your deployed Edge Function) */
+function connectGoogleCalendar(){
+  fetch(`${EDGE_BASE}/auth-url`).then(r=>r.json()).then(d=>{ if(d.authUrl) window.location.href=d.authUrl; }).catch(()=>toast('Calendar service unavailable.'));
+}
+
+/* ═══════════════════════ LOAD MENTOR OFFERINGS (for HS picker) ═══════════════════════ */
+async function loadMentorOfferings(){ try{ mentorOfferings=await sbGet('mentor_offerings?limit=2000'); }catch(e){ mentorOfferings=[]; } }
+
+/* ═══════════════════════ BOOT ═══════════════════════ */
+(async function init(){
+  initSlotTimes();
+  await loadProfile();
+  if(!isMentor) await loadMentorOfferings();
+  renderStatusBanner();
+  $('profileCardText').textContent = isMentor
+    ? 'Add your university details, year, SAT status and document info. Everything saves instantly.'
+    : 'Add your personal details, SAT status and pick the universities + majors you want mentorship for.';
+  renderDocsSection();
+  refreshActionButtons();
+})();
 </script>
 </body>
 </html>
