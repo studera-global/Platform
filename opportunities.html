@@ -218,6 +218,23 @@ footer.studera-footer::after{
     <button class="filter-btn" id="btnOnline" onclick="toggleFormat('online',this)">Online</button>
     <button class="filter-btn" id="btnInperson" onclick="toggleFormat('inperson',this)">In-Person</button>
 
+    <div class="filter-divider"></div>
+
+    <!-- MAJOR CATEGORY MULTI-SELECT DROPDOWN -->
+    <div class="filter-dropdown-wrap">
+      <button class="filter-dropdown-btn" id="catDropdownBtn" onclick="toggleDropdown('catDropdownMenu',this)">🎯 Field / Major</button>
+      <div class="filter-dropdown-menu" id="catDropdownMenu"></div>
+    </div>
+
+    <!-- OPPORTUNITY TYPE MULTI-SELECT DROPDOWN -->
+    <div class="filter-dropdown-wrap">
+      <button class="filter-dropdown-btn" id="typeDropdownBtn" onclick="toggleDropdown('typeDropdownMenu',this)">🏷️ Type</button>
+      <div class="filter-dropdown-menu" id="typeDropdownMenu"></div>
+    </div>
+
+  </div>
+  <div class="filter-inner" id="personalisedNote" style="display:none;padding-top:0;margin-top:-4px">
+    <span style="font-size:.78rem;color:var(--green);font-weight:600">✨ Personalised: categories from your profile are pre-selected. Add or remove any field above.</span>
   </div>
 </div>
 
@@ -241,7 +258,6 @@ footer.studera-footer::after{
       <a href="updates.html">Updates</a>
       <a href="technology.html">Technology</a>
       <a href="opportunities.html">Opportunities</a>
-      <a href="index.html#faq">FAQ</a>
     </div>
     <div class="footer-col">
       <div class="footer-col-title">Get Started</div>
@@ -1011,6 +1027,99 @@ const opportunities = [
   }
 ];
 
+/* ═══════════════════════════════════════════════════════════════
+   OPPORTUNITY CLASSIFIER + PERSONALISATION  (Studera)
+   Auto-derives a major-category list and an opportunity-type for every
+   opportunity from its existing text, so new opportunities are tagged
+   automatically with no manual editing. An opportunity may also carry an
+   explicit `cat:[...]` and/or `type:"..."` field to override the guesser.
+   ═══════════════════════════════════════════════════════════════ */
+
+// The 25 Studera major categories + a special non-major bucket.
+const OPP_MAJOR_CATEGORIES = [
+  "Aerospace Engineering","Mechanical Engineering","Computer Science/AI",
+  "Business/Management/Finance","Biology/Biomedical Sciences","Nursing","Psychology",
+  "International Studies/Anthropology","Engineering (General)","Economics",
+  "Business Analytics/Data Science/MIS","Philosophy","Visual Arts & Design",
+  "Performing Arts","Architecture & Spatial Design","Media & Journalism",
+  "Public Relations & Marketing","Law & Legal Studies","Public Policy & Administration",
+  "Political Science & Government","Education & Teaching",
+  "Environmental Science & Sustainability","Chemistry & Materials Science",
+  "Physics & Astronomy","Earth & Marine Sciences",
+  "Leadership & General" // catch-all for opportunities that map to no specific major
+];
+
+// keyword → category map (lowercased substrings tested against title+desc+eligibility)
+const CAT_KEYWORDS = {
+  "Aerospace Engineering":["aerospace","aeronautic","aviation","space","rocket","satellite","astronautic"],
+  "Mechanical Engineering":["mechanical","robotics","manufacturing","automotive","mechatronic"],
+  "Computer Science/AI":["computer science","artificial intelligence"," ai ","machine learning","coding","programming","software","hackathon","cyber","data structures","app development","computing"],
+  "Business/Management/Finance":["business","finance","financial","banking","entrepreneur","startup","management","accounting","commerce","investment","corporate","trading"],
+  "Biology/Biomedical Sciences":["biology","biomedical","medicine","medical","life sciences","genetics","biotech","pre-med","healthcare","health "],
+  "Nursing":["nursing","nurse"],
+  "Psychology":["psychology","psychological","mental health","behavioral","behavioural","cognitive"],
+  "International Studies/Anthropology":["international studies","anthropology","diplomacy","diplomat","global affairs","cross-cultural","united nations"," un ","model un","foreign affairs","geopolitic"],
+  "Engineering (General)":["engineering","engineer","stem"],
+  "Economics":["economics","economic","econometric","macroeconomic","microeconomic"],
+  "Business Analytics/Data Science/MIS":["data science","analytics","big data","data analysis","information systems","statistics","quantitative"],
+  "Philosophy":["philosophy","ethics","philosophical","logic"],
+  "Visual Arts & Design":["visual art","graphic design","fine art","painting","illustration","photography","design "],
+  "Performing Arts":["performing art","theatre","theater"," music ","dance ","drama","film ","acting","orchestra"],
+  "Architecture & Spatial Design":["architecture","architect","urban design","spatial","interior design"],
+  "Media & Journalism":["journalism","journalist","media","broadcast","news","reporting","press","writing","essay","creative writing","communication"],
+  "Public Relations & Marketing":["marketing","public relations","advertising","branding","pr "],
+  "Law & Legal Studies":["law","legal","moot court","jurisprudence","attorney","justice","human rights"],
+  "Public Policy & Administration":["public policy","public administration","governance","civic","policy"],
+  "Political Science & Government":["political science","politics","government","civics","parliament","democracy","election"],
+  "Education & Teaching":["education","teaching","teacher","pedagog","tutoring","mentorship","scholar program"],
+  "Environmental Science & Sustainability":["environment","sustainability","climate","conservation","ecology","renewable","green ","sdg","carbon"],
+  "Chemistry & Materials Science":["chemistry","chemical","materials science","biochem"],
+  "Physics & Astronomy":["physics","astronomy","astrophysics","quantum","cosmology"],
+  "Earth & Marine Sciences":["geology","marine","oceanography","earth science","geoscience","environmental science"]
+};
+
+// Opportunity types
+const OPP_TYPES = ["Scholarship","Conference","Competition","Camp / Summer Program","Internship / Fellowship","Workshop / Webinar","Leadership Program","Other"];
+const TYPE_KEYWORDS = {
+  "Scholarship":["scholarship","fully funded","financial aid","bursary","grant","tuition"],
+  "Conference":["conference","summit","forum","symposium","congress","delegate","festival"],
+  "Competition":["competition","contest","olympiad","challenge","award","prize","hackathon","essay competition"],
+  "Camp / Summer Program":["summer program","summer academy","camp","summer school","residency","bootcamp","cohort"],
+  "Internship / Fellowship":["internship","intern","fellowship","fellow","apprentice","placement","work experience"],
+  "Workshop / Webinar":["workshop","webinar","masterclass","seminar","course","training","discovery program","virtual workshop"],
+  "Leadership Program":["leadership","leaders","changemaker","ambassador","youth empowerment","global leadership"]
+};
+
+function classifyOpp(o){
+  const hay = ((o.title||'')+' '+(o.desc||'')+' '+(o.eligibility||'')+' '+(o.fullDesc||'')+' '+(o.eligibilityFull||'')).toLowerCase();
+  // categories
+  let cats = Array.isArray(o.cat) && o.cat.length ? o.cat.slice() : [];
+  if(!cats.length){
+    for(const [cat,kws] of Object.entries(CAT_KEYWORDS)){
+      if(kws.some(k=>hay.includes(k))) cats.push(cat);
+    }
+    if(!cats.length) cats=["Leadership & General"]; // non-major opportunities
+  }
+  // type
+  let type = o.type || '';
+  if(!type){
+    for(const t of ["Scholarship","Competition","Camp / Summer Program","Leadership Program","Internship / Fellowship","Conference","Workshop / Webinar"]){
+      const kws=TYPE_KEYWORDS[t]; if(kws && kws.some(k=>hay.includes(k))){ type=t; break; }
+    }
+    if(!type) type="Other";
+  }
+  o._cats = cats;
+  o._type = type;
+  return o;
+}
+opportunities.forEach(classifyOpp);
+
+/* personalisation: categories preselected from the signed-in user's profile */
+let userMajorCats = new Set();      // preselected (from profile)
+const catSelected = new Set();      // currently active category filters
+const typeSelected = new Set();     // currently active type filters
+
+
 // Sort by deadline ascending
 opportunities.sort((a,b)=>new Date(a.deadline)-new Date(b.deadline));
 
@@ -1058,8 +1167,44 @@ function toggleFormat(val, btn) {
 }
 
 function updateAllBtn() {
-  const anyActive = levelSelected.size > 0 || eligSelected.size > 0 || formatSelected.size > 0;
+  const anyActive = levelSelected.size > 0 || eligSelected.size > 0 || formatSelected.size > 0 || catSelected.size > 0 || typeSelected.size > 0;
   document.getElementById('btnAll').classList.toggle('active', !anyActive);
+}
+
+/* ── Major-category + Type dropdowns ── */
+function buildOppDropdowns(){
+  const catMenu=document.getElementById('catDropdownMenu');
+  catMenu.innerHTML = OPP_MAJOR_CATEGORIES.map(c=>{
+    const checked = catSelected.has(c);
+    return `<label class="filter-dropdown-item ${checked?'checked':''}"><input type="checkbox" ${checked?'checked':''} onchange="toggleCat('${c.replace(/'/g,"\\'")}',this)"/> ${c}</label>`;
+  }).join('');
+  const typeMenu=document.getElementById('typeDropdownMenu');
+  typeMenu.innerHTML = OPP_TYPES.map(t=>{
+    const checked = typeSelected.has(t);
+    return `<label class="filter-dropdown-item ${checked?'checked':''}"><input type="checkbox" ${checked?'checked':''} onchange="toggleType('${t.replace(/'/g,"\\'")}',this)"/> ${t}</label>`;
+  }).join('');
+  refreshDropdownBtnState();
+}
+function refreshDropdownBtnState(){
+  document.getElementById('catDropdownBtn').classList.toggle('active', catSelected.size>0);
+  document.getElementById('typeDropdownBtn').classList.toggle('active', typeSelected.size>0);
+}
+function toggleDropdown(menuId,btn){
+  const menu=document.getElementById(menuId);
+  const willOpen=!menu.classList.contains('open');
+  document.querySelectorAll('.filter-dropdown-menu').forEach(m=>m.classList.remove('open'));
+  if(willOpen) menu.classList.add('open');
+}
+document.addEventListener('click',e=>{ if(!e.target.closest('.filter-dropdown-wrap')) document.querySelectorAll('.filter-dropdown-menu').forEach(m=>m.classList.remove('open')); });
+function toggleCat(c,cb){
+  if(cb.checked) catSelected.add(c); else catSelected.delete(c);
+  cb.closest('.filter-dropdown-item').classList.toggle('checked',cb.checked);
+  updateAllBtn(); refreshDropdownBtnState(); renderOpps();
+}
+function toggleType(t,cb){
+  if(cb.checked) typeSelected.add(t); else typeSelected.delete(t);
+  cb.closest('.filter-dropdown-item').classList.toggle('checked',cb.checked);
+  updateAllBtn(); refreshDropdownBtnState(); renderOpps();
 }
 
 function toggleDeadlineActive(btn) {
@@ -1092,6 +1237,9 @@ function resetAll() {
   document.getElementById('btnUSA').classList.remove('active');
   document.getElementById('btnOnline').classList.remove('active');
   document.getElementById('btnInperson').classList.remove('active');
+  catSelected.clear();
+  typeSelected.clear();
+  buildOppDropdowns();
   document.getElementById('btnAll').classList.add('active');
   renderOpps();
 }
@@ -1125,6 +1273,10 @@ function makeCard(o) {
         <span class="meta-tag">🎓 <strong>Eligibility:</strong> ${o.eligibility}</span>
         <span class="meta-tag">📍 <strong>Location:</strong> ${o.location}</span>
       </div>
+      <div class="opp-meta" style="margin-top:2px">
+        <span class="meta-tag" style="background:#fff3e0;color:#e65100;border-color:rgba(230,81,0,.2)">🏷️ ${o._type}</span>
+        ${(o._cats||[]).slice(0,3).map(c=>`<span class="meta-tag" style="background:var(--green-light);color:var(--green-dark);border-color:#b7dfc8">${c}</span>`).join('')}
+      </div>
       <p class="opp-desc">${o.desc}</p>
       <div class="opp-footer">
         <a href="opportunity.html?id=${o.id}" class="btn-orange">Learn More / Apply →</a>
@@ -1141,7 +1293,11 @@ function passesBaseFilters(o) {
   // Nationality filter: if any nationality is selected, opp must match at least one selected
   const natOk = eligSelected.size === 0 || eligSelected.has(o.nationality);
   const fmtOk = formatSelected.size === 0 || formatSelected.has(o.locationType);
-  return levelOk && natOk && fmtOk;
+  // Major-category filter: opp passes if it shares at least one selected category
+  const catOk = catSelected.size === 0 || (o._cats || []).some(c => catSelected.has(c));
+  // Opportunity-type filter
+  const typeOk = typeSelected.size === 0 || typeSelected.has(o._type);
+  return levelOk && natOk && fmtOk && catOk && typeOk;
 }
 
 function renderOpps() {
@@ -1193,8 +1349,36 @@ function renderOpps() {
 }
 
 renderOpps();
+buildOppDropdowns();
 
 function toggleNav(){document.getElementById('navLinks').classList.toggle('open');}
+
+// Supabase (for fetching the signed-in user's profile categories)
+const OPP_SB_URL='https://thmcurfueobamkctupez.supabase.co';
+const OPP_SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRobWN1cmZ1ZW9iYW1rY3R1cGV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDE5NDksImV4cCI6MjA5NTIxNzk0OX0.mEsgYakV9Xbo6PMeAX_AQCMa_nhveP7NydfiPFsbfPM';
+
+async function personaliseFromProfile(user){
+  try{
+    const filter = user.id ? `id=eq.${encodeURIComponent(user.id)}` : `email=eq.${encodeURIComponent(user.email)}`;
+    const r=await fetch(`${OPP_SB_URL}/rest/v1/users?${filter}&select=major_interests,current_major_category,university_list&limit=1`,{headers:{apikey:OPP_SB_KEY,Authorization:`Bearer ${OPP_SB_KEY}`}});
+    const rows=await r.json(); const p=(rows&&rows[0])||{};
+    const cats=new Set();
+    // High-school student: major_interests = [{category,...}] or ["Cat", ...]
+    if(Array.isArray(p.major_interests)){
+      p.major_interests.forEach(m=>{ if(typeof m==='string')cats.add(m); else if(m&&m.category)cats.add(m.category); });
+    }
+    // Mentor: current major + university_list categories
+    if(p.current_major_category) cats.add(p.current_major_category);
+    if(Array.isArray(p.university_list)) p.university_list.forEach(u=>{ if(u&&u.major_category)cats.add(u.major_category); });
+    // keep only valid known categories
+    cats.forEach(c=>{ if(OPP_MAJOR_CATEGORIES.includes(c)){ userMajorCats.add(c); catSelected.add(c); } });
+    if(catSelected.size>0){
+      document.getElementById('personalisedNote').style.display='flex';
+      updateAllBtn(); refreshDropdownBtnState(); buildOppDropdowns(); renderOpps();
+    }
+  }catch(e){ /* silent: show all opportunities if profile fetch fails */ }
+}
+
 (function initAuth(){
   let user={};try{user=JSON.parse(sessionStorage.getItem('studera_user')||'{}');}catch(e){}
   const isAuth=window.location.search.includes('auth=1')||user.logged_in;
@@ -1204,6 +1388,7 @@ function toggleNav(){document.getElementById('navLinks').classList.toggle('open'
     document.getElementById('authBannerName').textContent='Filtered for '+( user.name||'you');
     const nl=document.getElementById('navAuthLink');if(nl){nl.textContent='Dashboard';nl.href='dashboard.html';}
     if(!user.profile_complete) document.getElementById('incompleteOppNote').style.display='block';
+    personaliseFromProfile(user);   // ← preselect categories from their profile
   } else {
     document.getElementById('authBanner').style.display='none';
     document.getElementById('signInPrompt').style.display='flex';
