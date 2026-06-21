@@ -778,7 +778,7 @@ function openProfileModal(){
   $('pf-email').value = user.email || profileData.email || '';
   $('pf-sid').value = user.studera_id || profileData.studera_id || '';
   $('pf-role').value = (user.role || profileData.role || '');
-  $('pf-phone').value = profileData.phone_number || profileData.phone || profileData.mobile || '';
+  $('pf-phone').value = profileData.phone_number || profileData.phone || profileData.mobile || user.phone || '';
   $('pf-linkedin').value = profileData.linkedin_url || '';
   $('pf-dob').value = profileData.date_of_birth || '';
   if(profileData.age) $('pf-age').value = profileData.age + ' years';
