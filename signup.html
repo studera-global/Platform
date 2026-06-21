@@ -201,6 +201,12 @@ footer{background:var(--dark);padding:20px 5%;text-align:center}
       <div class="field-error" id="errCountry">Please enter your country</div>
     </div>
 
+    <div class="field">
+      <label>Phone Number</label>
+      <input type="tel" id="inputPhone" placeholder="e.g. +92 300 1234567" autocomplete="tel"/>
+      <div class="field-error" id="errPhone">Please enter a valid phone number</div>
+    </div>
+
     <!-- PRIVACY POLICY -->
     <div class="privacy-check">
       <input type="checkbox" id="privacyCheck" onchange="document.getElementById('btnDetails').disabled=!this.checked"/>
@@ -285,6 +291,7 @@ let selectedRole = null;
 let userEmail = '';
 let userName = '';
 let userCountry = '';
+let userPhone = '';
 let countdownTimer = null;
 let countdownSecs = 60;
 
@@ -321,6 +328,12 @@ function validateEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+function validatePhone(phone) {
+  // Require at least 7 digits; allow +, spaces, dashes, parentheses.
+  const digits = (phone || '').replace(/[^\d]/g, '');
+  return digits.length >= 7 && /^[\d\s()+\-]+$/.test(phone);
+}
+
 function showFieldError(id, show) {
   const el = document.getElementById(id);
   if (el) el.classList.toggle('show', show);
@@ -343,16 +356,19 @@ async function submitDetails() {
   const name = document.getElementById('inputName').value.trim();
   const email = document.getElementById('inputEmail').value.trim();
   const country = document.getElementById('inputCountry').value.trim();
+  const phone = document.getElementById('inputPhone').value.trim();
 
   let valid = true;
   if (!name) { showFieldError('errName', true); valid = false; } else showFieldError('errName', false);
   if (!validateEmail(email)) { showFieldError('errEmail', true); valid = false; } else showFieldError('errEmail', false);
   if (!country) { showFieldError('errCountry', true); valid = false; } else showFieldError('errCountry', false);
+  if (!validatePhone(phone)) { showFieldError('errPhone', true); valid = false; } else showFieldError('errPhone', false);
   if (!valid) return;
 
   userName = name;
   userEmail = email;
   userCountry = country;
+  userPhone = phone;
 
   const btn = document.getElementById('btnDetails');
   btn.disabled = true;
@@ -370,6 +386,7 @@ async function submitDetails() {
         email: email,
         full_name: name,
         country: country,
+        phone: phone,
         role: selectedRole
       })
     });
@@ -483,7 +500,8 @@ async function verifyOTP() {
         otp_verified: true,
         otp_code: null,
         account_status: 'pending',
-        activation_code: activationCode
+        activation_code: activationCode,
+        phone: userPhone
       })
     });
     
@@ -493,6 +511,7 @@ async function verifyOTP() {
         name: userName,
         email: userEmail,
         country: userCountry,
+        phone: userPhone,
         role: selectedRole,
         id: user.id,
         verified: true,
