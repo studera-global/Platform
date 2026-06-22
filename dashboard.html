@@ -137,6 +137,7 @@ img{max-width:100%}
 .file-label.has-file{background:var(--green-light);border-color:var(--green)}
 .file-label input{display:none}
 .status-tick{font-size:1.05rem}
+.done-badge{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--green-dark);background:var(--green-light);border:1px solid #b7dfc8;padding:5px 12px;border-radius:20px}
 
 /* accordion (mentor uni list docs) */
 .acc-item{border:1px solid var(--border);border-radius:11px;margin-bottom:10px;overflow:hidden}
@@ -436,6 +437,7 @@ img{max-width:100%}
         <div class="eyebrow">Step 1</div>
         <h3>Enter Your Profile Data</h3>
       </div>
+      <span class="done-badge" id="profileDoneBadge" style="display:none">✓ Completed</span>
     </div>
     <div class="card-body">
       <p style="font-size:.88rem;color:var(--body);margin-bottom:14px" id="profileCardText">Add your personal details, university information and areas of interest. Everything saves instantly.</p>
@@ -448,6 +450,7 @@ img{max-width:100%}
     <div class="card-head">
       <div class="card-head-icon">📂</div>
       <div><div class="eyebrow">Step 2</div><h3>Upload Your Documents</h3></div>
+      <span class="done-badge" id="hsDocsDoneBadge" style="display:none">✓ Completed</span>
     </div>
     <div class="card-body">
       <div class="field-hint" style="margin-bottom:14px">Transcripts required depend on your selected class/year. If one document contains multiple years, upload it in each slot.</div>
@@ -476,6 +479,7 @@ img{max-width:100%}
     <div class="card-head">
       <div class="card-head-icon">📄</div>
       <div><div class="eyebrow">Step 2</div><h3>Upload Your Documents</h3></div>
+      <span class="done-badge" id="mentorDocsDoneBadge" style="display:none">✓ Completed</span>
     </div>
     <div class="card-body">
 
@@ -768,6 +772,20 @@ function renderStatusBanner(){
   b.classList.add('sb-incomplete'); $('sbIcon').textContent='⚠️'; $('sbText').textContent='Profile Incomplete'; $('sbSub').textContent='Complete your profile and upload all required documents.';
 }
 
+/* Show ✓ Completed badges on the Profile and Documents cards. */
+function refreshCompletionBadges(){
+  // Profile is complete when the mandatory fields are all present.
+  const p = profileData || {};
+  const profileComplete = !!(p.phone && p.date_of_birth && p.grade_year &&
+    (p.sat_taken === true || p.sat_taken === false));
+  const pb = $('profileDoneBadge'); if(pb) pb.style.display = profileComplete ? 'inline-flex' : 'none';
+
+  // Documents complete when they have been submitted.
+  const docsComplete = !!p.documents_submitted;
+  const hb = $('hsDocsDoneBadge'); if(hb) hb.style.display = docsComplete ? 'inline-flex' : 'none';
+  const mb = $('mentorDocsDoneBadge'); if(mb) mb.style.display = docsComplete ? 'inline-flex' : 'none';
+}
+
 /* ═══════════════════════ PROFILE MODAL ═══════════════════════ */
 const HS_YEARS = ['Class 9','Class 10','Class 11','Class 12','Gap Year (Deferral without Admission)'];
 const MENTOR_YEARS = ['Gap Year (Deferral with Admission)','Incoming Freshman','Freshman','Sophomore','Junior','Senior'];
@@ -888,7 +906,7 @@ async function saveProfile(){
       if(isMentor) await syncMentorOfferings();
       selectedPicFile=null;
       st.className='save-status success'; st.textContent='✓ Profile saved.';
-      renderStatusBanner(); renderDocsSection(); refreshActionButtons(); buildMentorDocSections();
+      renderStatusBanner(); refreshCompletionBadges(); renderDocsSection(); refreshActionButtons(); buildMentorDocSections();
       setTimeout(closeProfileModal,1100);
     } else { throw new Error(r.status); }
   }catch(e){ st.className='save-status error'; st.textContent='✗ Could not save. Please retry.'; }
@@ -1200,7 +1218,7 @@ async function submitHsDocuments(){
     await sbInsert('student_documents',records);
     await markDocsSubmitted();
     btn.style.display='none'; st.className='save-status success'; st.textContent='✓ Documents submitted. Verification within 48 hours.';
-    renderStatusBanner(); refreshActionButtons();
+    renderStatusBanner(); refreshCompletionBadges(); refreshActionButtons();
   }catch(e){ btn.disabled=false; btn.textContent='Submit Documents'; st.className='save-status error'; st.textContent='✗ Upload failed. Please retry.'; }
 }
 
@@ -1261,7 +1279,7 @@ async function submitMentorDocuments(){
     await sbInsert('mentor_documents',records);
     await markDocsSubmitted();
     btn.style.display='none'; st.className='save-status success'; st.textContent='✓ Documents submitted. Verification within 48 hours.';
-    renderStatusBanner(); refreshActionButtons();
+    renderStatusBanner(); refreshCompletionBadges(); refreshActionButtons();
   }catch(e){ btn.disabled=false; btn.textContent='Submit Documents'; st.className='save-status error'; st.textContent='✗ Upload failed. Please retry.'; }
 }
 
@@ -1310,7 +1328,7 @@ async function setMatchStatus(status){
   profileData.profile_status=status;
   const filter=userId()?`id=eq.${userId()}`:`email=eq.${encodeURIComponent(user.email)}`;
   await sbPatch(`users?${filter}`,{profile_status:status});
-  renderStatusBanner(); refreshActionButtons();
+  renderStatusBanner(); refreshCompletionBadges(); refreshActionButtons();
 }
 
 /* ═══════════════════════ CALENDAR ═══════════════════════ */
@@ -1480,7 +1498,7 @@ async function loadMentorOfferings(){ try{ mentorOfferings=await sbGet('mentor_o
   initSlotTimes();
   await loadProfile();
   if(!isMentor) await loadMentorOfferings();
-  renderStatusBanner();
+  renderStatusBanner(); refreshCompletionBadges();
   $('profileCardText').textContent = isMentor
     ? 'Add your university details, year, SAT status and document info. Everything saves instantly.'
     : 'Add your personal details, SAT status and pick the universities + majors you want mentorship for.';
