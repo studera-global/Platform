@@ -778,7 +778,7 @@ function openProfileModal(){
   $('pf-email').value = user.email || profileData.email || '';
   $('pf-sid').value = user.studera_id || profileData.studera_id || '';
   $('pf-role').value = (user.role || profileData.role || '');
-  $('pf-phone').value = profileData.phone_number || profileData.phone || profileData.mobile || user.phone || '';
+  $('pf-phone').value = profileData.phone || user.phone || '';
   $('pf-linkedin').value = profileData.linkedin_url || '';
   $('pf-dob').value = profileData.date_of_birth || '';
   if(profileData.age) $('pf-age').value = profileData.age + ' years';
@@ -852,7 +852,7 @@ async function saveProfile(){
   const ageNum = parseInt(($('pf-age').value||'').replace(/\D/g,''))||null;
   const satYes = $('pf-sat-status').value==='Yes';
   const payload = {
-    phone_number:phone, mobile:phone, phone:phone,
+    phone:phone,
     linkedin_url: $('pf-linkedin').value.trim(),
     date_of_birth:$('pf-dob').value, age:ageNum,
     grade_year:$('pf-year').value,
