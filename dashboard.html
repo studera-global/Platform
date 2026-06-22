@@ -1384,14 +1384,25 @@ async function sendSessionRequest(){
   if(!pendingSlot) return;
   const st=$('requestStatus'); st.className='save-status'; st.textContent='Sending…';
   try{
-    await sbInsert('session_requests',[{student_id:userId(),mentor_id:pendingSlot.mentor_id,slot_id:pendingSlot.id,status:'pending',payment_status:'pending'}]);
-    // notify team via mailto fallback
-    const t=new Date(pendingSlot.slot_start);
-    const subject=encodeURIComponent(`Session Request — ${user.name} (${user.studera_id||''})`);
-    const body=encodeURIComponent(`Student: ${user.name}\nStudera ID: ${user.studera_id||''}\nEmail: ${user.email}\nRequested slot: ${t.toLocaleString()} EST\nSlot ID: ${pendingSlot.id}`);
-    window.open(`mailto:${STUDERA_EMAIL}?subject=${subject}&body=${body}`,'_blank');
+    // Insert the request and read back its id (Prefer: return=representation)
+    const insRes=await sbInsert('session_requests',[{student_id:userId(),mentor_id:pendingSlot.mentor_id,slot_id:pendingSlot.id,status:'pending',payment_status:'pending'}]);
+    const inserted=await insRes.json().catch(()=>[]);
+    const requestId=Array.isArray(inserted)&&inserted[0]?inserted[0].id:null;
+
+    // Email the student the bank details + proof-of-payment instructions
+    if(requestId){
+      try{
+        await fetch(`${SUPABASE_URL}/functions/v1/send_payment_instructions`,{
+          method:'POST',
+          headers:{'Authorization':`Bearer ${SUPABASE_ANON_KEY}`,'Content-Type':'application/json'},
+          body:JSON.stringify({request_id:requestId})
+        });
+      }catch(mailErr){ /* non-fatal: request is still created */ }
+    }
+
     closeModal('requestModal');
-    toast('Request sent! Our team will contact you about payment.');
+    toast('Request sent! Check your email for payment details.');
+    if(typeof loadSessions==='function') loadSessions();
   }catch(e){ st.className='save-status error'; st.textContent='Could not send request.'; }
 }
 
