@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /email-console.html
+Disallow: /dashboard.html
+
+Sitemap: https://studera-global.github.io/Platform/sitemap.xml
