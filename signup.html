@@ -465,46 +465,29 @@ async function verifyOTP() {
   btn.innerHTML = '<span class="spinner"></span>Verifying...';
 
   try {
-    // Check OTP in users table
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/users?email=eq.${encodeURIComponent(userEmail)}&otp_code=eq.${otp}&otp_expires_at=gt.${new Date().toISOString()}&select=id,full_name,email`,
-      {
-        headers: {
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-        }
-      }
-    );
-    
-    const users = await res.json();
-    
-    if (!users || users.length === 0) {
-      setStatus('step3Status', 'Invalid or expired code. Please request a new one.', 'error');
+    // Verify OTP + write verified state SERVER-SIDE (anon can no longer read
+    // otp_code or write to users after RLS lockdown). The function also
+    // generates the activation code and returns it.
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/verify_otp`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email: userEmail, otp: otp, phone: userPhone })
+    });
+
+    const result = await res.json();
+
+    if (!result || !result.success) {
+      setStatus('step3Status', (result && result.error) || 'Invalid or expired code. Please request a new one.', 'error');
       btn.disabled = false;
       btn.textContent = 'Verify & Continue →';
       return;
     }
-    
-    const user = users[0];
-    const activationCode = generateActivationCode();
-    
-    // Mark user as verified and store activation code
-    await fetch(`${SUPABASE_URL}/rest/v1/users?id=eq.${user.id}`, {
-      method: 'PATCH',
-      headers: {
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ 
-        otp_verified: true,
-        otp_code: null,
-        account_status: 'pending',
-        activation_code: activationCode,
-        phone: userPhone
-      })
-    });
-    
+
+    const activationCode = result.activation_code;
+
     // Store user data in session
     try {
       sessionStorage.setItem('studera_user', JSON.stringify({
@@ -513,7 +496,7 @@ async function verifyOTP() {
         country: userCountry,
         phone: userPhone,
         role: selectedRole,
-        id: user.id,
+        id: result.user_id,
         verified: true,
         activation_code: activationCode,
       }));
