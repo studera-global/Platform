@@ -750,9 +750,19 @@ function signOut(){ sessionStorage.clear(); window.location.href='index.html'; }
 
 async function loadProfile(){
   if(!user.email && !user.id) return;
-  const filter = user.id ? `id=eq.${encodeURIComponent(user.id)}` : `email=eq.${encodeURIComponent(user.email)}`;
-  const rows = await sbGet(`users?${filter}&limit=1`);
-  if(rows && rows.length){ profileData = rows[0]; }
+  // Read the caller's own profile via the secure function (anon can no longer
+  // read the users table after RLS lockdown). Identity comes from the stored
+  // Supabase Auth token.
+  const token = sessionStorage.getItem('studera_token');
+  try{
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/get_profile`, {
+      method:'POST',
+      headers:{ 'Authorization':`Bearer ${token||SUPABASE_ANON_KEY}`, 'Content-Type':'application/json' },
+      body: JSON.stringify({})
+    });
+    const data = await res.json();
+    if(data && data.profile){ profileData = data.profile; }
+  }catch(e){ /* leave profileData as-is on failure */ }
   // nav avatar
   const url = profileData.avatar_url || profileData.profile_picture;
   if(url){ $('navProfileBtn').innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"/>`; }
@@ -897,9 +907,17 @@ async function saveProfile(){
   if(!['Looking for a Match','Open for a Match'].includes(profileData.profile_status)) payload.profile_status='Profile Complete';
 
   try{
-    const filter = userId()? `id=eq.${encodeURIComponent(userId())}` : `email=eq.${encodeURIComponent(user.email)}`;
-    const r = await sbPatch(`users?${filter}`, payload);
-    if(r.ok||r.status===204){
+    // Save via the secure function (anon can no longer write users after RLS
+    // lockdown). The function verifies the caller's token and writes ONLY their
+    // own row, ignoring any protected fields.
+    const token = sessionStorage.getItem('studera_token');
+    const r = await fetch(`${SUPABASE_URL}/functions/v1/save_profile`, {
+      method:'POST',
+      headers:{ 'Authorization':`Bearer ${token||SUPABASE_ANON_KEY}`, 'Content-Type':'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await r.json().catch(()=>({}));
+    if(r.ok && data && data.success){
       Object.assign(profileData,payload);
       if(payload.avatar_url) $('navProfileBtn').innerHTML=`<img src="${payload.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"/>`;
       // mentor: push offerings live so HS students see them
@@ -1283,10 +1301,19 @@ async function submitMentorDocuments(){
   }catch(e){ btn.disabled=false; btn.textContent='Submit Documents'; st.className='save-status error'; st.textContent='✗ Upload failed. Please retry.'; }
 }
 
+async function saveProfileFields(fields){
+  // Secure self-write helper (post-RLS-lockdown). Uses the verified token.
+  const token = sessionStorage.getItem('studera_token');
+  return fetch(`${SUPABASE_URL}/functions/v1/save_profile`, {
+    method:'POST',
+    headers:{ 'Authorization':`Bearer ${token||SUPABASE_ANON_KEY}`, 'Content-Type':'application/json' },
+    body: JSON.stringify(fields)
+  });
+}
+
 async function markDocsSubmitted(){
   profileData.documents_submitted=true;
-  const filter=userId()?`id=eq.${userId()}`:`email=eq.${encodeURIComponent(user.email)}`;
-  await sbPatch(`users?${filter}`,{documents_submitted:true});
+  await saveProfileFields({documents_submitted:true});
 }
 
 /* ═══════════════════════ ACTION BUTTONS (gating) ═══════════════════════ */
@@ -1326,8 +1353,7 @@ async function confirmMentorMatch(){
 }
 async function setMatchStatus(status){
   profileData.profile_status=status;
-  const filter=userId()?`id=eq.${userId()}`:`email=eq.${encodeURIComponent(user.email)}`;
-  await sbPatch(`users?${filter}`,{profile_status:status});
+  await saveProfileFields({profile_status:status});
   renderStatusBanner(); refreshCompletionBadges(); refreshActionButtons();
 }
 
