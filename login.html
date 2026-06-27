@@ -143,7 +143,7 @@ function togglePw(id, btn) {
 async function resolveStuderaID(sid) {
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/users?studera_id=eq.${encodeURIComponent(sid)}&select=email`,
+      `${SUPABASE_URL}/rest/v1/public_users_safe?studera_id=eq.${encodeURIComponent(sid)}&select=email`,
       { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` } }
     );
     const data = await res.json();
@@ -208,7 +208,7 @@ async function doLogin() {
     
     // Get user profile
  const userRes = await fetch(
-  `${SUPABASE_URL}/rest/v1/users?email=eq.${encodeURIComponent(email)}&select=full_name,studera_id,role,account_status`,
+  `${SUPABASE_URL}/rest/v1/public_users_safe?email=eq.${encodeURIComponent(email)}&select=full_name,studera_id,role,account_status`,
   { headers: { 'apikey': SUPABASE_ANON_KEY } }
 );
     const userData = await userRes.json();
@@ -249,7 +249,7 @@ async function sendResetEmail() {
   try {
     // Check if user exists
     const checkRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/users?email=eq.${encodeURIComponent(email)}&select=id`,
+      `${SUPABASE_URL}/rest/v1/public_users_safe?email=eq.${encodeURIComponent(email)}&select=id`,
       { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` } }
     );
     const users = await checkRes.json();
